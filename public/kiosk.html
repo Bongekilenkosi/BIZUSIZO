@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>BIZUSIZO Check-In</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;min-height:100vh;display:flex;flex-direction:column}
+.header{background:#1e40af;color:#fff;padding:16px 20px;text-align:center}
+.header h1{font-size:28px;font-weight:800;letter-spacing:1px}
+.header p{font-size:14px;opacity:.8;margin-top:2px}
+.body{flex:1;padding:16px;max-width:600px;margin:0 auto;width:100%}
+.card{background:#fff;border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card h2{font-size:20px;color:#1e40af;margin-bottom:12px;text-align:center}
+.card p{font-size:15px;color:#4b5563;text-align:center;margin-bottom:16px;line-height:1.5}
+.btn-grid{display:grid;gap:10px}
+.btn-grid.cols-2{grid-template-columns:1fr 1fr}
+.btn-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:18px 16px;border-radius:12px;border:2px solid #e5e7eb;background:#fff;font-size:16px;font-weight:600;color:#1f2937;cursor:pointer;transition:all .15s;text-align:center;min-height:60px;line-height:1.3}
+.btn:active{transform:scale(.97);background:#eff6ff;border-color:#3b82f6}
+.btn.selected{background:#eff6ff;border-color:#3b82f6;color:#1e40af}
+.btn-primary{background:#1e40af;color:#fff;border-color:#1e40af;font-size:18px;padding:20px;border-radius:12px;width:100%;font-weight:700;cursor:pointer;margin-top:12px}
+.btn-primary:active{background:#1e3a8a;transform:scale(.98)}
+.btn-primary:disabled{background:#94a3b8;border-color:#94a3b8}
+.btn-danger{background:#dc2626;color:#fff;border-color:#dc2626}
+.btn-danger:active{background:#b91c1c}
+.btn-secondary{background:#64748b;color:#fff;border-color:#64748b;font-size:16px;padding:16px;border-radius:12px;width:100%;font-weight:600;cursor:pointer;margin-top:8px}
+.btn-secondary:active{background:#475569;transform:scale(.98)}
+.input{width:100%;padding:16px;border-radius:12px;border:2px solid #e5e7eb;font-size:18px;outline:none;margin-bottom:10px}
+.input:focus{border-color:#3b82f6}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.label{font-size:13px;color:#6b7280;margin-bottom:4px;font-weight:600}
+.badge{display:inline-block;padding:6px 16px;border-radius:99px;font-size:16px;font-weight:700}
+.badge-red{background:#fef2f2;color:#dc2626;border:2px solid #fecaca}
+.badge-orange{background:#fff7ed;color:#ea580c;border:2px solid #fed7aa}
+.badge-yellow{background:#fefce8;color:#ca8a04;border:2px solid #fef08a}
+.badge-green{background:#f0fdf4;color:#16a34a;border:2px solid #bbf7d0}
+.result-box{text-align:center;padding:24px}
+.result-box .emoji{font-size:48px;margin-bottom:12px}
+.result-box h3{font-size:22px;margin-bottom:8px}
+.result-box p{font-size:15px;color:#4b5563;line-height:1.6}
+.ref-num{font-size:32px;font-weight:800;color:#1e40af;margin:16px 0;letter-spacing:2px}
+.progress{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.progress .dot{width:10px;height:10px;border-radius:99px;background:#e5e7eb}
+.progress .dot.active{background:#1e40af}
+.progress .dot.done{background:#22c55e}
+.footer{text-align:center;padding:12px;font-size:11px;color:#9ca3af}
+.hidden{display:none}
+.back-btn{font-size:13px;color:#6b7280;cursor:pointer;text-align:center;margin-top:8px;padding:8px}
+.consent-list{text-align:left;margin:12px 0 20px;padding-left:8px}
+.consent-list li{font-size:15px;color:#374151;margin-bottom:10px;line-height:1.5;list-style:none;padding-left:24px;position:relative}
+.consent-list li::before{content:'\2713';position:absolute;left:0;color:#16a34a;font-weight:700}
+.checkbox-grid{display:grid;gap:10px;text-align:left}
+.checkbox-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;border:2px solid #e5e7eb;background:#fff;cursor:pointer;font-size:15px;color:#1f2937;line-height:1.4}
+.checkbox-item input[type="checkbox"]{width:24px;height:24px;flex-shrink:0}
+.checkbox-item.checked{border-color:#dc2626;background:#fef2f2}
+.deletion-notice{font-size:12px;color:#9ca3af;text-align:center;margin-top:16px;padding:8px;border-top:1px solid #f3f4f6}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>BIZUSIZO</h1>
+  <p id="header-sub">Clinic Check-In / Ukubhalisa Emtholampilo</p>
+</div>
+
+<div class="body" id="app"></div>
+
+<div class="footer">BIZUSIZO v2.8 · Tap any button to continue · Ask staff for help</div>
+
+<script>
+const API = window.location.origin;
+let kioskUnlocked = false;
+let kioskPin = '';
+let state = { step: 'language', language: 'en', firstName: '', surname: '', dob: '', sex: '', symptoms: '', category: '', severity: '', triageResult: null, refCode: '', pathway: '', phone: '' };
+
+const LANGS = [
+  {code:'en',name:'English'},{code:'zu',name:'isiZulu'},{code:'xh',name:'isiXhosa'},
+  {code:'af',name:'Afrikaans'},{code:'nso',name:'Sepedi'},{code:'tn',name:'Setswana'},
+  {code:'st',name:'Sesotho'},{code:'ts',name:'Xitsonga'},{code:'ss',name:'siSwati'},
+  {code:'ve',name:'Tshivenda'},{code:'nr',name:'isiNdebele'}
+];
+
+const CATEGORIES = [
+  {id:'1',emoji:'\uD83E\uDEC1',en:'Breathing / Chest pain',zu:'Ukuphefumula / Isifuba',xh:'Ukuphefumla / Intlungu yesifuba',af:'Asemhaling / Borspyn',nso:'Go hema / Bohloko bja sefuba',tn:'Go hema / Botlhoko jwa sehuba',st:'Ho hema / Bohloko ba sefuba',ts:'Ku hefemula / Ku vava ka xifuva',ss:'Kuphefumula / Buhlungu besifuba',ve:'U femela / Vhutungu ha tshifuva',nr:'Ukuphefumula / Ubuhlungu besifuba'},
+  {id:'2',emoji:'\uD83E\uDD15',en:'Head injury / Headache',zu:'Ikhanda elibuhlungu',xh:'Ukwenzakala kwentloko / Intloko ebuhlungu',af:'Kopbesering / Hoofpyn',nso:'Kotsi ya hlogo / Go opa hlogo',tn:'Kotsi ya tlhogo / Tlhogo e botlhoko',st:'Kotsi ya hlooho / Hlooho e bohloko',ts:'Khombo ra nhloko / Ku vava ka nhloko',ss:'Kulimala kwenhloko / Inhloko lebuhlungu',ve:'U huvhala ha thoho / Thoho i a rema',nr:'Ukulimala kwehloko / Ihloko ebuhlungu'},
+  {id:'3',emoji:'\uD83E\uDD30',en:'Pregnancy related',zu:'Okuphathelene nokukhulelwa',xh:'Okukhulelweyo',af:'Swangerskap verwant',nso:'Tsa boimana',tn:'Tsa boimana',st:'Tsa boimana',ts:'Swa vukatana',ss:'Lokuphatselene nekukhulelwa',ve:'Zwa vhuimana',nr:'Okuphathelene nokukhulelwa'},
+  {id:'4',emoji:'\uD83E\uDE78',en:'Bleeding / Wound',zu:'Ukopha / Inxeba',xh:'Ukophela / Inxeba',af:'Bloeding / Wond',nso:'Go tsholla madi / Ntho',tn:'Go tshola madi / Ntho',st:'Ho tsoha madi / Leqeba',ts:'Ku huma ngati / Ndzhonga',ss:'Kopha / Inxeba',ve:'U bva malofha / Mbonzhe',nr:'Ukopha / Inxeba'},
+  {id:'5',emoji:'\uD83E\uDD12',en:'Fever / Flu / Cough',zu:'Imfiva / Umkhuhlane',xh:'Ifiva / Umkhuhlane / Ukukhohlela',af:'Koors / Griep / Hoes',nso:'Letadi / Mokgohla / Go gohlola',tn:'Mogote / Mokgotlhane / Go gotlhola',st:'Feberu / Mokhohlane / Ho hohlela',ts:'Ndzovolo / Swirhundzu / Ku khohola',ss:'Imfiva / Umkhuhlane / Kukhwehlela',ve:'Mulalwadza / Fuluwa / U kosola',nr:'Imfiva / Umkhuhlane / Ukukhwehlela'},
+  {id:'6',emoji:'\uD83E\uDD22',en:'Stomach / Vomiting',zu:'Isisu / Ukuhlanza',xh:'Isisu / Ukugabha',af:'Maag / Braak',nso:'Mala / Go hlatsa',tn:'Mala / Go tlhantsha',st:'Mala / Ho hlatsa',ts:'Ndzarhi / Ku hlanza',ss:'Sisu / Kuhlanta',ve:'Thumbu / U tanza',nr:'Isisu / Ukuhlanza'},
+  {id:'7',emoji:'\uD83D\uDC76',en:'Child illness',zu:'Ukugula kwengane',xh:'Ukugula komntwana',af:'Kindsiekte',nso:'Bolwetsi bja ngwana',tn:'Bolwetse jwa ngwana',st:'Bolwetse ba ngwana',ts:'Vuvabyi bya n\'wana',ss:'Kugula kwemntfwana',ve:'Vhulwadze ha nwana',nr:'Ukugula komntwana'},
+  {id:'8',emoji:'\uD83D\uDC8A',en:'Medication / Chronic',zu:'Umuthi / Esingamahlalakhona',xh:'Amayeza / Isifo esingapheliyo',af:'Medikasie / Chronies',nso:'Dihlare / Malwetsi a sa folego',tn:'Melemo / Malwetse a sa foleng',st:'Meriana / Mafu a sa foleng',ts:'Murhi / Mavabyi ya ku yima',ss:'Umutsi / Sifo lesingapheli',ve:'Mushonga / Malwadze a sa fheli',nr:'Umuthi / Isifo esingapheliko'},
+  {id:'9',emoji:'\uD83E\uDDB4',en:'Bone / Joint / Back pain',zu:'Ithambo / Umhlane',xh:'Ithambo / Umqolo',af:'Been / Gewrig / Rugpyn',nso:'Lesapo / Morokgo / Go opa mokokotlo',tn:'Lesapo / Tokololo / Mokwatla',st:'Lesapo / Setswe / Mokokotlo',ts:'Rhambu / Xikolo / Muganga',ss:'Litsambo / Inyonga / Umgogodla',ve:'Thambo / Tshiungo / Mudzi',nr:'Ithambo / Inyonga / Umgogodla'},
+  {id:'10',emoji:'\uD83E\uDDE0',en:'Mental health',zu:'Impilo yengqondo',xh:'Impilo yengqondo',af:'Geestesgesondheid',nso:'Maphelo a monagano',tn:'Boitekanelo jwa tlhaloganyo',st:'Bophelo ba kelello',ts:'Rihanyu ra mianakanyo',ss:'Imphilo yengcondvo',ve:'Mutakalo wa muhumbulo',nr:'Ipilo yomkhumbulo'},
+  {id:'11',emoji:'\uD83E\uDD27',en:'Allergy / Rash',zu:'I-allergy / Isikhumba',xh:'I-allergy / Isikhumba',af:'Allergie / Uitslag',nso:'Allergy / Go ruruga',tn:'Allergy / Go ruruga',st:'Allergy / Ho ruruha',ts:'Allergy / Ku pfimba',ss:'I-allergy / Sesifo sesikhumba',ve:'Allergy / Mashanga',nr:'I-allergy / Isikhumba'},
+  {id:'12',emoji:'\u270F\uFE0F',en:'Other',zu:'Okunye',xh:'Okunye',af:'Ander',nso:'Tse dingwe',tn:'Tse dingwe',st:'Tse ding',ts:'Swin\'wana',ss:'Lokunye',ve:'Zwinwe',nr:'Okunye'},
+];
+
+const T = {
+  en: {choose_lang:'Choose your language',welcome:'Welcome! Let\'s get you checked in.',name:'What is your first name?',surname:'What is your surname?',dob:'Date of birth (DD-MM-YYYY)',sex:'What is your sex?',male:'Male',female:'Female',intersex:'Intersex',prefer_not:'Prefer not to say',whats_wrong:'What is your main problem today?',how_bad:'How bad is it?',mild:'Mild',moderate:'Moderate',severe:'Severe',describe:'Describe your symptoms (optional)',next:'Next',back:'Back',checking:'Checking your symptoms...',result_title:'Your Result',queue_msg:'You have been added to the queue.',show_reception:'Show this screen to reception:',ref:'Your reference number:',your_turn:'Have a seat. The nurse will call your name.',start_over:'Start Over (New Patient)',emergency:'EMERGENCY? Call 10177',mild_desc:'I can do my daily activities',mod_desc:'It\'s affecting my daily activities',sev_desc:'I can barely function',consent_text:'Before we begin, please note:\n- This service provides health guidance only\n- It does not diagnose or replace a doctor/nurse\n- Your information is stored securely under SA privacy law (POPIA)\n- You can request deletion at reception at any time',consent_agree:'I agree',consent_decline:'I do not agree',consent_goodbye:'Thank you. You may register with reception staff instead.',imci_title:'Does the child have any of these danger signs?',imci_1:'Not able to drink or breastfeed',imci_2:'Vomits everything',imci_3:'Has had convulsions',imci_4:'Lethargic or unconscious',imci_5:'Chest indrawing',imci_6:'Stridor (noisy breathing in)',imci_none:'None of the above',anc_title:'What is your visit about?',anc_routine:'Routine antenatal visit',anc_concern:'New concern or symptom',anc_emergency:'Emergency (bleeding, severe pain, baby not moving)',anc_supplements:'Collecting supplements only',chronic_title:'What do you need today?',chronic_stable:'Just collecting medication (stable)',chronic_sick:'I am sick / not feeling well',followup_prompt:'Would you like to receive a follow-up on WhatsApp?',followup_phone:'Enter your phone number (optional)',followup_send:'Send follow-up',followup_skip:'No thanks',deletion_notice:'To delete your information, ask reception staff.'},
+  zu: {choose_lang:'Khetha ulimi lwakho',welcome:'Siyakwemukela! Masikubhalise.',name:'Ngubani igama lakho?',surname:'Yisiphi isibongo sakho?',dob:'Usuku lokuzalwa (DD-MM-YYYY)',sex:'Ubulili bakho?',male:'Owesilisa',female:'Owesifazane',intersex:'Intersex',prefer_not:'Angithandi ukusho',whats_wrong:'Yini inkinga yakho enkulu namuhla?',how_bad:'Kumbi kangakanani?',mild:'Kancane',moderate:'Maphakathi',severe:'Kakhulu',describe:'Chaza izimpawu zakho (uma uthanda)',next:'Okulandelayo',back:'Emuva',checking:'Sihlola izimpawu zakho...',result_title:'Umphumela Wakho',queue_msg:'Usufakwe emgqeni.',show_reception:'Khombisa lesi sikrini e-reception:',ref:'Inombolo yakho:',your_turn:'Hlala phansi. Unesi uzokubiza ngegama.',start_over:'Qala Kabusha (Umuntu Omusha)',emergency:'KUPHUTHUMILE? Shaya 10177',mild_desc:'Ngingenza imisebenzi yami',mod_desc:'Kuthinta imisebenzi yami',sev_desc:'Angikwazi nhlobo',consent_text:'Ngaphambi kokuba siqale, sicela wazi:\n- Le sevisi inikeza isiqondiso sempilo kuphela\n- Ayixilongi futhi ayithathi indawo kadokotela/nomesi\n- Imininingwane yakho igcinwe ngokuphepha ngaphansi komthetho wezwe (POPIA)\n- Ungacela ukusulwa kwayo e-reception nganoma yinini',consent_agree:'Ngiyavuma',consent_decline:'Angivumi',consent_goodbye:'Siyabonga. Ungabhalisa e-reception.',imci_title:'Ingabe ingane inezimpawu eziyingozi?',imci_1:'Ayikwazi ukuphuza noma ukuncela',imci_2:'Ihlanza konke',imci_3:'Ibe nesifo sokuwa',imci_4:'Ikhathele kakhulu noma ayiphaphami',imci_5:'Isifuba siya ngaphakathi',imci_6:'Umsindo wokuphefumula',imci_none:'Akukho kulezi',anc_title:'Uvakashele ini namuhla?',anc_routine:'Ukuhlolwa okujwayelekile kokukhulelwa',anc_concern:'Isikhalazo esisha noma isimpawu',anc_emergency:'Isimo esiphuthumayo (ukopha, ubuhlungu obukhulu, ingane ayinyakazi)',anc_supplements:'Ukuthenga amavithamini kuphela',chronic_title:'Udingani namuhla?',chronic_stable:'Ngithatha umuthi kuphela (ngiqinile)',chronic_sick:'Ngiyagula / Angizizwa kahle',followup_prompt:'Ungathanda ukuthola ulandelelo nge-WhatsApp?',followup_phone:'Faka inombolo yakho yocingo (uma uthanda)',followup_send:'Thumela ulandelelo',followup_skip:'Cha ngiyabonga',deletion_notice:'Ukususa imininingwane yakho, buza abasebenzi be-reception.'},
+  xh: {choose_lang:'Khetha ulwimi lwakho',welcome:'Wamkelekile! Masikubhalise.',name:'Ngubani igama lakho?',surname:'Ngubani ifani yakho?',dob:'Umhla wokuzalwa (DD-MM-YYYY)',sex:'Sesiphi isini sakho?',male:'Indoda',female:'Ibhinqa',intersex:'Intersex',prefer_not:'Andithandi ukutsho',whats_wrong:'Yintoni ingxaki yakho enkulu namhlanje?',how_bad:'Kubi kangakanani?',mild:'Kancinane',moderate:'Phakathi',severe:'Kakhulu',describe:'Chaza iimpawu zakho (ukuba uthanda)',next:'Okulandelayo',back:'Emva',checking:'Sihlola iimpawu zakho...',result_title:'Isiphumo Sakho',queue_msg:'Ufakwe emgceni.',show_reception:'Bonisa esi sikrini e-reception:',ref:'Inombolo yakho:',your_turn:'Hlala phantsi. Umongikazi uya kukubiza ngegama.',start_over:'Qala Kwakhona (Umntu Omtsha)',emergency:'INGXAKEKO? Tsalela 10177',mild_desc:'Ndingenza imisebenzi yam',mod_desc:'Ichaphazela imisebenzi yam',sev_desc:'Andikwazi kwenza nto',consent_text:'Phambi kokuba siqale, qaphela:\n- Le nkonzo inika isikhokelo sempilo kuphela\n- Ayixilongi okanye ithathe indawo kagqirha/yomongikazi\n- Inkcazelo yakho igcinwe ngokukhuselekileyo phantsi komthetho wabucala (POPIA)\n- Ungacela ukucinywa kwayo e-reception nanini na',consent_agree:'Ndiyavuma',consent_decline:'Andivumi',consent_goodbye:'Enkosi. Ungabhalisa e-reception.',imci_title:'Ingaba umntwana unezi mpawu zingozi?',imci_1:'Akakwazi ukusela okanye ukuncanca',imci_2:'Ugabha yonke into',imci_3:'Ube nesifo sokuwa',imci_4:'Udiniwe kakhulu okanye akavuki',imci_5:'Isifuba sitsala ngaphakathi',imci_6:'Isandi sokuphefumla',imci_none:'Akukho kule',anc_title:'Utyelelo lwakho lungantoni?',anc_routine:'Utyelelo olwesiqhelo lokukhulelwa',anc_concern:'Isikhalazo esitsha okanye isimpawu',anc_emergency:'Ingxakeko (ukophela, intlungu enkulu, usana alushukumi)',anc_supplements:'Ukuthatha iivithamini kuphela',chronic_title:'Ufuna ntoni namhlanje?',chronic_stable:'Ndithatha amayeza kuphela (ndiqinile)',chronic_sick:'Ndiyagula / Andiziva kakuhle',followup_prompt:'Ungathanda ukufumana ulandelelo nge-WhatsApp?',followup_phone:'Faka inombolo yakho yomnxeba (ukuba uthanda)',followup_send:'Thumela ulandelelo',followup_skip:'Hayi enkosi',deletion_notice:'Ukucima inkcazelo yakho, buza abasebenzi be-reception.'},
+  af: {choose_lang:'Kies jou taal',welcome:'Welkom! Kom ons registreer jou.',name:'Wat is jou voornaam?',surname:'Wat is jou van?',dob:'Geboortedatum (DD-MM-JJJJ)',sex:'Wat is jou geslag?',male:'Manlik',female:'Vroulik',intersex:'Interseks',prefer_not:'Verkies om nie te se nie',whats_wrong:'Wat is jou hoofprobleem vandag?',how_bad:'Hoe erg is dit?',mild:'Lig',moderate:'Matig',severe:'Ernstig',describe:'Beskryf jou simptome (opsioneel)',next:'Volgende',back:'Terug',checking:'Kontroleer jou simptome...',result_title:'Jou Resultaat',queue_msg:'Jy is by die tou gevoeg.',show_reception:'Wys hierdie skerm by ontvangs:',ref:'Jou verwysingsnommer:',your_turn:'Sit asseblief. Die verpleegster sal jou naam roep.',start_over:'Begin Oor (Nuwe Pasient)',emergency:'NOODGEVAL? Bel 10177',mild_desc:'Ek kan my daaglikse aktiwiteite doen',mod_desc:'Dit affekteer my daaglikse aktiwiteite',sev_desc:'Ek kan skaars funksioneer',consent_text:'Voordat ons begin, let asseblief:\n- Hierdie diens bied slegs gesondheidsleiding\n- Dit diagnoseer nie of vervang nie \'n dokter/verpleegster\n- Jou inligting word veilig gestoor onder SA privaatheidsreg (POPIA)\n- Jy kan enige tyd by ontvangs vra om dit uit te vee',consent_agree:'Ek stem saam',consent_decline:'Ek stem nie saam nie',consent_goodbye:'Dankie. Jy kan by ontvangs registreer.',imci_title:'Het die kind enige van hierdie gevaarstekens?',imci_1:'Kan nie drink of borsvoed nie',imci_2:'Braak alles uit',imci_3:'Het stuipe gehad',imci_4:'Lusteloos of bewusteloos',imci_5:'Borsindrukking',imci_6:'Stridor (raserige inaseming)',imci_none:'Geen van bogenoemde',anc_title:'Waaroor gaan jou besoek?',anc_routine:'Roetine voorgeboorte besoek',anc_concern:'Nuwe bekommernis of simptoom',anc_emergency:'Noodgeval (bloeding, erge pyn, baba beweeg nie)',anc_supplements:'Haal net supplemente',chronic_title:'Wat het jy vandag nodig?',chronic_stable:'Haal net medikasie (stabiel)',chronic_sick:'Ek is siek / voel nie lekker nie',followup_prompt:'Wil jy \'n opvolg op WhatsApp ontvang?',followup_phone:'Voer jou foonnommer in (opsioneel)',followup_send:'Stuur opvolg',followup_skip:'Nee dankie',deletion_notice:'Om jou inligting uit te vee, vra ontvangspersoneel.'},
+  nso: {choose_lang:'Kgetha polelo ya gago',welcome:'O amogelwa! A re go ngwadise.',name:'Leina la gago ke mang?',surname:'Sefane sa gago ke eng?',dob:'Letšatšikgwedi la matswalo (DD-MM-YYYY)',sex:'Bong bja gago ke eng?',male:'Monna',female:'Mosadi',intersex:'Intersex',prefer_not:'Ga ke rate go bolela',whats_wrong:'Bothata bja gago bjo bogolo ke eng lehono?',how_bad:'Bo bobe bjang?',mild:'Gannyane',moderate:'Magareng',severe:'Kudu',describe:'Hlaloša dika tša gago (ge o rata)',next:'Go latelago',back:'Morago',checking:'Re hlahloba dika tša gago...',result_title:'Poelo ya Gago',queue_msg:'O tsenywe mothalading.',show_reception:'Bontšha sekirini se go reception:',ref:'Nomoro ya gago:',your_turn:'Dula fase. Mooki o tla go bitša ka leina.',start_over:'Thoma Gape (Molwetši yo Moswa)',emergency:'TŠHOGANYETŠO? Lletša 10177',mild_desc:'Nka dira mešomo ya ka ya letšatši',mod_desc:'E ama mešomo ya ka ya letšatši',sev_desc:'Ga ke kgone go šoma',consent_text:'Pele re thoma, tseba gore:\n- Tirelo ye e fa moeletši wa maphelo fela\n- Ga e diagnoše goba go tšea sebaka sa ngaka/mooki\n- Tshedimošo ya gago e bolokilwe ka polokego ka fase ga molao wa sephiri (POPIA)\n- O ka kgopela go phumulwa ga yona go reception nako efe le efe',consent_agree:'Ke a dumela',consent_decline:'Ga ke dumele',consent_goodbye:'Re a leboga. O ka ngwadišwa ke bašomi ba reception.',imci_title:'Na ngwana o na le dika tše di kotsi?',imci_1:'A ka se kgone go nwa goba go nyanya',imci_2:'O hlatsa tšohle',imci_3:'O bile le dikonfolšene',imci_4:'O lapile kudu goba ga a tsoge',imci_5:'Sefuba se ya ka gare',imci_6:'Stridor (go hema ka modumo)',imci_none:'Ga go le e tee',anc_title:'Ketelo ya gago ke ya eng?',anc_routine:'Ketelo ya setlwaedi ya pelego',anc_concern:'Pelaelo e mpsha goba seka',anc_emergency:'Tšhoganyetšo (go tšholla madi, bohloko bjo bogolo, lesea ga le šikinyege)',anc_supplements:'Go tšea dithšidišo fela',chronic_title:'O hloka eng lehono?',chronic_stable:'Ke tšea dihlare fela (ke tsepame)',chronic_sick:'Ke a lwala / Ga ke ikwe gabotse',followup_prompt:'Na o ka rata go fiwa tshekatsheko ka WhatsApp?',followup_phone:'Tsenya nomoro ya gago ya mogala (ge o rata)',followup_send:'Romela tshekatsheko',followup_skip:'Aowa ke a leboga',deletion_notice:'Go phumula tshedimošo ya gago, botšiša bašomi ba reception.'},
+  tn: {choose_lang:'Tlhopha puo ya gago',welcome:'O amogelwa! A re go kwadise.',name:'Leina la gago ke mang?',surname:'Sefane sa gago ke eng?',dob:'Letlha la matsalo (DD-MM-YYYY)',sex:'Bong jwa gago ke eng?',male:'Monna',female:'Mosadi',intersex:'Intersex',prefer_not:'Ga ke rate go bua',whats_wrong:'Bothata jwa gago jo bogolo ke eng gompieno?',how_bad:'Bo maswe go le kana kang?',mild:'Gannye',moderate:'Magareng',severe:'Thata',describe:'Tlhalosa matshwao a gago (fa o rata)',next:'Go go latelang',back:'Morago',checking:'Re tlhatlhoba matshwao a gago...',result_title:'Maduo a Gago',queue_msg:'O tsentshwe mo moleng.',show_reception:'Bontsha sekirini se go reception:',ref:'Nomoro ya gago:',your_turn:'Dula fatshe. Mooki o tla go bitsa ka leina.',start_over:'Simolola Gape (Molwetsi yo Mosha)',emergency:'MAEMO A TSHOGANYETSO? Leletsa 10177',mild_desc:'Ke kgona go dira ditiro tsa me tsa letsatsi',mod_desc:'E ama ditiro tsa me tsa letsatsi',sev_desc:'Ga ke kgone go dira sepe',consent_text:'Pele re simolola, ela tlhoko:\n- Tirelo e e fana ka kaelo ya boitekanelo fela\n- Ga e dire tlhatlhobo kana go tsaya sebaka sa ngaka/mooki\n- Tshedimosetso ya gago e bolokilwe ka polokesego ka fa tlase ga molao wa sephiri (POPIA)\n- O ka kopa go phimolwa ga yona go reception nako nngwe le nngwe',consent_agree:'Ke a dumela',consent_decline:'Ga ke dumele',consent_goodbye:'Re a leboga. O ka kwadisiwa ke badiri ba reception.',imci_title:'A ngwana o na le matshwao a a kotsi a?',imci_1:'Ga a kgone go nwa kana go anya',imci_2:'O tlhantsha sengwe le sengwe',imci_3:'O nnile le ditšhupetso',imci_4:'O lapile thata kana ga a tsoge',imci_5:'Sehuba se ya kwa teng',imci_6:'Stridor (go hema ka modumo)',imci_none:'Ga go sepe sa tsone',anc_title:'Ketelo ya gago ke ya eng?',anc_routine:'Ketelo ya tlwaelo ya boimana',anc_concern:'Poifo e ntšha kana letshwao',anc_emergency:'Maemo a tshoganyetso (go tsholla madi, botlhoko jo bogolo, lesea ga le tshikinyege)',anc_supplements:'Go tsaya dithuso fela',chronic_title:'O tlhoka eng gompieno?',chronic_stable:'Ke tsaya melemo fela (ke tsepame)',chronic_sick:'Ke a lwala / Ga ke ikutlwe sentle',followup_prompt:'A o ka rata go amogela tshekatsheko ka WhatsApp?',followup_phone:'Tsenya nomoro ya gago ya mogala (fa o rata)',followup_send:'Romela tshekatsheko',followup_skip:'Nnyaa ke a leboga',deletion_notice:'Go phimola tshedimosetso ya gago, botsa badiri ba reception.'},
+  st: {choose_lang:'Khetha puo ya hao',welcome:'Rea u amohela! Ha re u ngodise.',name:'Lebitso la hao ke mang?',surname:'Fane ya hao ke mang?',dob:'Letsatsi la tswalo (DD-MM-YYYY)',sex:'Bong ba hao ke bofe?',male:'Motona',female:'Motshehadi',intersex:'Intersex',prefer_not:'Ke kgetha ho se bolele',whats_wrong:'Bothata ba hao bo boholo ke bofe kajeno?',how_bad:'Bo bobe hakae?',mild:'Hanyenyane',moderate:'Mahareng',severe:'Haholo',describe:'Hlalosa matshwao a hao (haeba o rata)',next:'E latelang',back:'Morao',checking:'Re hlahloba matshwao a hao...',result_title:'Sephetho sa Hao',queue_msg:'O kentswe moleng.',show_reception:'Bontsha sekirini sena ho reception:',ref:'Nomoro ya hao:',your_turn:'Dula fatshe. Mooki o tla u bitsa ka lebitso.',start_over:'Qala Botjha (Mokudi e Motjha)',emergency:'TSHOHANYETSO? Letsetsa 10177',mild_desc:'Ke kgona ho etsa mesebetsi ya ka ya letsatsi',mod_desc:'E ama mesebetsi ya ka ya letsatsi',sev_desc:'Ha ke kgone ho sebetsa',consent_text:'Pele re qala, tseba hore:\n- Tshebeletso ena e fana ka tataiso ya bophelo fela\n- Ha e hlahlobe kapa ho nka sebaka sa ngaka/mooki\n- Tlhahisoleseding ya hao e bolokilwe ka polokelo ka tlase ho molao wa lekunutu (POPIA)\n- O ka kopa ho hlakolwa ha yona ho reception nako efe kapa efe',consent_agree:'Ke a dumela',consent_decline:'Ha ke dumele',consent_goodbye:'Rea leboha. O ka ngodiswa ke basebetsi ba reception.',imci_title:'Na ngwana o na le matshwao a a kotsi?',imci_1:'Ha a kgone ho nwa kapa ho anya',imci_2:'O hlatsa ntho tsohle',imci_3:'O bile le ho kenwa ke sefefo',imci_4:'O kgathetse haholo kapa ha a tsoge',imci_5:'Sefuba se kena ka hare',imci_6:'Stridor (ho hema ka modumo)',imci_none:'Ha ho le e le e nngwe',anc_title:'Ketelo ya hao ke ya eng?',anc_routine:'Ketelo ya tlwaelo ya boimana',anc_concern:'Ngongoreho e ntjha kapa letshwao',anc_emergency:'Tshohanyetso (ho tsoha madi, bohloko bo boholo, lesea ha le tshikinyehe)',anc_supplements:'Ho nka dithuso fela',chronic_title:'O hloka eng kajeno?',chronic_stable:'Ke nka meriana fela (ke tsepame)',chronic_sick:'Ke a kula / Ha ke ikutlwe hantle',followup_prompt:'Na o ka rata ho fumana tshekatsheko ka WhatsApp?',followup_phone:'Kenya nomoro ya hao ya mohala (haeba o rata)',followup_send:'Romela tshekatsheko',followup_skip:'Tjhe ke a leboha',deletion_notice:'Ho hlakola tlhahisoleseding ya hao, botsa basebetsi ba reception.'},
+  ts: {choose_lang:'Hlawula ririmi ra wena',welcome:'U amukelekile! A hi ku tsarisa.',name:'Vito ra wena i mani?',surname:'Xifani xa wena i yini?',dob:'Siku ra ku velekiwa (DD-MM-YYYY)',sex:'Rimbewu ra wena i rihi?',male:'Xinuna',female:'Xisati',intersex:'Intersex',prefer_not:'A ndzi lavi ku vula',whats_wrong:'Xiphiqo xa wena lexikulu i yini namuntlha?',how_bad:'Swa vava ku fika kwihi?',mild:'Kantsongo',moderate:'Xiringanelo',severe:'Swinene',describe:'Hlamusela swikombelo swa wena (loko u rhandza)',next:'Leswi landzelaka',back:'Endzhaku',checking:'Hi kambisisa swikombelo swa wena...',result_title:'Mbuyelo wa Wena',queue_msg:'U nghenisiwile emugceni.',show_reception:'Kombisa xikirina lexi eka reception:',ref:'Nomboro ya wena:',your_turn:'Tshama hansi. Nurse u ta ku vitana hi vito.',start_over:'Sungula Nakambe (Vuvabyi Byintshwa)',emergency:'XIHATLA? Fonela 10177',mild_desc:'Ndzi kota ku endla mintirho ya mina ya siku',mod_desc:'Swa khumba mintirho ya mina ya siku',sev_desc:'A ndzi koti ku tirha',consent_text:'Pele hi sungula, xiya leswaku:\n- Vukorhokeri lebyi byi nyika ndzayo ya rihanyu ntsena\n- A byi diagnosei kumbe ku teka ndhawu ya dokodela/nurse\n- Rungula ra wena ri hlayisiwile hi vuhlayiseki eka nawu wa xihundla (POPIA)\n- U nga kombela ku susiwa ka rona eka reception nkarhi wihi na wihi',consent_agree:'Ndza pfumela',consent_decline:'A ndzi pfumeli',consent_goodbye:'Hi khensa. U nga tsarisiwa hi vatirhi va reception.',imci_title:'Xana n\'wana u na swikombiso leswi swa khombo?',imci_1:'A swi koti ku nwa kumbe ku mamisa',imci_2:'U hlanza hinkwaswo',imci_3:'U vile na swirhumbuto',imci_4:'U karhatekile swinene kumbe a ha pfuki',imci_5:'Xifuva xi ya endzeni',imci_6:'Stridor (ku hefemula hi mpfumawulo)',imci_none:'A ku na na xin\'we',anc_title:'Ndzhendzhelo wa wena i wa yini?',anc_routine:'Ndzhendzhelo wa ntolovelo wa vukatana',anc_concern:'Xiphiqo xintshwa kumbe xikombiso',anc_emergency:'Xihatla (ku huma ngati, ku vava swinene, ntsundzu a yi tshuki)',anc_supplements:'Ku teka dithuso ntsena',chronic_title:'U lava yini namuntlha?',chronic_stable:'Ndzi teka murhi ntsena (ndzi tiyile)',chronic_sick:'Ndza vabya / A ndzi tiwi kahle',followup_prompt:'Xana u lava ku kuma nlandzeleriso hi WhatsApp?',followup_phone:'Nghenisa nomboro ya wena ya riqingho (loko u rhandza)',followup_send:'Rhumela nlandzeleriso',followup_skip:'Hayi ndza khensa',deletion_notice:'Ku susa rungula ra wena, vutisa vatirhi va reception.'},
+  ss: {choose_lang:'Khetsa lulwimi lwakho',welcome:'Siyakwemukela! Asikubhalise.',name:'Ngubani ligama lakho?',surname:'Siphuno sakho ngubani?',dob:'Lusuku lwekutalwa (DD-MM-YYYY)',sex:'Bulili bakho buyini?',male:'Lomdvuna',female:'Lomfati',intersex:'Intersex',prefer_not:'Angitsandzi kusho',whats_wrong:'Yini inkinga yakho lenkhulu lamuhla?',how_bad:'Kumbi kangakanani?',mild:'Kancane',moderate:'Emkhatsini',severe:'Kakhulu',describe:'Chaza tibonakaliso takho (uma utsandza)',next:'Lokulandzelako',back:'Emuva',checking:'Sihlola tibonakaliso takho...',result_title:'Umphumela Wakho',queue_msg:'Sewufakwe emgceni.',show_reception:'Khombisa lesikrini e-reception:',ref:'Inombolo yakho:',your_turn:'Hlala phansi. Umhlengikati utakubita ngelibito.',start_over:'Cala Kabusha (Ligulane Lelisha)',emergency:'KUPHUTHUMILE? Shayela 10177',mild_desc:'Ngiyakhona kwenta imisebenti yami',mod_desc:'Kuthinta imisebenti yami',sev_desc:'Angikwazi kwenta lutfo',consent_text:'Ngaphambi kwekucala, sicela wati:\n- Lemsebenti inika sicondziso semphilo kuphela\n- Ayihlongoletsi futsi ayitsatsi indzawo yendvokotela/umhlengikati\n- Lwatiso lwakho lugcinwe ngekuphepha ngaphasi kwemtsetfo wemfihlo (POPIA)\n- Ungacela kususwa kwalo e-reception ngesikhatsi sinoma ngusiphi',consent_agree:'Ngiyavuma',consent_decline:'Angivumi',consent_goodbye:'Siyabonga. Ungabhalisa e-reception.',imci_title:'Ingabe umntfwana unaletibonakaliso letiyingoti?',imci_1:'Akakhoni kunatsa nome kuncela',imci_2:'Uhlanta konkhe',imci_3:'Ube nesifo sekuwa',imci_4:'Ukhatsele kakhulu nome akavuki',imci_5:'Sifuba siya ngekhatsi',imci_6:'Stridor (kuphefumula ngemsindvo)',imci_none:'Kute nakunye',anc_title:'Kuvakashela kwakho kungani?',anc_routine:'Kuvakashela kwesiga sekukhulelwa',anc_concern:'Sikhalazo lesisha nome sibonakaliso',anc_emergency:'Kuphuthumile (kupha, buhlungu lobukhulu, lisana alinyakati)',anc_supplements:'Kutsatsa emavithamini kuphela',chronic_title:'Udzingani lamuhla?',chronic_stable:'Ngitsatsa umutsi kuphela (ngisimeme)',chronic_sick:'Ngiyagula / Angitiveli kahle',followup_prompt:'Ungatsandza kutfola kulandzelela nge-WhatsApp?',followup_phone:'Faka inombolo yakho yelucingo (uma utsandza)',followup_send:'Tfumela kulandzelela',followup_skip:'Cha ngiyabonga',deletion_notice:'Kususa lwatiso lwakho, buta basebenti be-reception.'},
+  ve: {choose_lang:'Khethani luambo lwanu',welcome:'Ri a ni tanganedza! Kha ri ni nwalise.',name:'Dzina lanu ndi nnyi?',surname:'Fani yanu ndi mini?',dob:'Datumu ya mabebo (DD-MM-YYYY)',sex:'Mbeu yanu ndi mini?',male:'Munna',female:'Musadzi',intersex:'Intersex',prefer_not:'A thi funi u amba',whats_wrong:'Thaidzo yanu khulwane ndi mini nnama?',how_bad:'Zwi vhifha hani?',mild:'Zwiṱuku',moderate:'Vhukati',severe:'Nga maanda',describe:'Ṱalutshedzani zwiga zwanu (arali ni tshi funa)',next:'Zwi tevhelaho',back:'Murahu',checking:'Ri khou sedza zwiga zwanu...',result_title:'Mvelelo Yanu',queue_msg:'No dzheniswa kha mudavhi.',show_reception:'Sumbedzani tshikirini hei kha reception:',ref:'Nomboro yanu:',your_turn:'Dzulani fhasi. Nurse u do ni vhidza nga dzina.',start_over:'Thomani Hafhu (Mulwadze Muswa)',emergency:'TSHOGANETSO? Founelani 10177',mild_desc:'Ndi a kona u ita mishumo yanga ya duvha',mod_desc:'I khou kwama mishumo yanga ya duvha',sev_desc:'A thi koni u shumisa',consent_text:'Phanḓa ha musi ri tshi thoma, ṱhogomelanai:\n- Tshumelo heyi i ṋea vhulivhisi ha mutakalo fhedzi\n- A i iti diagnosis kana u dzhia fhethu ha dokotela/nurse\n- Mafhungo anu o vhulungwa nga vhutsireledzi nga fhasi ha mulayo wa tshiphiri (POPIA)\n- Ni nga humbela u thuthuwedza hawo kha reception tshifhinga tshifhio na tshifhio',consent_agree:'Ndi a tenda',consent_decline:'A thi tendelani',consent_goodbye:'Ri a livhuwa. Ni nga nwaliswa nga vhashumi vha reception.',imci_title:'Naa nwana u na zwiga izwi zwa khombo?',imci_1:'Ha koni u nwa kana u mama',imci_2:'U tanza zwithu zwothe',imci_3:'O vha na u wa',imci_4:'O netaho nga maanda kana ha tsha vuwa',imci_5:'Tshifuva tshi ya ngomu',imci_6:'Stridor (u femela nga mutsindo)',imci_none:'A hu na na nthihi',anc_title:'Ndzhendzhelo wanu ndi wa mini?',anc_routine:'Ndzhendzhelo wa tshiṱhavhelo wa vhuimana',anc_concern:'Mbilaelo ntswa kana tshiga',anc_emergency:'Tshoganetso (u bva malofha, vhutungu vhuhulu, lutshetshe a lu tshikinyei)',anc_supplements:'U dzhia thikhedzo fhedzi',chronic_title:'Ni toda mini nnama?',chronic_stable:'Ndi tshi dzhia mushonga fhedzi (ndi tshimidze)',chronic_sick:'Ndi a lwala / A thi ḓipfi zwavhuḓi',followup_prompt:'Ni nga takalela u wana ndatiso nga WhatsApp?',followup_phone:'Dzhenisani nomboro yanu ya luingo (arali ni tshi funa)',followup_send:'Rumelani ndatiso',followup_skip:'Hai ndi a livhuwa',deletion_notice:'U thuthuwedza mafhungo anu, vhudzisani vhashumi vha reception.'},
+  nr: {choose_lang:'Khetha ilimi lakho',welcome:'Wamkelekile! Asikubhalise.',name:'Ngubani ibizo lakho?',surname:'Ngubani isibongo sakho?',dob:'Ilanga lokubeletwa (DD-MM-YYYY)',sex:'Ubulili bakho buyini?',male:'Indoda',female:'Umfazi',intersex:'Intersex',prefer_not:'Angifuni ukutjho',whats_wrong:'Yini ikinga yakho ekulu namhlanje?',how_bad:'Kumbi kangangani?',mild:'Kancani',moderate:'Hlangana',severe:'Khulu',describe:'Hlathulula iimpawu zakho (nawufuna)',next:'Okulandelako',back:'Emuva',checking:'Sihlola iimpawu zakho...',result_title:'Umphumela Wakho',queue_msg:'Sewufakwe emgceni.',show_reception:'Khombisa isikrini lesi e-reception:',ref:'Inomboro yakho:',your_turn:'Hlala phasi. Unesi uzokubiza ngebizo.',start_over:'Thoma Kabutjha (Umuntu Omutjha)',emergency:'KURHABILEKO? Fonela 10177',mild_desc:'Ngingenza imisebenzi yami yelanga',mod_desc:'Kuthinta imisebenzi yami yelanga',sev_desc:'Angikghoni ukwenza litho',consent_text:'Ngaphambi kobana sithome, tjheja:\n- Isevisi le inikela isikhombiso sepilo kwaphela\n- Ayihlongoletsi namtjhana ithathe indawo kadokotela/unesi\n- Imininingwane yakho igcinwe ngokuphepha ngaphasi komthetho wefihlo (POPIA)\n- Ungabawa ukususwa kwayo e-reception nanoma kunini',consent_agree:'Ngiyavuma',consent_decline:'Angivumi',consent_goodbye:'Siyathokoza. Ungabhalisa e-reception.',imci_title:'Ingabe umntwana unezimpawu letiyingozi?',imci_1:'Akakghoni ukusela namtjhana ukuncela',imci_2:'Uhlanza koke',imci_3:'Ube nesifo sokuwa',imci_4:'Udinwe khulu namtjhana akavuki',imci_5:'Isifuba siya ngaphakathi',imci_6:'Stridor (ukuphefumula ngomsindo)',imci_none:'Akukho nakunye',anc_title:'Ukuvakatjhela kwakho kungani?',anc_routine:'Ukuvakatjhela okujayelekileko kokukhulelwa',anc_concern:'Isikhalazo esitjha namtjhana isimpawu',anc_emergency:'Kurhabileko (ukupha, ubuhlungu obukhulu, umntwana akatjhikinyeki)',anc_supplements:'Ukuthatha amavithamini kwaphela',chronic_title:'Ufunani namhlanje?',chronic_stable:'Ngithatha umuthi kwaphela (ngiqinile)',chronic_sick:'Ngiyagula / Angizizwa kuhle',followup_prompt:'Ungathanda ukufumana ukulandelelwa nge-WhatsApp?',followup_phone:'Faka inomboro yakho yefowunu (nawufuna)',followup_send:'Thumela ukulandelelwa',followup_skip:'Awa ngiyathokoza',deletion_notice:'Ukususa imininingwane yakho, buza abasebezi be-reception.'},
+};
+
+function t(key){ return (T[state.language]||T.en)[key] || T.en[key] || key; }
+function el(id){ return document.getElementById(id); }
+function render(html){ document.getElementById('app').innerHTML = html; }
+
+function progress(current, total){
+  let dots = '';
+  for(let i=0;i<total;i++){
+    dots += '<div class="dot '+(i<current?'done':i===current?'active':'')+'"></div>';
+  }
+  return '<div class="progress">'+dots+'</div>';
+}
+
+function showLanguage(){
+  state.step='language';
+  render('<div class="card"><h2>BIZUSIZO</h2><p>Choose your language / Khetha ulimi lwakho</p><div class="btn-grid cols-2">'+
+    LANGS.map(l=>'<div class="btn" onclick="selectLang(\''+l.code+'\')">'+l.name+'</div>').join('')+
+  '</div></div>'+
+  '<div style="text-align:center;margin-top:12px"><div class="btn" style="display:inline-flex;width:auto;padding:14px 28px;border-color:#3b82f6;color:#3b82f6" onclick="showCheckIn()">📍 Already triaged? Check in with your BZ code</div></div>'+
+  '<div style="text-align:center;margin-top:8px"><div class="btn btn-danger" style="display:inline-flex;width:auto;padding:14px 28px" onclick="kioskEmergency()">EMERGENCY / KUPHUTHUMILE</div></div>');
+}
+
+// ── Kiosk check-in for patients who already triaged via WhatsApp ──
+function showCheckIn(){
+  render('<div class="card"><h2>📍 Check In</h2>'+
+    '<p style="font-size:15px;color:#4b5563;margin-bottom:16px">Type your BZ code to confirm you have arrived.</p>'+
+    '<input class="input" id="checkin-code" placeholder="BZ-1234" style="text-align:center;font-size:24px;letter-spacing:4px;text-transform:uppercase" autocomplete="off">'+
+    '<button class="btn-primary" onclick="submitCheckIn()">I have arrived</button>'+
+    '<div class="back-btn" onclick="showLanguage()">Back</div>'+
+    '<div id="checkin-result" style="margin-top:12px;text-align:center"></div>'+
+  '</div>');
+  setTimeout(()=>{var e=document.getElementById('checkin-code');if(e)e.focus();},100);
+}
+
+async function submitCheckIn(){
+  const code=document.getElementById('checkin-code').value.trim().toUpperCase();
+  if(!code){alert('Please enter your BZ code');return;}
+  const resultEl=document.getElementById('checkin-result');
+  resultEl.innerHTML='<p style="color:#6b7280">Checking...</p>';
+
+  try{
+    const res=await fetch(API+'/api/kiosk/check-in',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-kiosk-pin':kioskPin},
+      body:JSON.stringify({study_code:code})
+    });
+    const data=await res.json();
+    if(data.success){
+      render('<div class="card" style="border:3px solid #22c55e"><div class="result-box">'+
+        '<div style="font-size:56px;margin-bottom:8px">✅</div>'+
+        '<h3 style="color:#22c55e;font-size:24px">You have checked in!</h3>'+
+        '<p style="font-size:16px;color:#4b5563;margin:12px 0">'+
+        (data.patient_name?'Welcome, <b>'+data.patient_name+'</b>':'Welcome')+
+        '</p>'+
+        '<div style="margin-top:16px;padding:16px;background:#f0fdf4;border-radius:12px">'+
+        '<p style="font-size:14px;color:#15803d"><b>Queue:</b> '+(data.queue_type||'General')+'</p>'+
+        '<p style="font-size:14px;color:#15803d"><b>Position:</b> #'+(data.position||'—')+'</p>'+
+        '</div>'+
+        '<p style="margin-top:16px;font-size:15px;color:#4b5563">Have a seat. The nurse will call your name.</p>'+
+        '</div></div>'+
+        '<button class="btn-primary" style="background:#64748b;border-color:#64748b" onclick="resetKiosk()">Done (New Patient)</button>');
+      setTimeout(()=>resetKiosk(),60000);
+    }else{
+      resultEl.innerHTML='<p style="color:#dc2626">'+(data.error||'Code not found. Ask reception for help.')+'</p>';
+    }
+  }catch(e){
+    resultEl.innerHTML='<p style="color:#dc2626">Connection error. Please ask reception.</p>';
+  }
+}
+
+async function kioskEmergency(){
+  render('<div class="card" style="border:3px solid #dc2626"><div class="result-box">'+
+    '<div style="font-size:56px;margin-bottom:8px">\uD83D\uDEA8</div>'+
+    '<h3 style="color:#dc2626;font-size:24px">Alerting the nurse...</h3>'+
+    '<p style="font-size:16px;color:#4b5563">Sazisa unesi...</p>'+
+    '</div></div>');
+
+  try {
+    const res = await fetch(API+'/api/kiosk/triage', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-kiosk-pin':kioskPin},
+      body: JSON.stringify({
+        firstName: 'EMERGENCY',
+        surname: 'WALK-IN',
+        dob: '',
+        sex: '',
+        category: '1',
+        categoryName: 'Emergency at kiosk',
+        severity: 'severe',
+        symptoms: 'Patient pressed EMERGENCY button at kiosk entrance. Needs immediate nurse attention.',
+        language: 'en',
+      })
+    });
+    const data = await res.json();
+    render('<div class="card" style="border:3px solid #dc2626"><div class="result-box">'+
+      '<div style="font-size:56px;margin-bottom:8px">\uD83D\uDEA8</div>'+
+      '<h3 style="color:#dc2626;font-size:28px">NURSE HAS BEEN ALERTED</h3>'+
+      '<p style="font-size:20px;font-weight:700;color:#dc2626;margin:12px 0">UNESI WAZISIWE</p>'+
+      '<p style="font-size:18px;color:#1f2937;margin:16px 0">Please stay here. A nurse will come to you.</p>'+
+      '<p style="font-size:16px;color:#4b5563">Sicela ulinde lapha. Unesi uzokuza kuwe.</p>'+
+      '<div style="margin-top:20px;padding:16px;background:#fef2f2;border-radius:12px">'+
+      '<p style="font-size:14px;color:#dc2626;font-weight:600">You are #1 priority — FAST-TRACK</p>'+
+      (data.ref_code?'<div class="ref-num">'+data.ref_code+'</div>':'')+
+      '</div></div></div>'+
+      '<button class="btn-primary" style="background:#64748b;border-color:#64748b;margin-top:16px" onclick="resetKiosk()">Done (New Patient)</button>');
+  } catch(e){
+    render('<div class="card" style="border:3px solid #dc2626"><div class="result-box">'+
+      '<div style="font-size:56px;margin-bottom:8px">\uD83D\uDEA8</div>'+
+      '<h3 style="color:#dc2626;font-size:24px">EMERGENCY</h3>'+
+      '<p style="font-size:18px;font-weight:700;margin:16px 0">System error \u2014 please tell a nurse directly</p>'+
+      '<p style="font-size:16px">Tshela unesi ngqo</p>'+
+      '</div></div>'+
+      '<button class="btn-primary" style="background:#64748b;border-color:#64748b" onclick="resetKiosk()">Back</button>');
+  }
+  setTimeout(()=>{ resetKiosk(); }, 90000);
+}
+
+function selectLang(code){
+  state.language=code;
+  showConsent();
+}
+
+// CHANGE 1: POPIA consent screen
+function showConsent(){
+  state.step='consent';
+  var lines = t('consent_text').split('\n');
+  var listHtml = '';
+  for(var i=0;i<lines.length;i++){
+    var line = lines[i].replace(/^- /,'').trim();
+    if(line) listHtml += '<li>'+line+'</li>';
+  }
+  render('<div class="card"><h2>'+t('welcome')+'</h2>'+
+    '<ul class="consent-list">'+listHtml+'</ul>'+
+    '<div class="btn-grid cols-2">'+
+    '<div class="btn" style="border-color:#22c55e;font-size:18px;min-height:70px" onclick="acceptConsent()">'+t('consent_agree')+'</div>'+
+    '<div class="btn" style="border-color:#ef4444;font-size:18px;min-height:70px" onclick="declineConsent()">'+t('consent_decline')+'</div>'+
+    '</div>'+
+    '<div class="back-btn" onclick="showLanguage()">'+t('back')+'</div></div>');
+}
+
+function acceptConsent(){
+  showName();
+}
+
+function declineConsent(){
+  render('<div class="card"><div class="result-box">'+
+    '<div class="emoji">\uD83D\uDE4F</div>'+
+    '<h3>'+t('consent_goodbye')+'</h3>'+
+    '</div></div>'+
+    '<button class="btn-primary" style="background:#64748b;border-color:#64748b" onclick="resetKiosk()">'+t('start_over')+'</button>');
+  setTimeout(()=>{ resetKiosk(); }, 15000);
+}
+
+function showName(){
+  state.step='name';
+  render(progress(0,7)+'<div class="card"><h2>'+t('welcome')+'</h2>'+
+    '<div class="label">'+t('name')+'</div><input class="input" id="fname" placeholder="e.g. Thabo" autocomplete="off">'+
+    '<div class="label">'+t('surname')+'</div><input class="input" id="sname" placeholder="e.g. Molefe" autocomplete="off">'+
+    '<button class="btn-primary" onclick="saveName()">'+t('next')+'</button>'+
+    '<div class="back-btn" onclick="showConsent()">'+t('back')+'</div></div>');
+  setTimeout(()=>document.getElementById('fname').focus(),100);
+}
+
+function saveName(){
+  const f=document.getElementById('fname').value.trim();
+  const s=document.getElementById('sname').value.trim();
+  if(!f){alert('Please enter a first name');return;}
+  state.firstName=f;
+  state.surname=s;
+  showDob();
+}
+
+function showDob(){
+  state.step='dob';
+  render(progress(1,7)+'<div class="card"><h2>'+state.firstName+'</h2>'+
+    '<div class="label">'+t('dob')+'</div><input class="input" id="dob" placeholder="DD-MM-YYYY" inputmode="numeric" autocomplete="off">'+
+    '<div class="label">'+t('sex')+'</div>'+
+    '<div class="btn-grid cols-2">'+
+    '<div class="btn" id="sex-m" onclick="selectSex(\'male\')">'+t('male')+'</div>'+
+    '<div class="btn" id="sex-f" onclick="selectSex(\'female\')">'+t('female')+'</div>'+
+    '<div class="btn" id="sex-i" onclick="selectSex(\'intersex\')">'+t('intersex')+'</div>'+
+    '<div class="btn" id="sex-p" onclick="selectSex(\'prefer_not_to_say\')">'+t('prefer_not')+'</div>'+
+    '</div>'+
+    '<button class="btn-primary" id="dob-next" onclick="saveDob()" disabled>'+t('next')+'</button>'+
+    '<div class="back-btn" onclick="showName()">'+t('back')+'</div></div>');
+}
+
+function selectSex(s){
+  state.sex=s;
+  ['sex-m','sex-f','sex-i','sex-p'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.className='btn'+(el.id==='sex-'+s[0]?' selected':'');
+  });
+  document.getElementById('dob-next').disabled=false;
+}
+
+function saveDob(){
+  if(!state.sex){alert('Please select your sex');return;}
+  state.dob=document.getElementById('dob').value.trim();
+  showCategory();
+}
+
+// CHANGE 3: Use patient's selected language for categories
+function showCategory(){
+  state.step='category';
+  var lang=state.language;
+  render(progress(2,7)+'<div class="card"><h2>'+t('whats_wrong')+'</h2>'+
+    '<div class="btn-grid">'+
+    CATEGORIES.map(c=>'<div class="btn" onclick="selectCategory(\''+c.id+'\')"><span style="font-size:22px">'+c.emoji+'</span> '+(c[lang]||c.en)+'</div>').join('')+
+    '</div>'+
+    '<div class="back-btn" onclick="showDob()">'+t('back')+'</div></div>');
+}
+
+function selectCategory(id){
+  state.category=id;
+  var cat = CATEGORIES.find(c=>c.id===id);
+  state.categoryName = cat ? (cat[state.language]||cat.en) : 'Other';
+  state.pathway = '';
+
+  // CHANGE 4: IMCI danger signs for Child illness (category 7)
+  if(id==='7'){
+    showIMCI();
+    return;
+  }
+  // CHANGE 5: ANC screening for Pregnancy (category 3)
+  if(id==='3'){
+    showANC();
+    return;
+  }
+  // CHANGE 6: Chronic screening for Medication/Chronic (category 8)
+  if(id==='8'){
+    showChronic();
+    return;
+  }
+  showSeverity();
+}
+
+// CHANGE 4: IMCI danger signs screen
+function showIMCI(){
+  state.step='imci';
+  var signs = ['imci_1','imci_2','imci_3','imci_4','imci_5','imci_6'];
+  render(progress(3,7)+'<div class="card"><h2>'+t('imci_title')+'</h2>'+
+    '<div class="checkbox-grid" id="imci-grid">'+
+    signs.map((s,i)=>'<label class="checkbox-item" id="imci-item-'+i+'" onclick="toggleIMCI('+i+')"><input type="checkbox" id="imci-'+i+'" onclick="event.stopPropagation();toggleIMCI('+i+')"> '+t(s)+'</label>').join('')+
+    '</div>'+
+    '<button class="btn-primary" onclick="submitIMCI(true)">'+t('imci_none')+' \u2192 '+t('next')+'</button>'+
+    '<button class="btn-primary btn-danger" style="margin-top:8px" id="imci-alert-btn" onclick="submitIMCI(false)" disabled>'+t('next')+' (danger signs selected)</button>'+
+    '<div class="back-btn" onclick="showCategory()">'+t('back')+'</div></div>');
+}
+
+function toggleIMCI(idx){
+  var cb = document.getElementById('imci-'+idx);
+  var item = document.getElementById('imci-item-'+idx);
+  if(cb){
+    // Toggle if triggered from label click
+    if(event && event.target!==cb) cb.checked=!cb.checked;
+    item.className = cb.checked ? 'checkbox-item checked' : 'checkbox-item';
+  }
+  // Enable/disable alert button
+  var anyChecked = false;
+  for(var i=0;i<6;i++){
+    var c=document.getElementById('imci-'+i);
+    if(c&&c.checked) anyChecked=true;
+  }
+  document.getElementById('imci-alert-btn').disabled = !anyChecked;
+}
+
+function submitIMCI(noneSelected){
+  if(!noneSelected){
+    // Danger signs selected — submit as RED/ORANGE directly
+    var checkedSigns = [];
+    var signKeys = ['imci_1','imci_2','imci_3','imci_4','imci_5','imci_6'];
+    for(var i=0;i<6;i++){
+      var c=document.getElementById('imci-'+i);
+      if(c&&c.checked) checkedSigns.push(t(signKeys[i]));
+    }
+    if(checkedSigns.length===0) return;
+    state.severity='severe';
+    state.symptoms='IMCI danger signs: '+checkedSigns.join(', ');
+    state.pathway='imci_danger';
+    submitTriage();
+  } else {
+    // No danger signs — proceed to severity
+    showSeverity();
+  }
+}
+
+// CHANGE 5: ANC screening
+function showANC(){
+  state.step='anc';
+  render(progress(3,7)+'<div class="card"><h2>'+t('anc_title')+'</h2>'+
+    '<div class="btn-grid">'+
+    '<div class="btn" onclick="selectANC(\'routine\')" style="min-height:70px">'+t('anc_routine')+'</div>'+
+    '<div class="btn" onclick="selectANC(\'concern\')" style="min-height:70px">'+t('anc_concern')+'</div>'+
+    '<div class="btn btn-danger" onclick="selectANC(\'emergency\')" style="min-height:70px;color:#fff">'+t('anc_emergency')+'</div>'+
+    '<div class="btn" onclick="selectANC(\'supplements\')" style="min-height:70px">'+t('anc_supplements')+'</div>'+
+    '</div>'+
+    '<div class="back-btn" onclick="showCategory()">'+t('back')+'</div></div>');
+}
+
+function selectANC(option){
+  if(option==='routine'){
+    state.severity='mild';
+    state.symptoms='Routine ANC visit';
+    state.pathway='anc_routine';
+    submitTriage();
+  } else if(option==='emergency'){
+    state.severity='severe';
+    state.symptoms='ANC emergency — patient reports bleeding, severe pain, or reduced fetal movement';
+    state.pathway='anc_emergency';
+    submitTriage();
+  } else if(option==='supplements'){
+    state.severity='mild';
+    state.symptoms='ANC supplements collection only';
+    state.pathway='anc_supplements';
+    submitTriage();
+  } else {
+    // concern — proceed to severity
+    showSeverity();
+  }
+}
+
+// CHANGE 6: Chronic screening
+function showChronic(){
+  state.step='chronic';
+  render(progress(3,7)+'<div class="card"><h2>'+t('chronic_title')+'</h2>'+
+    '<div class="btn-grid">'+
+    '<div class="btn" onclick="selectChronic(\'stable\')" style="min-height:70px">'+t('chronic_stable')+'</div>'+
+    '<div class="btn" onclick="selectChronic(\'sick\')" style="min-height:70px">'+t('chronic_sick')+'</div>'+
+    '</div>'+
+    '<div class="back-btn" onclick="showCategory()">'+t('back')+'</div></div>');
+}
+
+function selectChronic(option){
+  if(option==='stable'){
+    state.severity='mild';
+    state.symptoms='Chronic medication collection — patient reports stable';
+    state.pathway='chronic_bypass_stable';
+    submitTriage();
+  } else {
+    // sick — proceed to severity
+    showSeverity();
+  }
+}
+
+function showSeverity(){
+  state.step='severity';
+  render(progress(3,7)+'<div class="card"><h2>'+t('how_bad')+'</h2>'+
+    '<p style="font-size:14px;color:#6b7280">'+state.categoryName+'</p>'+
+    '<div class="btn-grid">'+
+    '<div class="btn" onclick="selectSeverity(\'mild\')" style="border-color:#22c55e"><span style="color:#22c55e;font-weight:700">'+t('mild')+'</span><br><span style="font-size:12px;color:#6b7280">'+t('mild_desc')+'</span></div>'+
+    '<div class="btn" onclick="selectSeverity(\'moderate\')" style="border-color:#eab308"><span style="color:#eab308;font-weight:700">'+t('moderate')+'</span><br><span style="font-size:12px;color:#6b7280">'+t('mod_desc')+'</span></div>'+
+    '<div class="btn" onclick="selectSeverity(\'severe\')" style="border-color:#ef4444"><span style="color:#ef4444;font-weight:700">'+t('severe')+'</span><br><span style="font-size:12px;color:#6b7280">'+t('sev_desc')+'</span></div>'+
+    '</div>'+
+    '<div class="back-btn" onclick="showCategory()">'+t('back')+'</div></div>');
+}
+
+function selectSeverity(s){
+  state.severity=s;
+  showDescribe();
+}
+
+function showDescribe(){
+  state.step='describe';
+  render(progress(4,7)+'<div class="card"><h2>'+t('describe')+'</h2>'+
+    '<textarea class="input" id="symptoms" rows="3" placeholder="e.g. cough for 3 days, mild fever..." style="resize:none"></textarea>'+
+    '<button class="btn-primary" onclick="submitTriage()">'+t('next')+'</button>'+
+    '<div class="back-btn" onclick="showSeverity()">'+t('back')+'</div></div>');
+}
+
+async function submitTriage(){
+  var symptomsEl = document.getElementById('symptoms');
+  if(symptomsEl){
+    state.symptoms = symptomsEl.value.trim() || state.symptoms;
+  }
+
+  render(progress(5,7)+'<div class="card"><div class="result-box"><div class="emoji">\u23F3</div><h3>'+t('checking')+'</h3></div></div>');
+
+  var body = {
+    firstName: state.firstName,
+    surname: state.surname,
+    dob: state.dob,
+    sex: state.sex,
+    category: state.category,
+    categoryName: state.categoryName,
+    severity: state.severity,
+    symptoms: state.symptoms,
+    language: state.language,
+  };
+  if(state.pathway) body.pathway = state.pathway;
+
+  try {
+    const res = await fetch(API+'/api/kiosk/triage', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-kiosk-pin':kioskPin},
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if(data.success){
+      state.triageResult = data.triage_level;
+      state.refCode = data.ref_code;
+      showResult(data);
+    } else {
+      showError();
+    }
+  } catch(e){
+    showError();
+  }
+}
+
+function showResult(data){
+  const level = data.triage_level || 'YELLOW';
+  const colors = {RED:'badge-red',ORANGE:'badge-orange',YELLOW:'badge-yellow',GREEN:'badge-green'};
+  const labels = {RED:'Emergency',ORANGE:'Very Urgent',YELLOW:'Urgent',GREEN:'Routine'};
+  const emojis = {RED:'\uD83D\uDEA8',ORANGE:'\uD83D\uDFE0',YELLOW:'\uD83D\uDFE1',GREEN:'\uD83D\uDFE2'};
+
+  // CHANGE 9: Instructions in all 11 languages
+  const instructions = {
+    RED:{en:'A nurse has been alerted. Stay here \u2014 you are #1 priority.',zu:'Unesi wazisiwe. Linda lapha \u2014 ubaluleke kakhulu.',xh:'Umongikazi wazisiwe. Linda apha \u2014 ungoyokuqala.',af:'\'n Verpleegster is gewaarsku. Bly hier \u2014 jy is #1 prioriteit.',nso:'Mooki o tsebisitswe. Dula mo \u2014 o wa mathomo.',tn:'Mooki o itsisiwe. Nna fano \u2014 o wa ntlha.',st:'Mooki o tsebisitswe. Dula mona \u2014 o wa pele.',ts:'Nurse u tivisiwe. Tshama laha \u2014 u wa ku sungula.',ss:'Umhlengikati watiwe. Linda lapha \u2014 ungowekucala.',ve:'Nurse o divhadzwa. Dzulani fhano \u2014 ni vha u thoma.',nr:'Unesi wazisiwe. Linda lapha \u2014 ungowokuthoma.'},
+    ORANGE:{en:'Tell reception you are VERY URGENT. You will be fast-tracked.',zu:'Tshela i-reception ukuthi KUPHUTHUMA KAKHULU. Uzosheshiswa.',xh:'Xelela i-reception ukuba KUPHUTHUMA KAKHULU. Uza kukhawuleziswa.',af:'Se vir ontvangs jy is BAIE DRINGEND. Jy sal vinnig gehelp word.',nso:'Botsa reception gore KE TSHOGANYETSO KUDU. O tla akgofiswa.',tn:'Bolelela reception gore KE TSHOGANYETSO THATA. O tla akofisiwa.',st:'Bolella reception hore KE TSHOHANYETSO HAHOLO. O tla potlakiswa.',ts:'Byela reception leswaku SWA HATLISA SWINENE. U ta hatlisisiwa.',ss:'Tjela reception kutsi KUPHUTHUMILE KAKHULU. Utawusheshiswa.',ve:'Vhudzani reception uri TSHOGANETSO NGA MAANDA. Ni do hatefhiswa.',nr:'Tjela reception bona kutsi KURHABILEKO KHULU. Uzokurhabiliswa.'},
+    YELLOW:{en:'Have a seat. The nurse will call your name.',zu:'Hlala phansi. Unesi uzokubiza ngegama.',xh:'Hlala phantsi. Umongikazi uza kukubiza ngegama.',af:'Sit asseblief. Die verpleegster sal jou naam roep.',nso:'Dula fase. Mooki o tla go bitsa ka leina.',tn:'Dula fatshe. Mooki o tla go bitsa ka leina.',st:'Dula fatshe. Mooki o tla o bitsa ka lebitso.',ts:'Tshama hansi. Nurse u ta ku vitana hi vito.',ss:'Hlala phansi. Umhlengikati utakubita ngelibito.',ve:'Dzulani fhasi. Nurse u do ni vhidza nga dzina.',nr:'Hlala phasi. Unesi uzokubiza ngebizo.'},
+    GREEN:{en:'You may be able to manage at home. Ask the nurse for advice.',zu:'Ungakwazi ukuzinakekela ekhaya. Buza unesi iseluleko.',xh:'Unokukwazi ukuzinakekela ekhaya. Buza umongikazi isiluleko.',af:'Jy kan dalk by die huis hanteer. Vra die verpleegster vir raad.',nso:'O ka kgona go itlhokomela gae. Botsa mooki keletso.',tn:'O ka kgona go itlhokomela gae. Botsa mooki kgakololo.',st:'O ka kgona ho itlhokomela hae. Botsa mooki keletso.',ts:'U nga swi kota ku tihlayisa ekaya. Vutisa nurse ndzayo.',ss:'Ungakhona kutinakekela ekhaya. Buta umhlengikati seluleko.',ve:'Ni nga kona u ḓilondoloza hayani. Vhudzisani nurse ngeletshedzo.',nr:'Ungakghona ukutinakekela ekhaya. Buza unesi iseluleko.'},
+  };
+  const inst = instructions[level]||instructions.YELLOW;
+
+  // Store data for follow-up phone submission
+  window._lastTriageData = data;
+
+  render('<div class="card"><div class="result-box">'+
+    '<div class="emoji">'+emojis[level]+'</div>'+
+    '<h3>'+t('result_title')+'</h3>'+
+    '<div class="badge '+(colors[level]||'badge-yellow')+'">'+level+' \u2014 '+(labels[level]||'Urgent')+'</div>'+
+    '<p style="margin-top:16px;font-size:16px;font-weight:600">'+(inst[state.language]||inst.en)+'</p>'+
+    '<div style="margin-top:20px;padding:16px;background:#eff6ff;border-radius:12px">'+
+    '<p style="font-size:13px;color:#6b7280">'+t('show_reception')+'</p>'+
+    '<div class="ref-num">'+data.ref_code+'</div>'+
+    '<p style="font-size:14px;color:#1f2937"><b>'+state.firstName+' '+state.surname+'</b></p>'+
+    '<p style="font-size:13px;color:#6b7280">Queue: #'+(data.queue_position||'\u2014')+' \u2014 '+(labels[level]||'')+'</p>'+
+    '</div>'+
+    (level!=='RED'?'<p style="margin-top:12px;font-size:14px;color:#4b5563">'+t('your_turn')+'</p>':'')+
+    '</div></div>'+
+    // CHANGE 7: Optional phone number for WhatsApp follow-up
+    '<div class="card" id="followup-card">'+
+    '<p style="font-size:14px;color:#374151;font-weight:600;text-align:center">'+t('followup_prompt')+'</p>'+
+    '<input class="input" id="followup-phone" type="tel" inputmode="tel" placeholder="e.g. 0712345678" autocomplete="off" style="text-align:center">'+
+    '<div class="btn-grid cols-2">'+
+    '<div class="btn" style="border-color:#22c55e" onclick="submitFollowup()">'+t('followup_send')+'</div>'+
+    '<div class="btn" onclick="skipFollowup()">'+t('followup_skip')+'</div>'+
+    '</div>'+
+    '</div>'+
+    // CHANGE 8: Consent withdrawal / deletion notice
+    '<div class="deletion-notice">'+t('deletion_notice')+'</div>'+
+    '<button class="btn-primary" style="background:#64748b;border-color:#64748b" onclick="resetKiosk()">'+t('start_over')+'</button>');
+
+  // Auto-reset after 90 seconds (longer to allow phone entry)
+  setTimeout(()=>{ if(state.step==='result') resetKiosk(); }, 90000);
+  state.step='result';
+}
+
+// CHANGE 7: Follow-up phone submission
+async function submitFollowup(){
+  var phone = document.getElementById('followup-phone').value.trim();
+  if(!phone){
+    document.getElementById('followup-phone').style.borderColor='#ef4444';
+    return;
+  }
+  state.phone = phone;
+  // Re-submit with phone number
+  try {
+    await fetch(API+'/api/kiosk/triage', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-kiosk-pin':kioskPin},
+      body: JSON.stringify({
+        firstName: state.firstName,
+        surname: state.surname,
+        dob: state.dob,
+        sex: state.sex,
+        category: state.category,
+        categoryName: state.categoryName,
+        severity: state.severity,
+        symptoms: state.symptoms,
+        language: state.language,
+        pathway: state.pathway,
+        phone: phone,
+        ref_code: state.refCode,
+        followup_only: true,
+      })
+    });
+  } catch(e){}
+  var card = document.getElementById('followup-card');
+  if(card) card.innerHTML = '<p style="color:#16a34a;font-weight:600;text-align:center">\u2713 '+t('followup_send')+'</p>';
+}
+
+function skipFollowup(){
+  var card = document.getElementById('followup-card');
+  if(card) card.style.display='none';
+}
+
+function showError(){
+  render('<div class="card"><div class="result-box">'+
+    '<div class="emoji">\u26A0\uFE0F</div>'+
+    '<h3>Something went wrong</h3>'+
+    '<p>Please ask reception to register you manually.</p>'+
+    '</div></div>'+
+    '<button class="btn-primary" onclick="resetKiosk()">Try Again</button>');
+}
+
+function resetKiosk(){
+  state = { step:'language', language:'en', firstName:'', surname:'', dob:'', sex:'', symptoms:'', category:'', severity:'', triageResult:null, refCode:'', pathway:'', phone:'' };
+  showLanguage();
+}
+
+// -- Facility PIN gate --
+function showPinScreen(errorMsg){
+  render('<div class="card" style="max-width:400px;margin:40px auto">'+
+    '<h2 style="margin-bottom:4px">BIZUSIZO Kiosk</h2>'+
+    '<p style="font-size:13px;color:#6b7280;margin-bottom:20px">Staff: enter the facility PIN to unlock</p>'+
+    '<input class="input" id="kiosk-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Facility PIN" style="text-align:center;font-size:24px;letter-spacing:8px" onkeyup="if(event.key===\'Enter\')verifyPin()">'+
+    (errorMsg?'<p style="color:#dc2626;font-size:13px;text-align:center;margin-bottom:8px">'+errorMsg+'</p>':'')+
+    '<button class="btn-primary" onclick="verifyPin()">Unlock Kiosk</button>'+
+    '</div>');
+  setTimeout(()=>{var e=document.getElementById('kiosk-pin');if(e)e.focus();},100);
+}
+
+async function verifyPin(){
+  var pin=document.getElementById('kiosk-pin').value.trim();
+  if(!pin){showPinScreen('Please enter the PIN');return;}
+  try{
+    var r=await fetch(API+'/api/kiosk/verify-pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:pin})});
+    if(r.ok){kioskUnlocked=true;kioskPin=pin;showLanguage();}
+    else{showPinScreen('Incorrect PIN. Ask the facility manager.');}
+  }catch(e){showPinScreen('Connection error. Try again.');}
+}
+
+async function initKiosk(){
+  try{
+    var r=await fetch(API+'/api/kiosk/requires-pin');
+    var d=await r.json();
+    if(d.requiresPin){showPinScreen();}
+    else{kioskUnlocked=true;showLanguage();}
+  }catch(e){showLanguage();}
+}
+
+// Start
+initKiosk();
+</script>
+</body>
+</html>

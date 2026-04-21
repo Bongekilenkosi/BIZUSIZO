@@ -1,0 +1,21 @@
+.env
+env.example
+
+node_modules/
+
+# Persona eval runtime artefacts
+persona_eval_results.json
+persona_eval_results_*.json
+persona_haiku_n5.json
+persona_sonnet_n5.json
+persona_opus_n5.json
+model_comparison.json
+
+# Claude Code harness local state (CLAUDE.md itself is tracked — see repo root)
+.claude/settings.json
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.claude/*.lock
+
+# Internal working documents (not for public release)
+internal/

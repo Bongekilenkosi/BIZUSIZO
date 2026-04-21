@@ -1,0 +1,2340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIZUSIZO Clinic Queue</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#060a12;color:#d1d5db;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px}
+a{color:#60a5fa;text-decoration:none}
+
+/* Login */
+.login{position:fixed;inset:0;background:#060a12;display:flex;align-items:center;justify-content:center;z-index:99}
+.login-box{background:#0c1222;border:1px solid #1a2236;border-radius:12px;padding:32px;width:340px;text-align:center}
+.login-box h2{font-size:18px;color:#e2e8f0;margin-bottom:4px}
+.login-box .sub{color:#475569;font-size:12px;margin-bottom:20px}
+.login-box input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #1e293b;background:#080e1a;color:#e2e8f0;font-size:13px;margin-bottom:10px;outline:none}
+.login-box input:focus{border-color:#3b82f6}
+.login-box button{width:100%;padding:10px;border-radius:8px;border:none;background:#3b82f6;color:#fff;font-size:13px;font-weight:600;cursor:pointer}
+.login-box button:hover{background:#2563eb}
+.login-err{color:#ef4444;font-size:12px;margin-top:8px}
+
+/* Header */
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid #111827;background:#080e18}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.logo{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#3b82f6,#06b6d4);font-size:16px;font-weight:800;color:#fff}
+.hdr-title{font-size:15px;font-weight:700;color:#e2e8f0}
+.hdr-sub{font-size:10px;color:#475569;letter-spacing:.08em;text-transform:uppercase}
+.hdr-right{display:flex;align-items:center;gap:14px;font-size:11px;color:#475569}
+.hdr-dot{width:7px;height:7px;border-radius:99px;background:#22c55e;display:inline-block}
+
+/* Tabs */
+.tabs{display:flex;gap:0;background:#080e18;border-bottom:1px solid #111827;padding:0 20px}
+.tab{padding:10px 16px;font-size:12px;font-weight:500;cursor:pointer;color:#94a3b8;border-bottom:2px solid transparent;transition:all .15s}
+.tab:hover{color:#94a3b8}
+.tab.active{color:#e2e8f0;border-bottom-color:#3b82f6;font-weight:600}
+.tab .badge{display:inline-block;padding:1px 7px;border-radius:99px;font-size:10px;font-weight:700;margin-left:4px;background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.25)}
+
+/* Alerts bar */
+.alert-bar{margin:12px 20px 0;padding:10px 14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:8px;display:flex;align-items:center;gap:10px;font-size:12px}
+.alert-bar .al-name{font-weight:600;color:#ef4444}
+.alert-bar .al-detail{flex:1;color:#94a3b8}
+.alert-bar .al-btn{padding:4px 10px;border-radius:6px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.1);color:#ef4444;font-size:11px;font-weight:600;cursor:pointer}
+.alert-bar .al-btn:hover{background:rgba(239,68,68,.2)}
+
+/* Consult bar */
+.consult-bar{margin:8px 20px 0;padding:8px 14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;font-size:12px;color:#94a3b8;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.consult-chip{display:inline-flex;align-items:center;gap:6px;margin-right:12px}
+.consult-done{padding:2px 8px;border-radius:4px;border:1px solid rgba(34,197,94,.3);background:rgba(34,197,94,.1);color:#22c55e;font-size:10px;font-weight:600;cursor:pointer}
+
+/* Body */
+.body{padding:16px 20px}
+
+/* Stat row */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:#0c1222;border:1px solid #151d2e;border-radius:8px;padding:12px 14px}
+.stat-label{font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.stat-val{font-size:24px;font-weight:700;margin-top:2px;color:#e2e8f0}
+.stat-sub{font-size:10px;color:#475569;margin-top:2px}
+
+/* Queue grid */
+.q-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:900px){.q-grid{grid-template-columns:1fr}}
+.q-col{background:#0a1120;border:1px solid #131b2e;border-radius:10px;overflow:hidden;min-height:200px}
+.q-hdr{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid;background:rgba(0,0,0,.25)}
+.q-hdr-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.q-count{font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px}
+.q-empty{padding:28px 14px;text-align:center;color:#334155;font-size:12px}
+
+/* Patient card */
+.p-card{padding:10px 14px;border-bottom:1px solid #131b2e;transition:background .1s;cursor:default}
+.p-card:hover{background:#111827}
+.p-row{display:flex;justify-content:space-between;align-items:flex-start}
+.p-name{font-size:12px;font-weight:600;color:#e2e8f0}
+.p-code{font-size:10px;color:#3b82f6;margin-left:6px;font-weight:400}
+.p-meta{font-size:10px;color:#475569;margin-top:2px;line-height:1.5}
+.p-symptoms{font-size:10px;color:#7c8694;margin-top:4px;padding:4px 6px;background:rgba(255,255,255,.02);border-radius:4px;line-height:1.4}
+.p-wait{font-size:16px;font-weight:700;line-height:1}
+.p-wait-unit{font-size:9px;font-weight:400;color:#475569}
+.p-actions{display:flex;gap:4px;margin-top:6px}
+
+/* Triage badge */
+.t-badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.03em}
+.t-RED{color:#ef4444;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25)}
+.t-ORANGE{color:#f97316;background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.25)}
+.t-YELLOW{color:#eab308;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.25)}
+.t-GREEN{color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25)}
+.t-UNKNOWN{color:#64748b;background:rgba(100,116,139,.12);border:1px solid rgba(100,116,139,.25)}
+
+/* Action buttons */
+.btn{padding:4px 10px;border-radius:5px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid;transition:all .1s}
+.btn:hover{filter:brightness(1.2)}
+.btn-call{color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.08)}
+.btn-noshow{color:#ef4444;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.08)}
+.btn-fast{color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.08)}
+.btn-routine{color:#3b82f6;border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.08)}
+.btn-walkin{color:#64748b;border-color:rgba(100,116,139,.3);background:rgba(100,116,139,.08)}
+.btn-primary{color:#fff;border-color:#3b82f6;background:#3b82f6;padding:8px 20px;font-size:12px;border-radius:6px}
+.btn-primary:hover{background:#2563eb}
+.btn-red{color:#fff;border-color:#ef4444;background:#ef4444}
+.btn-green{color:#fff;border-color:#22c55e;background:#16a34a}
+
+/* Lookup */
+.lookup-box{background:#0c1222;border:1px solid #151d2e;border-radius:10px;padding:20px;max-width:820px}
+.lookup-title{font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:2px}
+.lookup-sub{font-size:11px;color:#94a3b8;margin-bottom:14px}
+.lookup-row{display:flex;gap:8px}
+.lookup-input{flex:1;padding:9px 12px;border-radius:6px;border:1px solid #1e293b;background:#080e1a;color:#e2e8f0;font-size:13px;outline:none}
+.lookup-input:focus{border-color:#3b82f6}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Result card */
+.result{background:#0c1222;border:1px solid #151d2e;border-radius:10px;padding:18px;margin-top:14px}
+.result-header{display:flex;justify-content:space-between;align-items:flex-start}
+.result-name{font-size:15px;font-weight:700;color:#e2e8f0}
+.result-detail{font-size:11px;color:#475569;margin-top:3px;line-height:1.6}
+.result-triage{margin-top:14px;padding:12px;border-radius:8px}
+.result-triage-hdr{display:flex;justify-content:space-between;margin-bottom:6px}
+.result-triage-label{font-size:13px;font-weight:700}
+.result-triage-meta{font-size:10px;color:#64748b}
+.result-triage-symptoms{font-size:11px;color:#94a3b8;line-height:1.5}
+
+/* Assign box */
+.assign-box{margin-top:14px;padding:14px;border-radius:8px;background:#080e1a;border:1px solid #1e293b}
+.assign-title{font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:8px}
+.assign-rec{font-size:11px;font-weight:600;padding:6px 10px;border-radius:6px;margin-bottom:10px}
+.assign-btns{display:flex;gap:8px}
+.assign-btns .btn{flex:1;padding:8px;font-size:12px;text-align:center}
+
+/* Expected patients table */
+.exp-table{width:100%;border-collapse:collapse;font-size:12px}
+.exp-table th{text-align:left;padding:8px 10px;background:#0c1222;color:#475569;font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #151d2e;position:sticky;top:0}
+.exp-table td{padding:7px 10px;border-bottom:1px solid #0f1729}
+.exp-table tr:hover td{background:#0c1222}
+.file-hint{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:600;margin-right:4px;margin-bottom:2px}
+.fh-shelf{color:#60a5fa;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2)}
+.fh-chronic{color:#a78bfa;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2)}
+.fh-new{color:#ef4444;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2)}
+.file-status{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.fs-existing{color:#22c55e;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2)}
+.fs-new{color:#f97316;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2)}
+.fs-unknown{color:#64748b;background:rgba(100,116,139,.1);border:1px solid rgba(100,116,139,.2)}
+
+/* Chronic pills */
+.chronic-pill{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;color:#a78bfa;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);margin-right:3px}
+
+/* Footer */
+.footer{margin-top:24px;padding-top:12px;border-top:1px solid #111827;font-size:9px;color:#334155;display:flex;justify-content:space-between}
+
+/* Tab content */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Nurse alert cards */
+.nurse-alert{padding:12px;border-radius:8px;margin-bottom:8px}
+.nurse-alert-hdr{display:flex;justify-content:space-between;align-items:center}
+.nurse-alert-level{font-weight:700;font-size:12px}
+.nurse-alert-name{font-size:12px;color:#e2e8f0;margin-left:8px}
+.nurse-alert-wait{font-size:11px;color:#94a3b8;margin-left:8px}
+.nurse-alert-symptoms{font-size:11px;color:#94a3b8;margin-top:4px}
+</style>
+</head>
+<body>
+
+<div id="login" class="login">
+  <div class="login-box">
+    <h2>BIZUSIZO Clinic</h2>
+    <p class="sub">Queue management &amp; patient flow</p>
+    <input type="text" id="uname" placeholder="Username (e.g. eersterust_nurse)">
+    <input type="password" id="pwd" placeholder="Password" onkeyup="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Sign in</button>
+    <p class="login-err" id="login-err"></p>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="logo">B</div>
+      <div><div class="hdr-title">BIZUSIZO</div><div class="hdr-sub">Clinic Queue</div></div>
+    </div>
+    <div class="hdr-right">
+      <a href="/dashboard" style="color:#8b5cf6;font-size:10px;text-decoration:none;border:1px solid rgba(139,92,246,.3);padding:3px 8px;border-radius:4px;margin-right:8px">📊 Governance</a>
+      <span id="signed-in"></span>
+      <span id="last-refresh"></span>
+      <span class="hdr-dot"></span>
+      <button onclick="toggleHelp()" id="help-toggle-btn" style="padding:4px 12px;border-radius:6px;border:1px solid rgba(59,130,246,.4);background:rgba(59,130,246,.1);color:#60a5fa;font-size:11px;cursor:pointer;margin-left:8px">? Help</button>
+      <button onclick="showChangePwd()" style="padding:4px 12px;border-radius:6px;border:1px solid rgba(15,118,110,.4);background:rgba(15,118,110,.1);color:#5eead4;font-size:11px;cursor:pointer;margin-left:8px">🔑 Change Password</button>
+      <button onclick="logout()" style="padding:4px 12px;border-radius:6px;border:1px solid #1e293b;background:#111827;color:#94a3b8;font-size:11px;cursor:pointer;margin-left:8px">Logout</button>
+    </div>
+  </div>
+
+  <!-- Clinical Governance Lead Banner -->
+  <div id="governance-lead-bar" style="display:none;padding:6px 20px;background:rgba(139,92,246,.06);border-bottom:1px solid rgba(139,92,246,.15);font-size:11px;color:#a78bfa;display:none">
+    <span style="font-weight:600">🏛️ Clinical Governance Lead:</span> <span id="gov-lead-name">—</span> <span id="gov-lead-title" style="color:#64748b"></span>
+    <button id="gov-lead-set-btn" onclick="openSetGovernanceLead()" style="display:none;margin-left:12px;padding:2px 8px;border-radius:4px;border:1px solid rgba(139,92,246,.3);background:rgba(139,92,246,.1);color:#a78bfa;font-size:10px;cursor:pointer">Set</button>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="pwd-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center">
+    <div style="background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:28px;width:360px;max-width:90vw">
+      <h3 style="font-size:15px;color:#e2e8f0;margin-bottom:4px">Change Password</h3>
+      <p style="font-size:11px;color:#64748b;margin-bottom:20px">Choose a strong password of at least 8 characters.</p>
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:4px">Current Password</label>
+        <input id="pwd-current" type="password" placeholder="Enter current password" style="width:100%;padding:8px 10px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:4px">New Password</label>
+        <input id="pwd-new" type="password" placeholder="At least 8 characters" style="width:100%;padding:8px 10px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:4px">Confirm New Password</label>
+        <input id="pwd-confirm" type="password" placeholder="Repeat new password" style="width:100%;padding:8px 10px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#e2e8f0;font-size:13px;box-sizing:border-box">
+      </div>
+      <div id="pwd-err" style="color:#f87171;font-size:12px;margin-bottom:12px;display:none"></div>
+      <div id="pwd-ok" style="color:#4ade80;font-size:12px;margin-bottom:12px;display:none">✅ Password changed successfully!</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="doChangePwd()" style="flex:1;padding:9px;background:#0f766e;border:none;border-radius:6px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">Save Password</button>
+        <button onclick="closePwdModal()" style="padding:9px 16px;background:#1e293b;border:1px solid #334155;border-radius:6px;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="alerts-container"></div>
+  <div id="consult-container"></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('expected',this)">Expected Patients</div>
+    <div class="tab" onclick="showTab('queues',this)">Queue Board <span class="badge" id="queue-badge" style="display:none">0</span></div>
+    <div class="tab" onclick="showTab('walkin',this)">Walk-In Registration</div>
+    <div class="tab" onclick="showTab('lookup',this)">Patient Lookup</div>
+    <div class="tab" onclick="showTab('nurse',this)">Nurse View <span class="badge" id="nurse-badge" style="display:none">0</span></div>
+    <div class="tab" onclick="showTab('summary',this)">Today's Summary</div>
+    <div class="tab" onclick="showTab('doctor',this)" style="color:#7c3aed">👨‍⚕️ Doctor Queue <span class="badge" id="doctor-badge" style="display:none;background:rgba(124,58,237,.15);color:#7c3aed;border-color:rgba(124,58,237,.25)">0</span></div>
+  </div>
+
+  <div class="body">
+    <!-- TAB: EXPECTED PATIENTS -->
+    <div id="tab-expected" class="tab-content active">
+      <div class="help-tip" style="display:none;margin-bottom:12px;padding:12px 16px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;font-size:12px;color:#93c5fd;line-height:1.6">
+        <b>Expected Patients</b> — Shows patients who triaged via WhatsApp or kiosk today and selected your facility. Use it at <b>07:00</b> to pre-pull physical files before patients arrive.<br>
+        <b>File Hints:</b> Shows which shelf the file is on (A-F, G-M, N-Z) and whether the patient is NEW (create a folder).<br>
+        <b>Allergies:</b> If a patient has recorded allergies, they appear on their pre-arrival alert — check before dispensing medication.<br>
+        <b>Print Queue:</b> Click to print a paper list — useful during load-shedding when the dashboard is unavailable.<br>
+        <b>Triage colours:</b> RED = emergency, ORANGE = very urgent, YELLOW = urgent, GREEN = routine.
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div><span style="font-size:14px;font-weight:700;color:#e2e8f0">Today's Expected Patients</span><br><span style="font-size:11px;color:#94a3b8">Pre-pull files before patients arrive</span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="font-size:11px;color:#475569" id="exp-count">Loading...</span><button class="btn btn-primary" style="padding:6px 14px;font-size:11px" onclick="printExpected()">🖨️ Print Queue</button></div>
+      </div>
+      <div style="background:#0a1120;border:1px solid #131b2e;border-radius:10px;overflow:auto;max-height:70vh">
+        <table class="exp-table">
+          <thead><tr><th>Surname</th><th>Name</th><th>DOB</th><th>Sex</th><th>Triage</th><th>Symptoms</th><th>Chronic</th><th>File Status</th><th>File Hints</th><th>Time</th></tr></thead>
+          <tbody id="exp-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: QUEUE BOARD -->
+    <div id="tab-queues" class="tab-content">
+      <div class="help-tip" style="display:none;margin-bottom:12px;padding:12px 16px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;font-size:12px;color:#93c5fd;line-height:1.6">
+        <b>Queue Board</b> — Shows all patients currently waiting, grouped by queue type. Columns match the DoH PHC clinic workflow.<br>
+        <b>Queue types:</b> Emergency (RED), Acute (ORANGE), Maternal/Child, Chronic, Pharmacy (meds only), General, Walk-In, Screening.<br>
+        <b>Arrival status:</b> Patients with a green <b>HERE</b> badge have confirmed arrival (via WhatsApp, kiosk, or reception). Patients without it may still be en route.<br>
+        <b>📍 Arrived button:</b> Click when a patient presents at reception to confirm they are physically here.<br>
+        <b>Wait times:</b> Patients receive a 30-minute arrival window (e.g. 09:30–10:00), not an exact time — this staggers arrivals and avoids overcrowding.
+      </div>
+      <div class="stats" id="stat-cards"></div>
+      <div class="q-grid" id="queue-columns"></div>
+    </div>
+
+    <!-- TAB: PATIENT LOOKUP -->
+    <div id="tab-lookup" class="tab-content">
+      <div class="help-tip" style="display:none;margin-bottom:12px;padding:12px 16px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;font-size:12px;color:#93c5fd;line-height:1.6">
+        <b>Patient Lookup</b> — Search for any patient by phone number, BZ code (e.g. BZ-4827), or referral ID (e.g. REF-ABC123).<br>
+        <b>What you'll see:</b> Full triage history, symptoms, chronic conditions, follow-up outcomes, clinical flags, allergies, and vitals history.<br>
+        <b>Vitals trending:</b> View BP, glucose, and weight trends over time to spot changes in chronic patients.<br>
+        <b>Allergies:</b> View and add drug/food/environmental allergies. Severe allergies are flagged.<br>
+        <b>Regimen history:</b> View past medication changes with reasons (step-up, adverse effect, viral failure, etc.).<br>
+        <b>Referral lookup:</b> If a hospital sent a patient with a REF code, type it here to see their full clinical summary.<br>
+        <b>Privacy:</b> Full patient names are only visible here — queue displays show initials + BZ code for POPIA compliance.
+      </div>
+      <div class="lookup-box">
+        <div class="lookup-title">Patient Lookup</div>
+        <div class="lookup-sub">Search by phone number or study code to view triage results and assign to a queue</div>
+        <div class="lookup-row">
+          <input class="lookup-input" id="lookup-input" placeholder="Phone, BZ code (BZ-4827), or Referral ID (REF-...)" onkeyup="if(event.key==='Enter')doLookup()">
+          <button class="btn btn-primary" onclick="doLookup()" id="lookup-btn">Search</button>
+        </div>
+        <div id="lookup-result"></div>
+      </div>
+    </div>
+
+    <!-- TAB: WALK-IN REGISTRATION -->
+    <div id="tab-walkin" class="tab-content">
+      <div class="help-tip" style="display:none;margin-bottom:12px;padding:12px 16px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;font-size:12px;color:#93c5fd;line-height:1.6">
+        <b>Walk-In Registration</b> — For patients who arrive without WhatsApp triage (no phone, no data, or elderly). Also used for EMS arrivals.<br>
+        <b>Queue options:</b> Fast-Track (urgent), Routine (general), Walk-In (no triage), Screening (HIV test, BP check, glucose).<br>
+        <b>Critical Emergency:</b> Red button — puts patient at front of ALL queues immediately. Use for: unconscious, not breathing, severe bleeding.<br>
+        <b>EMS Arrival:</b> Orange section — register patients brought by ambulance. Records EMS provider, crew ID, and handover notes.<br>
+        <b>Kiosk alternative:</b> Patients can also self-register at the kiosk (/kiosk) — they get the same triage, queue position, and are auto-marked as arrived.<br>
+        <b>Tip:</b> You don't need all fields — even just a name and queue type is enough to get someone into the system.
+      </div>
+      <div class="lookup-box" style="max-width:600px">
+        <div class="lookup-title">Walk-In Patient Registration</div>
+        <div class="lookup-sub">For patients who did NOT use WhatsApp triage. Add them to the queue manually.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <input class="lookup-input" id="wi-name" placeholder="First name">
+          <input class="lookup-input" id="wi-surname" placeholder="Surname">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <input class="lookup-input" id="wi-dob" placeholder="DOB (DD-MM-YYYY)">
+          <select class="lookup-input" id="wi-sex" style="cursor:pointer"><option value="">Sex</option><option value="male">Male</option><option value="female">Female</option></select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <input class="lookup-input" id="wi-phone" placeholder="Phone (optional)">
+          <input class="lookup-input" id="wi-symptoms" placeholder="Chief complaint / symptoms">
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:11px;color:#94a3b8;margin-bottom:6px">Assign to queue:</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-red" style="flex:1;padding:10px;font-size:12px" onclick="registerWalkIn('fast_track')">⚡ Fast-Track</button>
+            <button class="btn btn-primary" style="flex:1;padding:10px;font-size:12px" onclick="registerWalkIn('routine')">📋 Routine</button>
+            <button class="btn btn-walkin" style="flex:1;padding:10px;font-size:12px" onclick="registerWalkIn('walk_in')">🚶 Walk-In</button>
+            <button class="btn" style="flex:1;padding:10px;font-size:12px;color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.08)" onclick="registerWalkIn('preventative')">🔬 Screening</button>
+          </div>
+        </div>
+        <div style="margin:16px 0 12px;padding-top:12px;border-top:1px solid #1e293b">
+          <button class="btn" style="width:100%;padding:14px;font-size:14px;font-weight:700;color:#fff;background:#dc2626;border:2px solid #ef4444;border-radius:8px;cursor:pointer;letter-spacing:.5px" onclick="criticalWalkIn()">🚨 CRITICAL EMERGENCY — Skip All Queues</button>
+          <div style="font-size:10px;color:#64748b;margin-top:4px;text-align:center">Unconscious, not breathing, severe bleeding — front of emergency queue immediately</div>
+        </div>
+        <div style="margin:16px 0 12px;padding-top:12px;border-top:1px solid #1e293b">
+          <div style="font-size:12px;font-weight:600;color:#f97316;margin-bottom:6px">🚑 EMS / Ambulance Arrival</div>
+          <div style="font-size:10px;color:#64748b;margin-bottom:8px">Register a patient brought in by EMS after stabilisation. Captures transport details for audit.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <select class="lookup-input" id="ems-provider" style="cursor:pointer">
+              <option value="">EMS provider</option>
+              <option value="provincial_ems">Provincial EMS</option>
+              <option value="er24">ER24</option>
+              <option value="netcare911">Netcare 911</option>
+              <option value="other">Other</option>
+            </select>
+            <input class="lookup-input" id="ems-crew-id" placeholder="Crew / vehicle ID (optional)">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <select class="lookup-input" id="ems-handover-level" style="cursor:pointer">
+              <option value="">Triage on arrival</option>
+              <option value="RED">RED — Emergency</option>
+              <option value="ORANGE">ORANGE — Very Urgent</option>
+              <option value="YELLOW">YELLOW — Urgent</option>
+              <option value="GREEN">GREEN — Stabilised</option>
+            </select>
+            <input class="lookup-input" id="ems-handover-notes" placeholder="Handover notes / chief complaint">
+          </div>
+          <button class="btn" style="width:100%;padding:12px;font-size:13px;font-weight:600;color:#fff;background:#ea580c;border:1px solid #f97316;border-radius:8px;cursor:pointer" onclick="registerEMS()">🚑 Register EMS Patient</button>
+        </div>
+        <div id="wi-result" style="font-size:12px;margin-top:8px"></div>
+      </div>
+    </div>
+
+    <!-- TAB: TODAY'S SUMMARY -->
+    <div id="tab-summary" class="tab-content">
+      <div class="help-tip" style="display:none;margin-bottom:12px;padding:12px 16px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;font-size:12px;color:#93c5fd;line-height:1.6">
+        <b>Today's Summary</b> — End-of-day overview showing throughput, wait times, and triage breakdown.<br>
+        <b>Key metrics:</b> Total check-ins, completed consultations, no-shows, average wait times by queue type.<br>
+        <b>Triage breakdown:</b> How many RED, ORANGE, YELLOW, GREEN patients were seen today.<br>
+        <b>Satisfaction:</b> Patient satisfaction surveys (sent 4h after consultation) feed into governance reporting.<br>
+        <b>Facility managers:</b> Use this data for monthly reporting, quality improvement, and governance reviews. Check the governance dashboard (/dashboard) for alerts on stockouts, poor satisfaction, and clinical drift.
+      </div>
+      <div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:12px">Today's Summary</div>
+      <div class="stats" id="summary-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:8px">Completed Patients</div>
+          <div style="background:#0a1120;border:1px solid #131b2e;border-radius:10px;overflow:auto;max-height:50vh">
+            <table class="exp-table"><thead><tr><th>Name</th><th>Triage</th><th>Queue</th><th>Wait</th><th>Seen by</th><th>Time</th></tr></thead><tbody id="completed-body"></tbody></table>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:8px">Triage Breakdown</div>
+          <div id="triage-breakdown" style="background:#0c1222;border:1px solid #151d2e;border-radius:10px;padding:16px"></div>
+          <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin:16px 0 8px">Queue Breakdown</div>
+          <div id="queue-breakdown" style="background:#0c1222;border:1px solid #151d2e;border-radius:10px;padding:16px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: DOCTOR QUEUE -->
+    <div id="tab-doctor" class="tab-content">
+      <div class="help-tip" style="display:none;margin-bottom:12px;padding:12px 16px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;font-size:12px;color:#93c5fd;line-height:1.6">
+        <b>Doctor Queue</b> — Shows patients that nurses have referred for doctor assessment today.<br>
+        <b>How it works:</b> Nurse clicks "Refer to Doctor" → system checks doctor capacity for today. If doctor has space, patient moves here with an assigned time slot. If doctor is full, patient is automatically rescheduled to the next doctor day with available capacity.<br>
+        <b>Patient slot selection:</b> For return visits, patients choose their own time slot via WhatsApp. They confirm attendance the day before — unconfirmed slots are released for others.<br>
+        <b>Capacity limits:</b> Each doctor session has a maximum number of patients (default 10 elective + 4 same-day reserve). Overflow patients are automatically moved to the next available day.<br>
+        <b>For doctors:</b> Click "Complete" after seeing a patient to record notes, outcome, and any regimen changes. You can also record vitals and add allergies from the patient lookup.
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <span style="font-size:14px;font-weight:700;color:#e2e8f0">👨‍⚕️ Doctor Queue</span><br>
+          <span style="font-size:11px;color:#94a3b8">Patients referred by nurses for doctor assessment today</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font-size:11px;color:#475569" id="doctor-count">Loading...</span>
+          <button class="btn" style="padding:6px 14px;font-size:11px;color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.08)" onclick="doctorBreak()">☕ Break</button>
+          <button class="btn btn-primary" style="padding:6px 14px;font-size:11px" onclick="refreshDoctorQueue()">↻ Refresh</button>
+        </div>
+      </div>
+      <div id="doctor-queue-list" style="display:grid;gap:10px"></div>
+      <div id="doctor-scheduled" style="margin-top:20px"></div>
+    </div>
+
+    <!-- TAB: NURSE VIEW -->
+    <div id="tab-nurse" class="tab-content">
+      <div class="help-tip" style="display:none;margin-bottom:12px;padding:12px 16px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:8px;font-size:12px;color:#93c5fd;line-height:1.6">
+        <b>Nurse View</b> — Your main working screen. Shows next patients in each queue with action buttons.<br>
+        <b>Priority alerts (red):</b> Patients waiting too long — RED >5 min, ORANGE >15 min, YELLOW >60 min. Call them immediately.<br>
+        <b>Arrival status:</b> Patients with <b>HERE</b> badge are physically present. Others may be en route — check before marking no-show.<br>
+        <b>Actions per patient:</b><br>
+        • <b>📍 Arrived</b> — mark patient as physically present (if they haven't confirmed via WhatsApp or kiosk)<br>
+        • <b>Call</b> — moves patient to "in consultation" and sends WhatsApp notification<br>
+        • <b>No-show</b> — marks patient as not arrived (check HERE badge first)<br>
+        • <b>Agree/Disagree</b> — your clinical feedback on the AI triage. Disagree opens a modal: select correct level, reason, and clinical notes<br>
+        • <b>TEWS</b> — Triage Early Warning Score calculator. Enter vitals → SATS colour calculated. Vitals automatically saved to patient's longitudinal history<br>
+        • <b>👨‍⚕️ Doctor</b> — refer to doctor. System checks capacity, assigns time slot, patient selects preferred time via WhatsApp<br>
+        • <b>🏥 Escalate</b> — hospital referral. If ambulance needed, an editable EMS call script appears with all clinical details for the 10177 call. Any staff can then retrieve and execute the call<br>
+        <b>After consultation:</b> Use "Complete" to record treatments, medications, tests, and next visit date. System auto-sends: exit message, health education (YELLOW/ORANGE/RED), dispensing confirmation (2h), treatment adherence check (48h), satisfaction survey (4h), and next visit reminder.<br>
+        <b>Regimen changes:</b> For chronic patients whose medication changed — use "Regimen Change" to record previous/new medication, reason, and lab results. Patient receives WhatsApp notification + 48h adherence check for the new medication.
+      </div>
+      <div id="nurse-alerts"></div>
+      <div style="font-size:14px;font-weight:700;color:#e2e8f0;margin:16px 0 10px">Next Patients by Queue</div>
+      <div class="q-grid" id="nurse-columns"></div>
+    </div>
+  </div>
+
+  <div class="footer" style="margin:0 20px 12px"><span>BIZUSIZO v2.3 · Clinic Queue Management</span><span>Auto-refresh every 15s</span></div>
+</div>
+
+<script>
+let PWD='',UNAME='',UROLE='',API='';
+
+async function api(path,opts){
+  try{
+    const match=document.cookie.match(/bz_session=([a-f0-9]+)/);
+    const token=match?match[1]:'';
+    const o={headers:{'Authorization':'Bearer '+token,'x-dashboard-password':PWD,'x-dashboard-user':UNAME,'Content-Type':'application/json'},...opts};
+    const r=await fetch(API+path,o);
+    if(r.status===401){window.location.href='/clinical/login';return null;}
+    if(!r.ok)throw new Error(r.status);
+    return await r.json();
+  }catch(e){console.error(path,e);return null;}
+}
+
+async function doLogin(){
+  UNAME=document.getElementById('uname').value.trim();
+  PWD=document.getElementById('pwd').value;
+  if(!UNAME){document.getElementById('login-err').textContent='Please enter your username';return;}
+  if(!PWD){document.getElementById('login-err').textContent='Please enter your password';return;}
+
+  // Try session-based auth
+  try{
+    const res=await fetch('/api/auth/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({username:UNAME.toLowerCase().replace(/[^a-z0-9_]/g,''),password:PWD})
+    });
+    if(res.ok){
+      const data=await res.json();
+      document.cookie='bz_session='+data.token+';path=/;max-age='+(8*60*60)+';SameSite=Strict';
+      UNAME=data.user.display_name;
+      UROLE=data.user.role||'nurse';
+      document.getElementById('login').style.display='none';
+      document.getElementById('app').style.display='block';
+      document.getElementById('signed-in').textContent='Signed in: '+data.user.display_name+(data.user.facility_name?' · '+data.user.facility_name:'');
+      applyRoleVisibility(UROLE);
+      refresh();
+      return;
+    }else{
+      const err=await res.json().catch(()=>({}));
+      document.getElementById('login-err').textContent=err.error||'Invalid username or password';
+      return;
+    }
+  }catch(e){console.log('Session auth failed, trying password auth');}
+
+  // Fallback: password auth (backward compat)
+  api('/api/clinic/queue/stats').then(d=>{
+    if(d){
+      document.getElementById('login').style.display='none';
+      document.getElementById('app').style.display='block';
+      document.getElementById('signed-in').textContent='Signed in: '+UNAME;
+      refresh();
+    }else{document.getElementById('login-err').textContent='Invalid credentials';}
+  });
+}
+
+async function logout(){
+  await fetch('/api/auth/logout',{method:'POST',headers:{'Authorization':'Bearer '+(document.cookie.match(/bz_session=([a-f0-9]+)/)||[])[1]}});
+  document.cookie='bz_session=;path=/;max-age=0';
+  window.location.href='/clinical/login';
+}
+
+function showChangePwd(){
+  document.getElementById('pwd-current').value='';
+  document.getElementById('pwd-new').value='';
+  document.getElementById('pwd-confirm').value='';
+  document.getElementById('pwd-err').style.display='none';
+  document.getElementById('pwd-ok').style.display='none';
+  const m=document.getElementById('pwd-modal');
+  m.style.display='flex';
+}
+function closePwdModal(){
+  document.getElementById('pwd-modal').style.display='none';
+}
+async function doChangePwd(){
+  const curr=document.getElementById('pwd-current').value;
+  const nw=document.getElementById('pwd-new').value;
+  const conf=document.getElementById('pwd-confirm').value;
+  const err=document.getElementById('pwd-err');
+  const ok=document.getElementById('pwd-ok');
+  err.style.display='none'; ok.style.display='none';
+  if(!curr||!nw||!conf){err.textContent='Please fill in all fields.';err.style.display='block';return;}
+  if(nw.length<8){err.textContent='New password must be at least 8 characters.';err.style.display='block';return;}
+  if(nw!==conf){err.textContent='New passwords do not match.';err.style.display='block';return;}
+  const token=(document.cookie.match(/bz_session=([a-f0-9]+)/)||[])[1];
+  const res=await fetch('/api/auth/change-password',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+    body:JSON.stringify({current_password:curr,new_password:nw})
+  });
+  const data=await res.json();
+  if(res.ok){
+    ok.style.display='block';
+    document.getElementById('pwd-current').value='';
+    document.getElementById('pwd-new').value='';
+    document.getElementById('pwd-confirm').value='';
+    setTimeout(closePwdModal,2000);
+  } else {
+    err.textContent=data.error||'Failed to change password.';
+    err.style.display='block';
+  }
+}
+
+// Role-based tab visibility
+// doctor: sees Doctor Queue + Patient Lookup only
+// receptionist: sees Expected + Queue Board + Walk-In + Patient Lookup
+// nurse/admin: sees everything
+function applyRoleVisibility(role){
+  const tabs=document.querySelectorAll('.tab');
+  const tabMap={};
+  tabs.forEach(t=>{
+    const match=t.getAttribute('onclick')||'';
+    const name=(match.match(/showTab\('([^']+)'/)||[])[1]||'';
+    if(name)tabMap[name]=t;
+  });
+
+  if(role==='doctor'){
+    // Doctor sees: Doctor Queue + Patient Lookup only
+    Object.entries(tabMap).forEach(([name,el])=>{
+      el.style.display=(name==='doctor'||name==='lookup')?'':'none';
+    });
+    // Auto-open doctor tab
+    if(tabMap.doctor)tabMap.doctor.click();
+  } else if(role==='receptionist'){
+    // Receptionist: no nurse view, no doctor queue, no summary
+    ['nurse','doctor','summary'].forEach(n=>{if(tabMap[n])tabMap[n].style.display='none';});
+  }
+  // nurse, admin, district_admin: see everything (default)
+}
+
+function showTab(name,el){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  // Stop lookup auto-refresh when navigating away from lookup tab
+  if(name!=='lookup')stopLookupRefresh();
+}
+
+function triageBadge(level){return '<span class="t-badge t-'+(level||'UNKNOWN')+'">'+(level||'?')+'</span>';}
+
+// Mask patient names for POPIA — show initials + BZ code on queue displays.
+// Full names only visible in the Patient Lookup tab (behind a deliberate search).
+function maskName(fullName, studyCode){
+  if(!fullName||fullName==='Unknown')return studyCode||'Unknown';
+  var parts=fullName.trim().split(/\s+/);
+  var initials=parts.map(function(p){return p.charAt(0).toUpperCase();}).join('');
+  return initials+(studyCode?' · '+studyCode:'');
+}
+
+function waitMin(checkedIn){
+  if(!checkedIn)return 0;
+  return Math.round((Date.now()-new Date(checkedIn).getTime())/60000);
+}
+
+function fmtTime(iso){
+  if(!iso)return '—';
+  return new Date(iso).toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});
+}
+
+function waitColor(m){return m>45?'#ef4444':m>20?'#eab308':'#22c55e';}
+
+// ==================== REFRESH ====================
+async function refresh(){
+  document.getElementById('last-refresh').textContent='Updated '+new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  await Promise.all([refreshExpected(),refreshQueues(),refreshNurse(),refreshSummary()]);
+}
+
+// ==================== CONTEXTUAL HELP ====================
+let _helpVisible=false;
+function toggleHelp(){
+  _helpVisible=!_helpVisible;
+  document.querySelectorAll('.help-tip').forEach(el=>{
+    el.style.display=_helpVisible?'block':'none';
+  });
+  const btn=document.getElementById('help-toggle-btn');
+  if(_helpVisible){
+    btn.style.background='rgba(59,130,246,.3)';
+    btn.style.borderColor='rgba(59,130,246,.6)';
+    btn.textContent='? Hide Help';
+  }else{
+    btn.style.background='rgba(59,130,246,.1)';
+    btn.style.borderColor='rgba(59,130,246,.4)';
+    btn.textContent='? Help';
+  }
+}
+
+// ==================== GOVERNANCE LEAD ====================
+async function loadGovernanceLead(){
+  const d=await api('/api/facility/governance-lead');
+  if(!d)return;
+  const bar=document.getElementById('governance-lead-bar');
+  if(d.governance_lead){
+    document.getElementById('gov-lead-name').textContent=d.governance_lead;
+    document.getElementById('gov-lead-title').textContent=d.title?' · '+d.title:'';
+    bar.style.display='block';
+  }else{
+    document.getElementById('gov-lead-name').textContent='Not set — required for governance compliance';
+    document.getElementById('gov-lead-name').style.color='#f97316';
+    bar.style.display='block';
+  }
+  // Show set button for admin/manager
+  document.getElementById('gov-lead-set-btn').style.display='inline';
+}
+
+function openSetGovernanceLead(){
+  const html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center" id="gov-lead-modal">
+    <div style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:24px;width:400px">
+      <h3 style="font-size:16px;margin-bottom:4px;color:#e2e8f0">🏛️ Set Clinical Governance Lead</h3>
+      <div style="font-size:11px;color:#64748b;margin-bottom:16px">The named individual accountable for AI tool outcomes at this facility. This person must be able to answer governance questions about the tool at any time.</div>
+      <input id="gov-lead-input" class="lookup-input" placeholder="Full name (e.g. Sr. Nokuthula Dlamini)" style="margin-bottom:8px">
+      <input id="gov-lead-title-input" class="lookup-input" placeholder="Title / role (e.g. Operational Manager)" style="margin-bottom:8px">
+      <input id="gov-lead-contact-input" class="lookup-input" placeholder="Contact (phone or email)" style="margin-bottom:16px">
+      <div style="display:flex;gap:8px">
+        <button onclick="submitGovernanceLead()" style="flex:1;padding:10px;border-radius:6px;border:none;background:#8b5cf6;color:white;font-size:13px;font-weight:600;cursor:pointer">Save</button>
+        <button onclick="document.getElementById('gov-lead-modal').remove()" style="padding:10px 16px;border-radius:6px;border:1px solid #1e293b;background:#111827;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+async function submitGovernanceLead(){
+  const name=document.getElementById('gov-lead-input').value.trim();
+  const title=document.getElementById('gov-lead-title-input').value.trim();
+  const contact=document.getElementById('gov-lead-contact-input').value.trim();
+  if(!name){alert('Please enter the governance lead name.');return;}
+  const el=document.getElementById('gov-lead-modal');
+  if(el)el.remove();
+  const res=await api('/api/facility/governance-lead',{method:'PUT',body:JSON.stringify({
+    lead_name:name,lead_title:title||null,lead_contact:contact||null
+  })});
+  if(res&&res.success){
+    alert('Clinical governance lead set: '+name);
+    loadGovernanceLead();
+  }else{
+    alert('Failed to set governance lead. '+(res?.error||''));
+  }
+}
+
+// ==================== EXPECTED PATIENTS ====================
+async function refreshExpected(){
+  const d=await api('/api/clinic/expected');
+  if(!d)return;
+  document.getElementById('exp-count').textContent=d.count+' patients expected · '+d.date;
+  const tb=document.getElementById('exp-body');
+  if(!d.patients||d.patients.length===0){
+    tb.innerHTML='<tr><td colspan="10" style="text-align:center;padding:32px;color:#334155">No patients triaged for today yet. They will appear here as patients use BIZUSIZO.</td></tr>';
+    return;
+  }
+  tb.innerHTML=d.patients.map(p=>{
+    const hints=(p.file_hints||[]).map(h=>{
+      const cls=h.includes('NEW')?'fh-new':h.includes('chronic')?'fh-chronic':'fh-shelf';
+      return '<span class="file-hint '+cls+'">'+h+'</span>';
+    }).join('');
+    const fs=p.file_status==='new'?'<span class="file-status fs-new">New</span>':
+             p.file_status==='existing'?'<span class="file-status fs-existing">Returning</span>':
+             '<span class="file-status fs-unknown">Unknown</span>';
+    const chronic=(p.chronic_conditions||[]).map(c=>'<span class="chronic-pill">'+c+'</span>').join('');
+    return '<tr>'+
+      '<td style="font-weight:600;color:#e2e8f0">'+(p.surname||'—')+'</td>'+
+      '<td>'+(p.first_name||'—')+'</td>'+
+      '<td>'+(p.dob||'—')+'</td>'+
+      '<td>'+(p.sex?p.sex.charAt(0).toUpperCase():'—')+'</td>'+
+      '<td>'+triageBadge(p.triage_level)+(p.triage_level==='ORANGE'?' <span style="display:inline-block;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:700;background:rgba(249,115,22,.15);color:#f97316;border:1px solid rgba(249,115,22,.3);vertical-align:middle">FAST-TRACK</span>':'')+'</td>'+
+      '<td style="max-width:180px;font-size:10px;color:#94a3b8;line-height:1.3">'+(p.symptoms_summary?((p.symptoms_summary||'').length>120?(p.symptoms_summary||'').slice(0,120)+'…':p.symptoms_summary):'—')+'</td>'+
+      '<td>'+(chronic||'—')+'</td>'+
+      '<td>'+fs+'</td>'+
+      '<td>'+hints+'</td>'+
+      '<td style="color:#475569">'+fmtTime(p.triage_time)+'</td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ==================== QUEUE BOARD ====================
+async function refreshQueues(){
+  const [qd,sd]=await Promise.all([api('/api/clinic/queue'),api('/api/clinic/queue/stats')]);
+  if(!sd)return;
+  const queue=(qd&&qd.queue)||[];
+  const waiting=queue.filter(p=>p.status==='waiting');
+  const inConsult=queue.filter(p=>p.status==='in_consultation'||p.status==='paused');
+
+  // Badge
+  const qb=document.getElementById('queue-badge');
+  qb.textContent=waiting.length;
+  qb.style.display=waiting.length>0?'inline-block':'none';
+
+  // Stats
+  const avgF=sd.avg_wait_minutes?.fast_track;
+  const avgR=sd.avg_wait_minutes?.routine;
+  const avgW=sd.avg_wait_minutes?.walk_in;
+  document.getElementById('stat-cards').innerHTML=[
+    {l:'Total Waiting',v:sd.total_waiting,s:'across all queues',c:'#e2e8f0'},
+    {l:'⚡ Fast-Track',v:sd.fast_track.waiting,s:avgF?'avg '+avgF+' min':'—',c:'#ef4444'},
+    {l:'🕐 Routine',v:sd.routine.waiting,s:avgR?'avg '+avgR+' min':'—',c:'#3b82f6'},
+    {l:'🚶 Walk-In',v:sd.walk_in.waiting,s:avgW?'avg '+avgW+' min':'—',c:'#64748b'},
+    {l:'Today Seen',v:sd.today_completed||0,s:(sd.today_total||0)+' total check-ins',c:'#22c55e'},
+  ].map(c=>'<div class="stat"><div class="stat-label">'+c.l+'</div><div class="stat-val" style="color:'+c.c+'">'+c.v+'</div><div class="stat-sub">'+c.s+'</div></div>').join('');
+
+  // Alerts
+  const now=Date.now();
+  const alerts=waiting.filter(p=>{
+    const w=waitMin(p.checked_in_at);
+    return(p.triage_level==='RED'&&w>5)||(p.triage_level==='ORANGE'&&w>15)||(p.triage_level==='YELLOW'&&w>60);
+  });
+  document.getElementById('alerts-container').innerHTML=alerts.map(p=>'<div class="alert-bar"><span class="al-name">'+p.triage_level+'</span><span class="al-detail">'+maskName(p.patient_name,p.study_code)+' waiting <b>'+waitMin(p.checked_in_at)+' min</b>'+(p.symptoms_summary?' · '+p.symptoms_summary.slice(0,60)+'…':'')+'</span><button class="al-btn" onclick="callPatient(\''+p.id+'\')">Call now</button></div>').join('');
+
+  // Consult bar — shows patients currently in consultation with Pause/Done/Left options
+  document.getElementById('consult-container').innerHTML=inConsult.length>0?'<div class="consult-bar"><span style="font-size:13px">🩺</span><span style="color:#3b82f6;font-weight:600">'+inConsult.length+'</span> in consultation: '+inConsult.map(p=>{
+    const isPaused=p.status==='paused';
+    return '<span class="consult-chip"'+(isPaused?' style="opacity:.7"':'')+'>'+triageBadge(p.triage_level)+' '+maskName(p.patient_name,p.study_code)+(isPaused?' <span style="color:#f59e0b;font-size:9px;font-weight:700">PAUSED</span>':'')+(p.assigned_to?' <span style="color:#475569">→ '+p.assigned_to+'</span>':'')+' '+(isPaused?'<span class="consult-done" style="color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.1)" onclick="resumePatient(\''+p.id+'\')">Resume</span>':'<span class="consult-done" onclick="completePatient(\''+p.id+'\')">Done</span> <span class="consult-done" style="color:#f59e0b;border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.1)" onclick="pausePatient(\''+p.id+'\')">Pause</span>')+'</span>';
+  }).join('')+'</div>':'';
+
+  // Queue columns
+  const types=[
+    {key:'emergency',label:'Emergency',icon:'\uD83D\uDEA8',color:'#ef4444',match:['emergency','fast_track']},
+    {key:'acute',label:'Acute',icon:'\u26A1',color:'#f97316',match:['acute']},
+    {key:'maternal',label:'Maternal / Child',icon:'\uD83E\uDD30',color:'#a855f7',match:['maternal','child']},
+    {key:'chronic',label:'Chronic',icon:'\uD83D\uDC8A',color:'#3b82f6',match:['chronic']},
+    {key:'general',label:'General',icon:'\uD83D\uDD70',color:'#64748b',match:['general','routine']},
+    {key:'walk_in',label:'Walk-In',icon:'\uD83D\uDEB6',color:'#94a3b8',match:['walk_in','preventative']},
+  ];
+  document.getElementById('queue-columns').innerHTML=types.map(t=>{
+    const pts=waiting.filter(p=>t.match.includes(p.queue_type));
+    return '<div class="q-col"><div class="q-hdr" style="border-bottom-color:'+t.color+'"><div class="q-hdr-title">'+t.icon+' '+t.label+'</div><span class="q-count" style="background:'+t.color+'22;color:'+t.color+';border:1px solid '+t.color+'44">'+pts.length+'</span></div>'+(pts.length===0?'<div class="q-empty">No patients waiting</div>':pts.map((p,i)=>renderPatientCard(p,t.key,i)).join(''))+'</div>';
+  }).join('');
+}
+
+function renderPatientCard(p,queueType,idx){
+  const w=waitMin(p.checked_in_at);
+  const urgent=(p.triage_level==='RED'&&w>5)||(p.triage_level==='ORANGE'&&w>15);
+  const isFastTracked=p.triage_level==='ORANGE'&&queueType==='fast_track';
+  const ftBadge=isFastTracked?'<span style="display:inline-block;padding:2px 7px;border-radius:3px;font-size:9px;font-weight:700;background:rgba(249,115,22,.15);color:#f97316;border:1px solid rgba(249,115,22,.3);margin-left:6px">FAST-TRACK</span>':'';
+  const arrivedBadge=(p.notes||'').includes('ARRIVED')?'<span style="display:inline-block;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:700;background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.25);margin-left:5px">HERE</span>':'';
+  const sym=p.symptoms_summary?'<div class="p-symptoms">'+((p.symptoms_summary||'').length>90?(p.symptoms_summary||'').slice(0,90)+'…':p.symptoms_summary)+'</div>':'';
+  let btns='<button class="btn btn-call" onclick="callPatient(\''+p.id+'\')">✓ Call</button><button class="btn btn-noshow" onclick="noShow(\''+p.id+'\')">✕ No-show</button>';
+  if(queueType!=='fast_track')btns+='<button class="btn btn-fast" onclick="reassign(\''+p.id+'\',\'fast_track\')">⚡ Fast-track</button>';
+  if(queueType!=='routine')btns+='<button class="btn btn-routine" onclick="reassign(\''+p.id+'\',\'routine\')">→ Routine</button>';
+  btns+='<button class="btn" style="color:#7c3aed;border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.06);font-size:9px" onclick="referToDoctor(\''+p.id+'\',\''+(maskName(p.patient_name,p.study_code).replace(/'/g,"\\\\\'"))+'\',\''+(p.triage_level||'')+'\',\''+((p.symptoms_summary||'').replace(/'/g,"\\\\\'").slice(0,120))+'\')">👨‍⚕️ Doctor</button>';
+  btns+='<button class="btn btn-red" onclick="escalatePatient(\''+p.id+'\',\''+(maskName(p.patient_name,p.study_code).replace(/'/g,"\\\\\'"))+'\',\''+(p.triage_level||'')+'\',\''+((p.symptoms_summary||'').replace(/'/g,"\\\\\'").slice(0,120))+'\',\''+(p.study_code||'')+'\')">🏥 Escalate</button>';
+  if(!(p.notes||'').includes('ARRIVED'))btns+='<button class="btn" style="color:#10b981;border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.06);font-size:9px" onclick="markArrived(\''+p.id+'\')">📍 Arrived</button>';
+  btns+='<button class="btn" style="color:#94a3b8;border-color:rgba(148,163,184,.3);background:rgba(148,163,184,.05);font-size:9px" onclick="leftWithout(\''+p.id+'\')">Left</button>';
+
+  const posNum=typeof idx==='number'?'<span style="font-size:16px;font-weight:800;color:#3b82f6;margin-right:8px;min-width:22px;display:inline-block">#'+(idx+1)+'</span>':'';
+  return '<div class="p-card" style="border-left:3px solid '+(urgent?'#ef4444':'transparent')+'"><div class="p-row"><div><div class="p-name" style="font-size:14px">'+posNum+(p.patient_name||'Unknown patient')+(p.study_code?'<span class="p-code">'+p.study_code+'</span>':'')+ftBadge+arrivedBadge+'</div><div class="p-meta">'+triageBadge(p.triage_level)+' <span style="margin-left:6px">Waiting '+w+' min · Arrived '+fmtTime(p.checked_in_at)+'</span></div></div><div class="p-wait" style="color:'+waitColor(w)+'">'+w+'<span class="p-wait-unit">m</span></div></div>'+sym+'<div class="p-actions">'+btns+'</div></div>';
+}
+
+// ==================== NURSE VIEW ====================
+async function refreshNurse(){
+  const d=await api('/api/clinic/nurse-view');
+  if(!d)return;
+
+  // Badge
+  const nb=document.getElementById('nurse-badge');
+  nb.textContent=(d.alerts||[]).length;
+  nb.style.display=(d.alerts||[]).length>0?'inline-block':'none';
+
+  // Alerts
+  const colors={RED:'#ef4444',ORANGE:'#f97316',YELLOW:'#eab308'};
+  const bgs={RED:'rgba(239,68,68,.08)',ORANGE:'rgba(249,115,22,.08)',YELLOW:'rgba(234,179,8,.08)'};
+  const borders={RED:'rgba(239,68,68,.2)',ORANGE:'rgba(249,115,22,.2)',YELLOW:'rgba(234,179,8,.2)'};
+  document.getElementById('nurse-alerts').innerHTML=(d.alerts||[]).length>0?'<div style="font-size:14px;font-weight:700;color:#ef4444;margin-bottom:8px">🚨 Priority Alerts ('+(d.alerts||[]).length+')</div>'+(d.alerts||[]).map(p=>'<div class="nurse-alert" style="background:'+(bgs[p.triage_level]||bgs.YELLOW)+';border:1px solid '+(borders[p.triage_level]||borders.YELLOW)+'"><div class="nurse-alert-hdr"><div><span class="nurse-alert-level" style="color:'+(colors[p.triage_level]||'#eab308')+'">'+p.triage_level+'</span>'+(p.triage_level==='ORANGE'?' <span style="display:inline-block;padding:1px 5px;border-radius:3px;font-size:8px;font-weight:700;background:rgba(249,115,22,.15);color:#f97316;border:1px solid rgba(249,115,22,.3)">FAST-TRACK</span>':'')+'<span class="nurse-alert-name">'+maskName(p.patient_name,p.study_code)+'</span><span class="nurse-alert-wait">Waiting <b>'+p.wait_minutes+' min</b></span></div><button class="btn btn-call" onclick="callPatient(\''+p.id+'\')">Call now</button></div>'+(p.symptoms_summary?'<div class="nurse-alert-symptoms">'+p.symptoms_summary+'</div>':'')+'</div>').join(''):'';
+
+  // Next patients per queue
+  const types=[
+    {key:'fast_track',data:d.fast_track||[],label:'Emergency / Acute',icon:'\uD83D\uDEA8',color:'#ef4444'},
+    {key:'maternal',data:d.maternal||[],label:'Maternal / Child',icon:'\uD83E\uDD30',color:'#a855f7'},
+    {key:'chronic',data:d.chronic||[],label:'Chronic',icon:'\uD83D\uDC8A',color:'#3b82f6'},
+    {key:'pharmacy',data:d.pharmacy||[],label:'Pharmacy (Meds Only)',icon:'\uD83D\uDC8A',color:'#10b981'},
+    {key:'routine',data:d.routine||[],label:'General',icon:'\uD83D\uDD70',color:'#64748b'},
+    {key:'walk_in',data:d.walk_in||[],label:'Walk-In',icon:'\uD83D\uDEB6',color:'#94a3b8'}
+  ];
+  document.getElementById('nurse-columns').innerHTML=types.map(t=>{
+    return '<div class="q-col"><div class="q-hdr" style="border-bottom-color:'+t.color+'"><div class="q-hdr-title">'+t.icon+' Next in '+t.label+'</div></div>'+(t.data.length===0?'<div class="q-empty">Queue empty</div>':t.data.slice(0,5).map((p,i)=>{
+      const w=waitMin(p.checked_in_at);
+      return '<div style="padding:8px 14px;border-bottom:1px solid #131b2e"><div style="display:flex;justify-content:space-between;align-items:center"><div><span style="font-size:11px;font-weight:600;color:#475569;margin-right:6px">#'+(i+1)+'</span><span style="font-size:12px;font-weight:600;color:#e2e8f0">'+maskName(p.patient_name,p.study_code)+'</span></div>'+triageBadge(p.triage_level)+'</div>'+(p.symptoms_summary?'<div style="font-size:10px;color:#94a3b8;margin-top:4px;padding:4px 6px;background:rgba(255,255,255,.03);border-radius:4px;line-height:1.4">'+((p.symptoms_summary||'').length>140?(p.symptoms_summary||'').slice(0,140)+'…':p.symptoms_summary)+'</div>':'')+'<div style="font-size:10px;color:#475569;margin-top:3px">Waiting: '+w+' min</div><div class="p-actions" style="margin-top:4px"><button class="btn btn-call" onclick="callPatient(\''+p.id+'\')">✓ Call</button><button class="btn btn-noshow" onclick="noShow(\''+p.id+'\')">✕ No-show</button><button class="btn" style="color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.08)" onclick="nurseFeedback(\''+p.id+'\',\'agree\')">👍 Agree</button><button class="btn" style="color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.08)" onclick="nurseFeedback(\''+p.id+'\',\'disagree\')">👎 Disagree</button><button class="btn" style="color:#06b6d4;border-color:rgba(6,182,212,.3);background:rgba(6,182,212,.08)" onclick="openTEWS(\''+p.id+'\',\''+(maskName(p.patient_name,p.study_code).replace(/'/g,''))+'\',\''+p.triage_level+'\')">📊 TEWS</button></div></div>';
+    }).join(''))+'</div>';
+  }).join('');
+}
+
+// ==================== LOOKUP ====================
+// Auto-refresh: re-run lookup every 30s while a result is displayed
+let _lookupRefreshTimer=null;
+let _lastLookupQuery=null;
+
+function startLookupRefresh(query){
+  stopLookupRefresh();
+  _lastLookupQuery=query;
+  _lookupRefreshTimer=setInterval(function(){
+    if(!_lastLookupQuery)return;
+    // Silent refresh — don't change button text
+    doLookup(true);
+  },30000);
+}
+function stopLookupRefresh(){
+  if(_lookupRefreshTimer){clearInterval(_lookupRefreshTimer);_lookupRefreshTimer=null;}
+  _lastLookupQuery=null;
+}
+
+async function doLookup(silent){
+  const q=silent&&_lastLookupQuery?_lastLookupQuery:document.getElementById('lookup-input').value.trim();
+  if(!q)return;
+  if(!silent)document.getElementById('lookup-btn').textContent='Searching…';
+
+  // Check if it's a referral ID (REF-XXXX...)
+  if(q.toUpperCase().startsWith('REF-')){
+    const d=await api('/api/referral/'+encodeURIComponent(q));
+    if(!silent)document.getElementById('lookup-btn').textContent='Search';
+    const el=document.getElementById('lookup-result');
+    if(!d||!d.found){
+      stopLookupRefresh();
+      el.innerHTML='<div class="result" style="text-align:center;color:#64748b"><div style="font-size:22px;margin-bottom:6px">🔍</div><div style="font-size:13px">Referral not found</div></div>';
+      return;
+    }
+    if(!silent)startLookupRefresh(q);
+    var tColors={RED:'rgba(239,68,68,.1)',ORANGE:'rgba(249,115,22,.1)',YELLOW:'rgba(234,179,8,.1)',GREEN:'rgba(34,197,94,.1)'};
+    var tTextColors={RED:'#ef4444',ORANGE:'#f97316',YELLOW:'#eab308',GREEN:'#22c55e'};
+    var rhtml='<div class="result"><div style="font-size:10px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">🏥 Hospital Referral</div>';
+    rhtml+='<div class="result-header"><div><div class="result-name">'+(d.patient?.name||'Unknown patient')+' <span style="font-size:9px;color:#22c55e;font-weight:400;vertical-align:middle;margin-left:8px;animation:pulse 2s infinite">● LIVE</span></div>';
+    rhtml+='<div style="font-size:11px;color:#3b82f6;margin-top:2px">Referral: '+d.referral_id+(d.patient?.study_code?' · BZ Code: '+d.patient.study_code:'')+'</div>';
+    rhtml+='<div class="result-detail">'+(d.patient?.dob?'DOB: '+d.patient.dob+(d.patient?.age?' ('+d.patient.age+'y)':'')+' · ':'')+(d.patient?.sex||'')+'</div></div>';
+    rhtml+=triageBadge(d.triage?.level)+'</div>';
+    // Current referral triage
+    rhtml+='<div class="result-triage" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2)"><div class="result-triage-hdr"><span class="result-triage-label" style="color:#ef4444">Referred — '+d.triage?.level+'</span><span class="result-triage-meta">'+fmtTime(d.triage?.time)+'</span></div><div class="result-triage-symptoms">'+(d.triage?.symptoms||'No details')+'</div></div>';
+    // Chronic conditions
+    if(d.chronic_conditions&&d.chronic_conditions.length>0){
+      rhtml+='<div style="margin-top:8px"><span style="font-size:10px;color:#475569">Chronic: </span>'+d.chronic_conditions.map(function(c){return '<span class="chronic-pill">'+c+'</span>';}).join('')+'</div>';
+    }
+    // Triage history
+    var th=d.triage_history||[];
+    if(th.length>1){
+      rhtml+='<div style="margin-top:12px;padding:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px">';
+      rhtml+='<div style="font-size:10px;color:#3b82f6;font-weight:600;margin-bottom:6px">TRIAGE HISTORY ('+th.length+' visits)</div>';
+      if(d.triage_trend)rhtml+='<div style="font-size:12px;color:#94a3b8;margin-bottom:8px">Trend: '+d.triage_trend+'</div>';
+      rhtml+='<div style="display:flex;flex-direction:column;gap:4px">';
+      th.forEach(function(tr){
+        var col=tTextColors[tr.triage_level]||'#64748b';
+        var bg=tColors[tr.triage_level]||'rgba(100,116,139,.1)';
+        rhtml+='<div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 8px;background:'+bg+';border-radius:4px">';
+        rhtml+='<span style="color:'+col+';font-weight:700;min-width:52px">'+tr.triage_level+'</span>';
+        rhtml+='<span style="color:#64748b;min-width:60px">'+fmtTime(tr.created_at)+'</span>';
+        rhtml+='<span style="color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(tr.symptoms||'').slice(0,80)+'</span></div>';
+      });
+      rhtml+='</div></div>';
+    }
+    // Follow-up outcomes
+    var fo=d.follow_up_outcomes||[];
+    if(fo.length>0){
+      rhtml+='<div style="margin-top:8px;padding:10px;background:rgba(139,92,246,.05);border:1px solid rgba(139,92,246,.15);border-radius:8px">';
+      rhtml+='<div style="font-size:10px;color:#8b5cf6;font-weight:600;margin-bottom:6px">FOLLOW-UP HISTORY</div>';
+      fo.forEach(function(o){
+        var icon=o.symptom_outcome==='better'?'💚':o.symptom_outcome==='worse'?'🔴':'🟡';
+        var visit=o.visited_clinic==='clinic'?'visited clinic':o.visited_clinic==='hospital'?'went to hospital':o.visited_clinic==='no'?'did not visit':'unknown';
+        var fail=o.access_failure?' ⚠️ '+o.access_failure:'';
+        rhtml+='<div style="font-size:11px;color:#94a3b8;margin-bottom:3px">'+icon+' '+(o.symptom_outcome||'?')+' — '+visit+fail+'</div>';
+      });
+      rhtml+='</div>';
+    }
+    // Lab results
+    var lr=d.lab_results||[];
+    if(lr.length>0){
+      rhtml+='<div style="margin-top:8px;padding:10px;background:rgba(6,182,212,.05);border:1px solid rgba(6,182,212,.15);border-radius:8px">';
+      rhtml+='<div style="font-size:10px;color:#06b6d4;font-weight:600;margin-bottom:6px">LAB RESULTS ('+lr.length+')</div>';
+      lr.forEach(function(l){
+        var sIcon=l.result_status==='ready'?'✅':l.result_status==='pending'?'⏳':'📋';
+        var cCol=l.result_category==='normal'?'#22c55e':l.result_category==='action_required'?'#f97316':'#94a3b8';
+        rhtml+='<div style="font-size:11px;color:#94a3b8;margin-bottom:3px">'+sIcon+' <span style="color:#e2e8f0;font-weight:600">'+l.test_type+'</span> · '+fmtTime(l.test_date||l.created_at)+' · <span style="color:'+cCol+'">'+(l.result_summary||l.result_status)+'</span>'+(l.facility?' · '+l.facility:'')+'</div>';
+      });
+      rhtml+='</div>';
+    }
+    rhtml+='</div>';
+    el.innerHTML=rhtml;
+    return;
+  }
+
+  const isCode=q.toUpperCase().startsWith('BZ-');
+  const param=isCode?'study_code='+encodeURIComponent(q):'phone='+encodeURIComponent(q.replace(/^0/,'27'));
+  const d=await api('/api/clinic/lookup?'+param);
+  if(!silent)document.getElementById('lookup-btn').textContent='Search';
+  if(!d)return;
+  const el=document.getElementById('lookup-result');
+  if(!d.found){
+    stopLookupRefresh();
+    el.innerHTML='<div class="result" style="text-align:center;color:#64748b"><div style="font-size:22px;margin-bottom:6px">🔍</div><div style="font-size:13px">No BIZUSIZO session found for this patient</div><div style="font-size:11px;margin-top:6px">They may not have used WhatsApp triage. You can still add them as a walk-in.</div><button class="btn btn-walkin" style="margin-top:10px;padding:8px 16px;font-size:12px" onclick="addToQueue(\''+d.patient_id+'\',null,\'walk_in\')">🚶 Add as Walk-In</button></div>';
+    return;
+  }
+  // Start auto-refresh (every 30s) so new triages, labs, follow-ups appear live
+  if(!silent)startLookupRefresh(q);
+
+  const t=d.latest_triage;
+  var tBorders={RED:'rgba(239,68,68,.25)',ORANGE:'rgba(249,115,22,.25)',YELLOW:'rgba(234,179,8,.25)',GREEN:'rgba(34,197,94,.25)'};
+  var tLabels={RED:'Emergency',ORANGE:'Very urgent',YELLOW:'Urgent',GREEN:'Routine'};
+
+  let html='<div class="result"><div class="result-header"><div><div class="result-name">'+(d.first_name&&d.surname?d.first_name+' '+d.surname:'Patient found')+' <span style="font-size:9px;color:#22c55e;font-weight:400;vertical-align:middle;margin-left:8px;animation:pulse 2s infinite">● LIVE</span></div>';
+  if(d.study_code)html+='<div style="font-size:11px;color:#3b82f6;margin-top:2px">Study code: '+d.study_code+'</div>';
+  html+='<div class="result-detail">Language: '+(d.language||'en').toUpperCase();
+  if(d.dob)html+=' · DOB: '+d.dob;
+  if(d.age)html+=' ('+d.age+'y)';
+  if(d.sex)html+=' · '+d.sex.charAt(0).toUpperCase()+d.sex.slice(1);
+  html+=' · ID: '+(d.patient_id||'').slice(0,8)+'…</div></div>';
+  if(t)html+=triageBadge(t.triage_level);
+  html+='</div>';
+
+  // Triage detail
+  if(t){
+    const bg=tColors[t.triage_level]||'rgba(100,116,139,.1)';
+    const bd=tBorders[t.triage_level]||'rgba(100,116,139,.25)';
+    const tc=tTextColors[t.triage_level]||'#64748b';
+    html+='<div class="result-triage" style="background:'+bg+';border:1px solid '+bd+'"><div class="result-triage-hdr"><span class="result-triage-label" style="color:'+tc+'">'+(tLabels[t.triage_level]||'Unknown')+' — '+t.triage_level+'</span><span class="result-triage-meta">Confidence: '+(t.confidence||'?')+'% · '+fmtTime(t.created_at)+'</span></div><div class="result-triage-symptoms">'+(t.symptoms||'No symptoms recorded')+'</div></div>';
+  }
+
+  // Chronic
+  const chronic=d.chronic_conditions||[];
+  if(chronic.length>0){
+    html+='<div style="margin-top:10px"><span style="font-size:10px;color:#475569">Chronic: </span>'+chronic.map(c=>'<span class="chronic-pill">'+(c.label_en||c.key||c)+'</span>').join('')+'</div>';
+  }
+
+  // Triage trend + history timeline
+  if(d.triage_count>1){
+    html+='<div style="margin-top:12px;padding:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px">';
+    html+='<div style="font-size:10px;color:#3b82f6;font-weight:600;margin-bottom:6px">TRIAGE HISTORY ('+d.triage_count+' visits)</div>';
+    if(d.triage_trend)html+='<div style="font-size:12px;color:#94a3b8;margin-bottom:8px">Trend: '+d.triage_trend+'</div>';
+    html+='<div style="display:flex;flex-direction:column;gap:4px">';
+    (d.triage_history||[]).forEach(function(tr){
+      var col=tTextColors[tr.triage_level]||'#64748b';
+      var bg=tColors[tr.triage_level]||'rgba(100,116,139,.1)';
+      var sym=(tr.symptoms||'').slice(0,80);
+      var fac=tr.facility_name?' · '+tr.facility_name:'';
+      html+='<div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:4px 8px;background:'+bg+';border-radius:4px">';
+      html+='<span style="color:'+col+';font-weight:700;min-width:52px">'+tr.triage_level+'</span>';
+      html+='<span style="color:#64748b;min-width:60px">'+fmtTime(tr.created_at)+'</span>';
+      html+='<span style="color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+sym+fac+'</span>';
+      html+='</div>';
+    });
+    html+='</div></div>';
+  }
+
+  // Follow-up outcomes
+  var outcomes=d.follow_up_outcomes||[];
+  if(outcomes.length>0){
+    html+='<div style="margin-top:8px;padding:10px;background:rgba(139,92,246,.05);border:1px solid rgba(139,92,246,.15);border-radius:8px">';
+    html+='<div style="font-size:10px;color:#8b5cf6;font-weight:600;margin-bottom:6px">FOLLOW-UP HISTORY</div>';
+    outcomes.forEach(function(o){
+      var icon=o.symptom_outcome==='better'?'💚':o.symptom_outcome==='worse'?'🔴':'🟡';
+      var visit=o.visited_clinic==='clinic'?'visited clinic':o.visited_clinic==='hospital'?'went to hospital':o.visited_clinic==='no'?'did not visit':'unknown';
+      var fail=o.access_failure?' ⚠️ '+o.access_failure:'';
+      html+='<div style="font-size:11px;color:#94a3b8;margin-bottom:3px">'+icon+' '+(o.symptom_outcome||'?')+' — '+visit+fail+'</div>';
+    });
+    if(d.follow_up_access_failures&&d.follow_up_access_failures.length>0){
+      html+='<div style="font-size:11px;color:#f97316;margin-top:4px">⚠️ Access barriers reported: '+d.follow_up_access_failures.join(', ')+'</div>';
+    }
+    html+='</div>';
+  }
+
+  // Lab results
+  var labs=d.lab_results||[];
+  if(labs.length>0){
+    html+='<div style="margin-top:8px;padding:10px;background:rgba(6,182,212,.05);border:1px solid rgba(6,182,212,.15);border-radius:8px">';
+    html+='<div style="font-size:10px;color:#06b6d4;font-weight:600;margin-bottom:6px">LAB RESULTS ('+labs.length+')</div>';
+    labs.forEach(function(l){
+      var statusIcon=l.result_status==='ready'?'✅':l.result_status==='pending'?'⏳':'📋';
+      var catColor=l.result_category==='normal'?'#22c55e':l.result_category==='action_required'?'#f97316':'#94a3b8';
+      var notified=l.patient_notified?' · Patient notified':'';
+      var facility=l.facility?' · '+l.facility:'';
+      html+='<div style="font-size:11px;color:#94a3b8;margin-bottom:3px;display:flex;align-items:center;gap:6px">';
+      html+='<span>'+statusIcon+'</span>';
+      html+='<span style="color:#e2e8f0;font-weight:600;min-width:100px">'+l.test_type+'</span>';
+      html+='<span>'+fmtTime(l.test_date||l.created_at)+'</span>';
+      html+='<span style="color:'+catColor+'">'+(l.result_summary||l.result_status)+'</span>';
+      html+='<span style="color:#475569">'+notified+facility+'</span>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+
+  // Prescriptions
+  var rxs=d.prescriptions||[];
+  if(rxs.length>0){
+    html+='<div style="margin-top:8px;padding:10px;background:rgba(236,72,153,.05);border:1px solid rgba(236,72,153,.15);border-radius:8px">';
+    html+='<div style="font-size:10px;color:#ec4899;font-weight:600;margin-bottom:6px">💊 PRESCRIPTIONS ('+rxs.length+')</div>';
+    rxs.forEach(function(r){
+      var statusIcon=r.status==='active'?'●':r.status==='completed'?'✅':'❌';
+      var statusColor=r.status==='active'?'#22c55e':r.status==='completed'?'#64748b':'#ef4444';
+      html+='<div style="font-size:11px;margin-bottom:4px;padding:4px 8px;background:rgba(0,0,0,.15);border-radius:4px">';
+      html+='<div style="display:flex;justify-content:space-between"><span style="color:#e2e8f0;font-weight:600">'+r.medication+'</span><span style="color:'+statusColor+';font-size:10px">'+statusIcon+' '+r.status+'</span></div>';
+      if(r.dosage)html+='<div style="color:#94a3b8">'+r.dosage+(r.duration?' · '+r.duration:'')+(r.quantity?' · Qty: '+r.quantity:'')+'</div>';
+      html+='<div style="color:#475569;font-size:10px">By: '+r.prescribed_by+(r.facility_name?' · '+r.facility_name:'')+' · '+fmtTime(r.prescribed_at)+'</div>';
+      if(r.notes)html+='<div style="color:#64748b;font-size:10px;font-style:italic">'+r.notes+'</div>';
+      html+='</div>';
+    });
+    // Add prescription button
+    html+='<div style="margin-top:8px"><button class="btn" style="padding:5px 12px;font-size:10px;color:#ec4899;border-color:rgba(236,72,153,.3);background:rgba(236,72,153,.08)" onclick="addPrescription(\''+d.patient_id+'\')">+ Add Prescription</button></div>';
+    html+='</div>';
+  }else{
+    html+='<div style="margin-top:8px"><button class="btn" style="padding:5px 12px;font-size:10px;color:#ec4899;border-color:rgba(236,72,153,.3);background:rgba(236,72,153,.08)" onclick="addPrescription(\''+d.patient_id+'\')">💊 Add Prescription</button></div>';
+  }
+
+  // Passport views
+  var pvs=d.passport_views||[];
+  if(pvs.length>0){
+    html+='<div style="margin-top:8px;padding:10px;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:8px">';
+    html+='<div style="font-size:10px;color:#3b82f6;font-weight:600;margin-bottom:6px">📋 HEALTH PASSPORT VIEWS ('+pvs.length+')</div>';
+    pvs.forEach(function(v){
+      var date=new Date(v.viewed_at).toLocaleString('en-ZA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+      var vIcon=v.viewer_type==='doctor'?'🩺':v.viewer_type==='pharmacist'?'💊':v.viewer_type==='patient'?'👤':'👁️';
+      var vLabel=v.viewer_type==='doctor'?'Doctor':v.viewer_type==='pharmacist'?'Pharmacist':v.viewer_type==='patient'?'Patient':'Unknown';
+      html+='<div style="font-size:11px;color:#94a3b8;margin-bottom:2px">'+vIcon+' '+vLabel+' · '+date+(v.ip_address?' · IP: '+v.ip_address.split(',')[0]:'')+'</div>';
+    });
+    html+='</div>';
+  }
+
+  // Clinical pattern flags
+  var cflags=d.clinical_flags||[];
+  if(cflags.length>0){
+    html+='<div style="margin-top:8px;padding:10px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:8px">';
+    html+='<div style="font-size:10px;color:#ef4444;font-weight:600;margin-bottom:6px">🔍 CLINICAL PATTERN FLAGS</div>';
+    cflags.forEach(function(f){
+      var sevColor=f.severity==='high'?'#ef4444':f.severity==='medium'?'#f97316':'#eab308';
+      var sevIcon=f.severity==='high'?'🔴':f.severity==='medium'?'🟠':'🟡';
+      html+='<div style="font-size:11px;margin-bottom:6px;padding:6px 8px;background:rgba(0,0,0,.15);border-radius:4px">';
+      html+='<div style="color:'+sevColor+';font-weight:600">'+sevIcon+' '+f.flag.replace(/_/g,' ').toUpperCase()+'</div>';
+      html+='<div style="color:#94a3b8;margin-top:2px">'+f.message+'</div>';
+      html+='<div style="color:#e2e8f0;margin-top:2px;font-weight:500">→ '+f.action+'</div>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+
+  // File status
+  if(d.file_status&&d.file_status!=='unknown'){
+    const fsClass=d.file_status==='new'?'fs-new':'fs-existing';
+    html+='<div style="margin-top:6px"><span style="font-size:10px;color:#475569">File: </span><span class="file-status '+fsClass+'">'+(d.file_status==='new'?'New patient':'Returning')+'</span></div>';
+  }
+
+  // Queue assignment
+  html+='<div class="assign-box">';
+  if(d.already_in_queue){
+    const aq=d.already_in_queue;
+    const qtLabels={fast_track:'Fast-Track',routine:'Routine',walk_in:'Walk-In',preventative:'Screening'};
+    html+='<div style="color:#22c55e;font-size:12px;display:flex;align-items:center;gap:6px">✅ Already in queue: <b>'+(qtLabels[aq.queue_type]||aq.queue_type)+'</b><span style="color:#475569"> · Position '+(aq.position||'?')+' · Waiting '+waitMin(aq.checked_in_at)+' min</span></div>';
+  }else{
+    const recLevel=t?t.triage_level:'UNKNOWN';
+    const recText=recLevel==='RED'||recLevel==='ORANGE'?'⚡ RECOMMENDED: Fast-Track — patient triaged as urgent':
+                  recLevel==='YELLOW'?'🕐 RECOMMENDED: Routine — patient triaged as standard urgent':
+                  recLevel==='GREEN'?'🕐 RECOMMENDED: Routine — chronic/self-care':
+                  '🚶 No BIZUSIZO triage available';
+    const recBg=tColors[recLevel]||'rgba(100,116,139,.1)';
+    const recBd=tBorders[recLevel]||'rgba(100,116,139,.25)';
+    const recC=tTextColors[recLevel]||'#64748b';
+    const pName=(d.first_name&&d.surname)?d.first_name+' '+d.surname:null;
+    html+='<div class="assign-title">Assign to Queue</div>';
+    html+='<div class="assign-rec" style="background:'+recBg+';border:1px solid '+recBd+';color:'+recC+'">'+recText+'</div>';
+    html+='<div class="assign-btns"><button class="btn btn-red" onclick="addToQueue(\''+d.patient_id+'\','+JSON.stringify(pName)+',\'fast_track\')">⚡ Fast-Track</button><button class="btn btn-primary" onclick="addToQueue(\''+d.patient_id+'\','+JSON.stringify(pName)+',\'routine\')">🕐 Routine</button><button class="btn btn-walkin" style="padding:8px;font-size:12px" onclick="addToQueue(\''+d.patient_id+'\','+JSON.stringify(pName)+',\'walk_in\')">🚶 Walk-In</button></div>';
+  }
+  // Staff action: verify identity (SA ID number)
+  if(d.patient_id){
+    html+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid #1e293b">';
+    html+='<div style="font-size:10px;color:#3b82f6;font-weight:600;margin-bottom:6px">IDENTITY VERIFICATION</div>';
+    html+='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">';
+    html+='<input class="lookup-input" id="verify-id-input" placeholder="SA ID number (13 digits)" style="max-width:200px;font-size:12px;padding:6px 10px">';
+    html+='<button class="btn btn-primary" style="padding:6px 14px;font-size:11px" onclick="verifyIdentity(\''+d.patient_id+'\')">✓ SA ID</button>';
+    html+='<button class="btn" style="padding:6px 14px;font-size:11px;color:#8b5cf6;border-color:rgba(139,92,246,.3)" onclick="verifyAltId(\''+d.patient_id+'\')">📄 Other document</button>';
+    html+='<button class="btn" style="padding:6px 14px;font-size:11px;color:#64748b;border-color:#1e293b" onclick="verifyIdentity(\''+d.patient_id+'\',true)">No documents</button>';
+    html+='</div>';
+    html+='<div id="verify-id-result" style="font-size:11px;margin-top:6px"></div>';
+
+    // Unlink action (smaller, secondary)
+    html+='<div style="margin-top:8px"><button class="btn" style="padding:4px 10px;font-size:9px;color:#475569;border-color:#1e293b;background:transparent" onclick="unlinkPatient(\''+d.patient_id+'\')">⚠️ Wrong patient? Unlink phone</button></div>';
+    html+='</div>';
+  }
+  html+='</div></div>';
+  el.innerHTML=html;
+}
+
+// ==================== ACTIONS ====================
+async function callPatient(id){
+  const room=prompt('Room or nurse name (optional — patient will be notified on WhatsApp):','');
+  const res=await api('/api/clinic/queue/'+id+'/call',{method:'PUT',body:JSON.stringify({assigned_to:UNAME,room:room||null})});
+  if(res && !res.whatsapp_sent){
+    alert('Patient has been moved to consultation.\n\n⚠️ WhatsApp notification FAILED — the patient may not have data.\n\nPlease call them by name from the waiting area:\nLook for the patient name on the queue board.');
+  }
+  refresh();
+}
+async function pausePatient(id){
+  await api('/api/clinic/queue/'+id+'/pause',{method:'PUT',body:JSON.stringify({nurse_name:UNAME})});
+  refresh();
+}
+async function resumePatient(id){
+  await api('/api/clinic/queue/'+id+'/resume',{method:'PUT',body:JSON.stringify({nurse_name:UNAME})});
+  refresh();
+}
+async function completePatient(id){
+  // Show structured exit form (DoH Exit Flow)
+  const html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center" id="exit-modal">
+    <div style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:24px;width:420px;max-height:90vh;overflow-y:auto">
+      <h3 style="font-size:16px;margin-bottom:16px;color:#e2e8f0">✅ Complete Consultation</h3>
+      <div style="font-size:11px;color:#64748b;margin-bottom:12px">DoH Exit Flow — select what applies:</div>
+      
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:6px">💊 Treatment given:</div>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-treatment" value="medication"> Medication prescribed</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-treatment" value="injection"> Injection</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-treatment" value="wound_care"> Wound care</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-treatment" value="nebulisation"> Nebulisation</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-treatment" value="counselling"> Counselling</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-treatment" value="procedure"> Procedure</label>
+      </div>
+      
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:6px">🔬 Tests done:</div>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-test" value="hiv_test"> HIV test</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-test" value="bp_check"> BP check</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-test" value="glucose"> Glucose test</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-test" value="urine"> Urine test</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-test" value="blood_draw"> Blood draw</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-test" value="pap_smear"> Pap smear</label>
+      </div>
+      
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:6px">💊 Medication dispensed:</div>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-med" value="prescription"> Prescription given</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-med" value="chronic_meds"> Chronic meds collected</label>
+        <label style="display:block;font-size:12px;color:#cbd5e1;margin:4px 0;cursor:pointer"><input type="checkbox" class="exit-med" value="otc"> Over-the-counter meds</label>
+      </div>
+      
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:6px">📅 Next visit (optional):</div>
+        <input type="date" id="exit-next-visit" style="width:100%;padding:8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:12px">
+      </div>
+      
+      <div style="margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;color:#94a3b8;margin-bottom:6px">📝 Notes (optional):</div>
+        <textarea id="exit-notes" rows="2" style="width:100%;padding:8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:12px;resize:vertical" placeholder="Any additional notes..."></textarea>
+      </div>
+
+      <div style="margin-bottom:16px;padding:10px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:8px">
+        <div style="font-size:11px;font-weight:600;color:#22c55e;margin-bottom:6px">📋 Entry Attribution</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <label style="font-size:10px;color:#64748b;display:block;margin-bottom:2px">Your role</label>
+            <select id="exit-role" style="width:100%;padding:5px;border-radius:4px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:11px">
+              <option value="nurse">Nurse</option>
+              <option value="clerk">Clerk</option>
+              <option value="data_capturer">Data Capturer</option>
+              <option value="facility_manager">Facility Manager</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:10px;color:#64748b;display:block;margin-bottom:2px">Entry type</label>
+            <select id="exit-retro" style="width:100%;padding:5px;border-radius:4px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:11px" onchange="document.getElementById('exit-orig-time-wrap').style.display=this.value==='yes'?'block':'none'">
+              <option value="no">Real-time</option>
+              <option value="yes">Retrospective (from paper)</option>
+            </select>
+          </div>
+        </div>
+        <div id="exit-orig-time-wrap" style="display:none;margin-top:6px">
+          <label style="font-size:10px;color:#64748b;display:block;margin-bottom:2px">Original completion time (from paper register)</label>
+          <input type="datetime-local" id="exit-orig-time" style="width:100%;padding:5px;border-radius:4px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:11px">
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:8px">
+        <button onclick="submitComplete('${id}')" style="flex:1;padding:10px;border-radius:6px;border:none;background:#22c55e;color:white;font-size:13px;font-weight:600;cursor:pointer">✅ Confirm & Exit Patient</button>
+        <button onclick="document.getElementById('exit-modal').remove()" style="padding:10px 16px;border-radius:6px;border:1px solid #1e293b;background:#111827;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+async function submitComplete(id){
+  const treatments=[...document.querySelectorAll('.exit-treatment:checked')].map(c=>c.value);
+  const tests=[...document.querySelectorAll('.exit-test:checked')].map(c=>c.value);
+  const medications=[...document.querySelectorAll('.exit-med:checked')].map(c=>c.value);
+  const nextVisit=document.getElementById('exit-next-visit').value||null;
+  const notes=document.getElementById('exit-notes').value.trim()||null;
+  const role=document.getElementById('exit-role').value;
+  const isRetro=document.getElementById('exit-retro').value==='yes';
+  const origTime=document.getElementById('exit-orig-time').value||null;
+  
+  const el=document.getElementById('exit-modal');
+  if(el)el.remove();
+  
+  await api('/api/clinic/queue/'+id+'/complete',{method:'PUT',body:JSON.stringify({
+    treatments, tests, medications,
+    next_visit_date:nextVisit,
+    notes,
+    nurse_name:UNAME,
+    entered_by_role:role,
+    is_retrospective:isRetro,
+    original_completion_time:origTime
+  })});
+  refresh();
+}
+async function noShow(id){
+  await api('/api/clinic/queue/'+id+'/no-show',{method:'PUT',body:JSON.stringify({})});
+  refresh();
+}
+async function leftWithout(id){
+  if(!confirm('Mark this patient as Left Without Being Seen?'))return;
+  await api('/api/clinic/queue/'+id+'/left',{method:'PUT',body:JSON.stringify({nurse_name:UNAME})});
+  refresh();
+}
+async function reassign(id,qt){
+  await api('/api/clinic/queue/'+id+'/reassign',{method:'PUT',body:JSON.stringify({queue_type:qt})});
+  refresh();
+}
+async function addPrescription(patientId){
+  var el=document.getElementById('lookup-result');
+  // Find a place to insert the form — append to the prescriptions section
+  var formHtml='<div id="rx-form" style="margin-top:8px;padding:10px;background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.2);border-radius:8px">'
+    +'<div style="font-size:10px;color:#ec4899;font-weight:600;margin-bottom:6px">New Prescription</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">'
+    +'<input class="lookup-input" id="rx-medication" placeholder="Medication name + strength (e.g. Amoxicillin 500mg)" style="grid-column:1/3;font-size:11px;padding:6px 8px">'
+    +'<input class="lookup-input" id="rx-dosage" placeholder="Dosage (e.g. 1 tab 3x daily)" style="font-size:11px;padding:6px 8px">'
+    +'<input class="lookup-input" id="rx-duration" placeholder="Duration (e.g. 7 days)" style="font-size:11px;padding:6px 8px">'
+    +'<input class="lookup-input" id="rx-quantity" placeholder="Quantity (e.g. 21 tablets)" style="font-size:11px;padding:6px 8px">'
+    +'<input class="lookup-input" id="rx-notes" placeholder="Notes (e.g. Take with food)" style="font-size:11px;padding:6px 8px">'
+    +'</div>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button class="btn btn-primary" style="padding:6px 14px;font-size:11px" onclick="submitPrescription(\''+patientId+'\')">Save Prescription</button>'
+    +'<button class="btn" style="padding:6px 14px;font-size:11px;color:#64748b;border-color:#1e293b" onclick="document.getElementById(\'rx-form\').remove()">Cancel</button>'
+    +'</div>'
+    +'<div id="rx-result" style="font-size:11px;margin-top:4px"></div>'
+    +'</div>';
+  // Remove existing form if open
+  var existing=document.getElementById('rx-form');
+  if(existing)existing.remove();
+  // Insert form
+  var target=el.querySelector('[style*="ec4899"]')||el;
+  target.insertAdjacentHTML('beforeend',formHtml);
+}
+
+async function submitPrescription(patientId){
+  var el=document.getElementById('rx-result');
+  var medication=document.getElementById('rx-medication').value.trim();
+  if(!medication){el.innerHTML='<span style="color:#f97316">Medication name is required</span>';return;}
+  var d=await api('/api/prescriptions',{method:'POST',body:JSON.stringify({
+    patient_id:patientId,
+    medication:medication,
+    dosage:document.getElementById('rx-dosage').value.trim()||null,
+    duration:document.getElementById('rx-duration').value.trim()||null,
+    quantity:document.getElementById('rx-quantity').value.trim()||null,
+    notes:document.getElementById('rx-notes').value.trim()||null,
+  })});
+  if(d&&d.success){
+    el.innerHTML='<span style="color:#22c55e">✅ Prescription saved</span>';
+    setTimeout(function(){doLookup();},1000); // Refresh to show new prescription
+  }else{
+    el.innerHTML='<span style="color:#ef4444">Failed: '+(d?.error||'unknown')+'</span>';
+  }
+}
+
+async function verifyAltId(patientId){
+  var el=document.getElementById('verify-id-result');
+  // Show inline form for alternative document
+  el.innerHTML='<div style="margin-top:6px;padding:8px;background:rgba(139,92,246,.05);border:1px solid rgba(139,92,246,.15);border-radius:6px">'
+    +'<div style="font-size:10px;color:#8b5cf6;font-weight:600;margin-bottom:6px">Alternative Document</div>'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">'
+    +'<select id="alt-id-type" class="lookup-input" style="max-width:160px;font-size:11px;padding:5px 8px">'
+    +'<option value="">Select type...</option>'
+    +'<option value="passport">Passport</option>'
+    +'<option value="asylum_permit">Asylum seeker permit</option>'
+    +'<option value="refugee_id">Refugee ID</option>'
+    +'<option value="birth_certificate">Birth certificate</option>'
+    +'<option value="hospital_file">Hospital file number</option>'
+    +'<option value="other">Other</option>'
+    +'</select>'
+    +'<input class="lookup-input" id="alt-id-number" placeholder="Document number" style="max-width:180px;font-size:11px;padding:5px 8px">'
+    +'<input class="lookup-input" id="alt-id-country" placeholder="Country (if foreign)" style="max-width:130px;font-size:11px;padding:5px 8px">'
+    +'<button class="btn btn-primary" style="padding:5px 12px;font-size:11px" onclick="submitAltId(\''+patientId+'\')">Save</button>'
+    +'</div></div>';
+}
+
+async function submitAltId(patientId){
+  var el=document.getElementById('verify-id-result');
+  var docType=document.getElementById('alt-id-type').value;
+  var docNum=document.getElementById('alt-id-number').value.trim();
+  var country=document.getElementById('alt-id-country').value.trim();
+  if(!docType){el.innerHTML+='<div style="color:#f97316;font-size:10px;margin-top:4px">Select document type</div>';return;}
+  if(!docNum){el.innerHTML+='<div style="color:#f97316;font-size:10px;margin-top:4px">Enter document number</div>';return;}
+  var notes='Document: '+docType+' | Number: '+docNum+(country?' | Country: '+country:'');
+  var d=await api('/api/clinic/verify-identity',{method:'POST',body:JSON.stringify({patient_id:patientId,alt_doc_type:docType,alt_doc_number:docNum,alt_doc_country:country||null,notes:notes})});
+  if(d&&d.success){
+    el.innerHTML='<span style="color:#22c55e">✅ '+docType.replace(/_/g,' ')+' verified and on file.</span>';
+  }else{
+    el.innerHTML='<span style="color:#ef4444">Failed: '+(d?.error||'unknown')+'</span>';
+  }
+}
+
+async function verifyIdentity(patientId,noId){
+  var el=document.getElementById('verify-id-result');
+  if(noId){
+    // No ID available — mark as verified without ID (e.g. child, foreigner)
+    var notes=prompt('Reason no ID is available:','Patient does not have ID document');
+    if(notes===null)return;
+    var d=await api('/api/clinic/verify-identity',{method:'POST',body:JSON.stringify({patient_id:patientId,notes:notes})});
+    if(d&&d.success){el.innerHTML='<span style="color:#22c55e">✅ Noted — no ID. Reason logged.</span>';}
+    else{el.innerHTML='<span style="color:#ef4444">Failed: '+(d?.error||'unknown')+'</span>';}
+    return;
+  }
+  var idNum=document.getElementById('verify-id-input').value.trim();
+  if(!idNum){el.innerHTML='<span style="color:#f97316">Enter the 13-digit SA ID number</span>';return;}
+  if(!/^\d{13}$/.test(idNum.replace(/\s/g,''))){el.innerHTML='<span style="color:#f97316">SA ID must be 13 digits</span>';return;}
+  el.innerHTML='<span style="color:#64748b">Verifying...</span>';
+  var d=await api('/api/clinic/verify-identity',{method:'POST',body:JSON.stringify({patient_id:patientId,id_number:idNum})});
+  if(!d){el.innerHTML='<span style="color:#ef4444">Server error</span>';return;}
+  if(d.duplicate_warning){
+    el.innerHTML='<span style="color:#f97316">⚠️ This ID is already linked to another patient ('+d.duplicate_warning.existing_patient_id.slice(0,8)+'…). Verified by '+d.duplicate_warning.verified_by+' at '+(d.duplicate_warning.facility||'unknown facility')+'.</span><br><span style="color:#94a3b8;font-size:10px">This may indicate a duplicate registration. Check with the patient.</span>';
+  }else if(d.success){
+    el.innerHTML='<span style="color:#22c55e">✅ Identity verified. ID on file.</span>';
+    document.getElementById('verify-id-input').value='';
+  }else{
+    el.innerHTML='<span style="color:#ef4444">Failed: '+(d?.error||'unknown')+'</span>';
+  }
+}
+
+async function unlinkPatient(patientId){
+  if(!confirm('This will unlink the current phone from this patient record.\n\nThe patient will need to re-register on their next message.\n\nContinue?'))return;
+  var reason=prompt('Reason for unlinking (e.g. "wrong BZ code used"):','Wrong BZ code used during phone linking');
+  if(reason===null)return;
+  var d=await api('/api/clinic/unlink',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({patient_id:patientId,reason:reason})});
+  if(d&&d.success){
+    document.getElementById('lookup-result').innerHTML='<div class="result" style="text-align:center;color:#22c55e;padding:20px"><div style="font-size:18px;margin-bottom:8px">✅</div><div style="font-size:13px">Phone unlinked successfully.</div><div style="font-size:11px;color:#64748b;margin-top:4px">Next message from this phone will start a fresh session.</div></div>';
+    stopLookupRefresh();
+  }else{
+    alert('Failed to unlink: '+(d?.error||'unknown error'));
+  }
+}
+
+async function addToQueue(patientId,name,queueType){
+  const q=document.getElementById('lookup-input').value.trim();
+  const phone=q&&!q.toUpperCase().startsWith('BZ-')?q.replace(/^0/,'27'):null;
+  await api('/api/clinic/queue',{method:'POST',body:JSON.stringify({
+    patient_id:patientId,
+    patient_phone:phone,
+    patient_name:name,
+    queue_type:queueType,
+    added_by:UNAME
+  })});
+  refresh();
+  doLookup();
+}
+
+function printExpected(){
+  // Pull rows from the table already loaded in the browser — works offline / during load shedding
+  const tbody=document.querySelector('#tab-expected .exp-table tbody');
+  if(!tbody){alert('No patient data loaded yet. Refresh the dashboard first.');return;}
+  const rows=Array.from(tbody.querySelectorAll('tr'));
+  if(rows.length===0||rows[0].cells.length<2){alert('No patients to print.');return;}
+
+  // Sort rows RED → ORANGE → YELLOW → GREEN by reading the triage badge text
+  const order={RED:0,ORANGE:1,YELLOW:2,GREEN:3};
+  rows.sort((a,b)=>{
+    const getLevel=r=>{const t=(r.cells[4]||{}).textContent||'';return Object.keys(order).find(k=>t.includes(k))||'GREEN';};
+    return (order[getLevel(a)]||3)-(order[getLevel(b)]||3);
+  });
+
+  const colourMap={RED:'#dc2626',ORANGE:'#ea580c',YELLOW:'#ca8a04',GREEN:'#16a34a'};
+  const bgMap={RED:'#fff0f0',ORANGE:'#fff7ed',YELLOW:'#fefce8',GREEN:'#f0fdf4'};
+
+  const tableHTML=rows.map(r=>{
+    const level=Object.keys(order).find(k=>(r.cells[4]||{}).textContent?.includes(k))||'GREEN';
+    const bg=bgMap[level]||'#fff';
+    const border=colourMap[level]||'#ccc';
+    const cells=Array.from(r.cells).map((td,i)=>{
+      const txt=td.textContent.trim().replace(/FAST-TRACK/,'').trim();
+      const style=i===4?'font-weight:700;color:'+border:i===0?'font-weight:600':'';
+      return '<td style="padding:5px 7px;border:1px solid #ddd;font-size:10px;'+style+'">'+txt+'</td>';
+    }).join('');
+    return '<tr style="background:'+bg+';border-left:3px solid '+border+'">'+cells+'</tr>';
+  }).join('');
+
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head>
+<title>BIZUSIZO Queue — ${new Date().toLocaleDateString('en-ZA')}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Arial,sans-serif;font-size:11px;padding:14px;color:#000}
+  h1{font-size:15px;margin-bottom:2px}
+  .sub{font-size:11px;color:#555;margin-bottom:10px}
+  .legend{display:flex;gap:16px;margin-bottom:10px;font-size:10px}
+  .leg{display:flex;align-items:center;gap:4px}
+  .dot{width:10px;height:10px;border-radius:50%}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;padding:5px 7px;background:#eee;border:1px solid #ccc;font-size:9px;text-transform:uppercase;letter-spacing:.04em}
+  td{vertical-align:top}
+  .footer{margin-top:12px;font-size:8px;color:#999;border-top:1px solid #ddd;padding-top:6px}
+  @media print{@page{size:landscape;margin:8mm}button{display:none}}
+</style>
+</head><body>
+<h1>🏥 BIZUSIZO — Patient Queue</h1>
+<div class="sub">${new Date().toLocaleDateString('en-ZA',{weekday:'long',year:'numeric',month:'long',day:'numeric'})} &nbsp;|&nbsp; Printed: ${new Date().toLocaleTimeString('en-ZA')} &nbsp;|&nbsp; ${UNAME}</div>
+<div class="legend">
+  <div class="leg"><div class="dot" style="background:#dc2626"></div> RED — Immediate</div>
+  <div class="leg"><div class="dot" style="background:#ea580c"></div> ORANGE — Urgent (Fast-Track)</div>
+  <div class="leg"><div class="dot" style="background:#ca8a04"></div> YELLOW — Soon</div>
+  <div class="leg"><div class="dot" style="background:#16a34a"></div> GREEN — Routine</div>
+</div>
+<table>
+  <thead><tr><th>#</th><th>Surname</th><th>Name</th><th>DOB</th><th>Sex</th><th>Triage</th><th>Symptoms</th><th>Chronic</th><th>File</th><th>Time</th></tr></thead>
+  <tbody>${rows.map((r,i)=>{
+    const level=Object.keys(order).find(k=>(r.cells[4]||{}).textContent?.includes(k))||'GREEN';
+    const bg=bgMap[level];const border=colourMap[level];
+    const cells=Array.from(r.cells).map((td,ci)=>{
+      const txt=td.textContent.trim().replace(/FAST-TRACK/,'').trim();
+      const style=ci===4?'font-weight:700;color:'+border:ci===0?'font-weight:600':'';
+      return '<td style="padding:5px 7px;border:1px solid #ddd;font-size:10px;'+style+'">'+txt+'</td>';
+    }).join('');
+    return '<tr style="background:'+bg+';border-left:3px solid '+border+'"><td style="padding:5px 7px;border:1px solid #ddd;font-size:10px;color:#666">'+(i+1)+'</td>'+cells+'</tr>';
+  }).join('')}</tbody>
+</table>
+<div class="footer">BIZUSIZO Clinic Queue Management &nbsp;|&nbsp; ${rows.length} patient(s) &nbsp;|&nbsp; Sort order: RED → ORANGE → YELLOW → GREEN &nbsp;|&nbsp; Print this list BEFORE load shedding starts</div>
+</body></html>`);
+  win.document.close();
+  win.print();
+}
+
+// ==================== ESCALATE TO HOSPITAL (#referral) ====================
+async function escalatePatient(id, name, triageLevel, symptoms, studyCode){
+  const inputStyle='width:100%;padding:6px 8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:12px;margin-bottom:6px';
+  const labelStyle='font-size:10px;color:#94a3b8;display:block;margin-bottom:2px';
+  const html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center" id="escalate-modal">
+    <div style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:24px;width:500px;max-height:90vh;overflow-y:auto">
+      <h3 style="font-size:16px;margin-bottom:4px;color:#ef4444">🚑 Escalate to Hospital</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px">Patient: <b>${name}</b> · Triage: <b>${triageLevel}</b></div>
+
+      <div style="font-size:11px;color:#94a3b8;font-weight:600;margin-bottom:6px">Transport method:</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button id="esc-amb-btn" onclick="document.getElementById('esc-transport').value='ambulance';this.style.background='rgba(239,68,68,.2)';this.style.borderColor='#ef4444';document.getElementById('esc-self-btn').style.background='rgba(30,41,59,.5)';document.getElementById('esc-self-btn').style.borderColor='#1e293b';document.getElementById('ems-helper-section').style.display='block'" style="flex:1;padding:10px;border-radius:6px;border:1px solid #1e293b;background:rgba(30,41,59,.5);color:#e2e8f0;font-size:12px;cursor:pointer">🚑 Ambulance (10177)</button>
+        <button id="esc-self-btn" onclick="document.getElementById('esc-transport').value='self_transport';this.style.background='rgba(34,197,94,.2)';this.style.borderColor='#22c55e';document.getElementById('esc-amb-btn').style.background='rgba(30,41,59,.5)';document.getElementById('esc-amb-btn').style.borderColor='#1e293b';document.getElementById('ems-helper-section').style.display='none'" style="flex:1;padding:10px;border-radius:6px;border:1px solid #1e293b;background:rgba(30,41,59,.5);color:#e2e8f0;font-size:12px;cursor:pointer">🚗 Self-transport</button>
+      </div>
+      <input type="hidden" id="esc-transport" value="">
+
+      <label style="${labelStyle}">Clinical reason for referral *</label>
+      <textarea id="esc-notes" rows="2" placeholder="e.g. Chest pain 8/10, diaphoretic, ECG shows ST elevation..." style="${inputStyle};resize:vertical">${symptoms||''}</textarea>
+
+      <label style="${labelStyle}">Destination hospital</label>
+      <input id="esc-hospital" placeholder="e.g. Tshwane District Hospital (or leave blank)" style="${inputStyle}">
+
+      <label style="${labelStyle}">Vitals at time of referral</label>
+      <input id="esc-vitals" placeholder="e.g. BP 180/110, HR 120, RR 24, SpO2 94%, GCS 15" style="${inputStyle}">
+
+      <label style="${labelStyle}">Interventions given before referral</label>
+      <input id="esc-interventions" placeholder="e.g. IV access, O2 via nasal cannula, Aspirin 300mg" style="${inputStyle}">
+
+      <!-- EMS Call Helper — only shows when ambulance selected -->
+      <div id="ems-helper-section" style="display:none;margin-top:12px;padding:12px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:8px">
+        <div style="font-size:12px;font-weight:600;color:#ef4444;margin-bottom:8px">📞 EMS Call Helper — Read this to 10177 dispatch</div>
+        <div style="font-size:10px;color:#64748b;margin-bottom:8px">Review and edit these fields based on YOUR clinical assessment. Then call 10177 and read them to the dispatcher.</div>
+        <div style="font-size:11px;color:#f87171;font-weight:600;margin-bottom:4px">Call: 10177 (Provincial EMS) or 084 124 (ER24)</div>
+        <div id="ems-script" style="font-size:11px;color:#e2e8f0;background:#0d1321;padding:10px;border-radius:6px;line-height:1.8;margin-top:6px">
+          <b>Facility:</b> <span contenteditable="true" style="border-bottom:1px dashed #475569;padding:0 4px">[will be filled on submit]</span><br>
+          <b>Patient:</b> ${name}<br>
+          <b>Triage:</b> ${triageLevel}<br>
+          <b>Complaint:</b> <span contenteditable="true" style="border-bottom:1px dashed #475569;padding:0 4px">${(symptoms||'').slice(0,100)}</span><br>
+          <b>Vitals:</b> <span contenteditable="true" style="border-bottom:1px dashed #475569;padding:0 4px">[enter above]</span><br>
+          <b>Nurse:</b> ${UNAME}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button onclick="submitEscalation('${id}','${studyCode||''}')" style="flex:1;padding:10px;border-radius:6px;border:none;background:#ef4444;color:white;font-size:13px;font-weight:600;cursor:pointer">Escalate Now</button>
+        <button onclick="document.getElementById('escalate-modal').remove()" style="padding:10px 16px;border-radius:6px;border:1px solid #1e293b;background:#111827;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+async function submitEscalation(id,studyCode){
+  const transport=document.getElementById('esc-transport').value;
+  if(!transport){alert('Please select a transport method.');return;}
+  const notes=document.getElementById('esc-notes').value.trim();
+  const hospital=document.getElementById('esc-hospital').value.trim();
+  const vitals=document.getElementById('esc-vitals').value.trim();
+  const interventions=document.getElementById('esc-interventions').value.trim();
+  if(!notes){alert('Please enter a clinical reason for the referral.');return;}
+
+  const fullNotes=[notes,vitals?'Vitals: '+vitals:'',interventions?'Interventions: '+interventions:''].filter(Boolean).join(' | ');
+
+  const el=document.getElementById('escalate-modal');
+  if(el)el.remove();
+
+  const res=await api('/api/clinic/queue/'+id+'/escalate',{
+    method:'PUT',
+    body:JSON.stringify({
+      transport_method:transport,
+      nurse_notes:fullNotes,
+      destination_hospital:hospital||null,
+      nurse_name:UNAME,
+      study_code:studyCode||null,
+    })
+  });
+
+  if(res&&res.success){
+    if(res.ems_call_helper){
+      // Show the final EMS call script for the nurse to read during the 10177 call
+      const f=res.ems_call_helper.fields;
+      const scriptLines=[
+        'Facility: '+(f.facility||''),
+        'Patient: '+(f.patient_name||'')+', '+(f.patient_sex||'')+', Age '+(f.patient_age||f.patient_dob||''),
+        'Triage: '+(f.triage_level||''),
+        'Complaint: '+(f.presenting_complaint||''),
+        'Nurse findings: '+(f.nurse_clinical_findings||''),
+        'Vitals: '+(vitals||'Not recorded'),
+        'Chronic: '+(f.chronic_conditions||'None'),
+        'Interventions: '+(interventions||'None'),
+        'Referral ID: '+(f.referral_id||''),
+        'Nurse: '+(f.nurse_on_duty||UNAME),
+        'Destination: '+(f.destination||'Nearest hospital'),
+      ].join('\n');
+      alert('✅ Patient escalated. Referral ID: '+res.referral_id+'\n\n📞 CALL 10177 NOW and read:\n━━━━━━━━━━━━━━━━━━━━\n'+scriptLines+'\n━━━━━━━━━━━━━━━━━━━━\n\n'+res.ems_call_helper.instructions);
+    } else {
+      alert('✅ Patient escalated (self-transport). Referral ID: '+res.referral_id+'\n\nReferral summary sent to patient on WhatsApp.');
+    }
+    refresh();
+  } else {
+    alert('Failed to escalate. Please try again or refer manually.');
+  }
+}
+
+// ==================== REFER TO DOCTOR (intra-clinic) ====================
+async function referToDoctor(id, name, triageLevel, symptoms){
+  const reason = prompt(
+    '👨‍⚕️ REFER TO DOCTOR\n\n' +
+    'Patient: ' + name + '\n' +
+    'Triage: ' + triageLevel + '\n' +
+    'Symptoms: ' + (symptoms || 'Not recorded') + '\n\n' +
+    'Why does this patient need the doctor?\n' +
+    '(Brief clinical reason — this will be shared with the doctor and patient):', ''
+  );
+  if(!reason) return;
+
+  const doctorName = prompt('Doctor name (or leave blank if unknown):', '');
+
+  const res = await api('/api/clinic/queue/'+id+'/refer-to-doctor', {
+    method: 'PUT',
+    body: JSON.stringify({
+      clinical_reason: reason,
+      nurse_name: UNAME,
+      doctor_name: doctorName || null,
+    })
+  });
+
+  if(res && res.success){
+    if(res.doctor_available_today){
+      alert('✅ ' + name + ' referred to ' + (res.doctor || 'doctor') + '.\n\nPatient moved to doctor queue.\nWhatsApp notification sent.');
+    } else {
+      alert('📅 Doctor not available today.\n\n' + name + ' has been scheduled for:\n' + (res.next_doctor_day || 'Next available day') + '\n\nPatient notified on WhatsApp.\nReminder will be sent the day before.');
+    }
+    refresh();
+  } else {
+    alert('Failed to refer. Please try again.');
+  }
+}
+
+// ==================== DOCTOR QUEUE ====================
+async function refreshDoctorQueue(){
+  const d=await api('/api/clinic/doctor-queue');
+  if(!d)return;
+
+  const badge=document.getElementById('doctor-badge');
+  const total=d.total||0;
+  badge.textContent=total;
+  badge.style.display=total>0?'inline-block':'none';
+  document.getElementById('doctor-count').textContent=total+' patient'+(total!==1?'s':'')+' today';
+
+  const list=document.getElementById('doctor-queue-list');
+
+  // Combine queue patients (waiting today) and referrals
+  const patients=[...(d.queue||[]),...(d.referrals||[]).filter(r=>!d.queue?.some(q=>q.id===r.queue_entry_id))];
+
+  if(patients.length===0){
+    list.innerHTML='<div style="text-align:center;padding:40px;color:#475569;font-size:13px"><div style="font-size:32px;margin-bottom:8px">👨‍⚕️</div>No patients referred to doctor today.<br><span style="font-size:11px">Nurses can refer patients using the purple "Doctor" button on the queue board.</span></div>';
+    return;
+  }
+
+  list.innerHTML=patients.map(p=>{
+    const isReferral=p.clinical_reason!==undefined;
+    const name=maskName(p.patient_name,p.study_code);
+    const reason=isReferral?(p.clinical_reason||''):(p.notes||'').replace(/.*DOCTOR REFERRAL[^:]*:/,'').split('.')[0].trim();
+    const referredBy=isReferral?(p.referred_by||'nurse'):'nurse';
+    const status=isReferral?p.status:(p.status||'waiting');
+    const waitMin=p.checked_in_at?Math.round((Date.now()-new Date(p.checked_in_at).getTime())/60000):(p.created_at?Math.round((Date.now()-new Date(p.created_at).getTime())/60000):0);
+    const id=isReferral?p.id:p.id;
+    const triageLevel=p.triage_level||'YELLOW';
+
+    const statusBadge=status==='waiting'||status==='waiting_for_doctor'
+      ?'<span style="color:#f59e0b;font-weight:600">⏳ Waiting</span>'
+      :status==='in_progress'
+      ?'<span style="color:#3b82f6;font-weight:600">🔵 In Progress</span>'
+      :status==='completed'
+      ?'<span style="color:#22c55e;font-weight:600">✅ Completed</span>'
+      :'<span style="color:#94a3b8">'+status+'</span>';
+
+    const actionBtns=status==='completed'?''
+      :'<div style="display:flex;gap:6px;margin-top:8px">'
+      +'<button class="btn" style="color:#3b82f6;border-color:rgba(59,130,246,.3);background:rgba(59,130,246,.06);font-size:11px;padding:6px 12px" onclick="startDoctorConsult(\''+id+'\','+isReferral+')">🔵 Start Consult</button>'
+      +'<button class="btn" style="color:#22c55e;border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.06);font-size:11px;padding:6px 12px" onclick="completeDoctorConsult(\''+id+'\',\''+name.replace(/'/g,"\\\\'")+'\','+isReferral+')">✅ Complete</button>'
+      +'<button class="btn" style="color:#ef4444;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.06);font-size:11px;padding:6px 12px" onclick="escalateFromDoctor(\''+id+'\',\''+name.replace(/'/g,"\\\\'")+'\',\''+triageLevel+'\','+isReferral+')">🏥 Refer to Hospital</button>'
+      +'</div>';
+
+    return '<div class="p-card" style="border-left:3px solid #7c3aed;background:#0c1222;border:1px solid #1a2236;border-radius:10px;padding:14px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start">'
+      +'<div>'
+      +'<div style="font-size:14px;font-weight:600;color:#e2e8f0">'+name+(p.study_code?' <span style="font-size:10px;color:#7c3aed;background:rgba(124,58,237,.1);padding:1px 6px;border-radius:3px">'+p.study_code+'</span>':'')+'</div>'
+      +'<div style="font-size:11px;color:#94a3b8;margin-top:2px">'+triageBadge(triageLevel)+' · Referred by '+referredBy+' · Waiting '+waitMin+' min</div>'
+      +'</div>'
+      +'<div>'+statusBadge+'</div>'
+      +'</div>'
+      +(reason?'<div style="margin-top:8px;padding:8px 10px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:6px;font-size:12px;color:#c4b5fd"><strong>Nurse\'s reason:</strong> '+reason+'</div>':'')
+      +(p.symptoms_summary?'<div style="margin-top:6px;font-size:11px;color:#64748b">Symptoms: '+p.symptoms_summary+'</div>':'')
+      +actionBtns
+      +'</div>';
+  }).join('');
+}
+
+async function startDoctorConsult(id,isReferral){
+  if(isReferral){
+    await api('/api/clinic/doctor-referral/'+id+'/complete',{method:'PUT',body:JSON.stringify({status:'in_progress'})});
+  }
+  refreshDoctorQueue();
+}
+
+async function completeDoctorConsult(id,name,isReferral){
+  const notes=prompt('Doctor assessment notes for '+name+':\n\n(Brief summary of findings and plan)','');
+  if(notes===null)return;
+
+  const outcome=prompt('Outcome:\n1 — Assessed (no further action)\n2 — Prescribed medication\n3 — Refer to hospital\n4 — Follow-up needed\n\nEnter 1-4:','1');
+  if(!outcome)return;
+
+  const outcomes={1:'assessed',2:'prescribed',3:'referred_hospital',4:'follow_up'};
+
+  if(isReferral){
+    await api('/api/clinic/doctor-referral/'+id+'/complete',{method:'PUT',body:JSON.stringify({
+      doctor_name:UNAME,
+      doctor_notes:notes,
+      outcome:outcomes[outcome]||'assessed',
+    })});
+  } else {
+    await api('/api/clinic/queue/'+id+'/complete',{method:'PUT',body:JSON.stringify({
+      nurse_name:UNAME,
+      notes:'DOCTOR ASSESSMENT: '+notes+' | Outcome: '+(outcomes[outcome]||'assessed'),
+    })});
+  }
+
+  alert('✅ '+name+' — doctor assessment complete.');
+  refreshDoctorQueue();
+}
+
+async function escalateFromDoctor(id,name,triageLevel,isReferral){
+  // Doctor can refer to hospital OR specialist
+  const referType=prompt(
+    'DOCTOR REFERRAL\n\nPatient: '+name+'\n\nRefer to:\n'+
+    '1 — Hospital (emergency / admission)\n'+
+    '2 — Psychiatrist / Psychiatric nurse\n'+
+    '3 — Psychologist (outpatient)\n'+
+    '4 — Specialist (other)\n'+
+    '5 — Cancel\n\nEnter number:','');
+  if(!referType||referType==='5')return;
+
+  const referLabels={'1':'Hospital','2':'Psychiatry','3':'Psychology','4':'Specialist'};
+  const referDest=referLabels[referType]||'Specialist';
+
+  if(referType==='1'){
+    // Hospital — use full escalation flow with EMS call helper
+    if(isReferral){
+      const d=await api('/api/clinic/doctor-queue');
+      const ref=(d.referrals||[]).find(r=>r.id==id);
+      if(ref&&ref.queue_entry_id){
+        escalatePatient(ref.queue_entry_id,name,triageLevel,'Doctor escalation','');
+      }else{alert('Cannot find queue entry. Escalate manually.');}
+    }else{
+      escalatePatient(id,name,triageLevel,'Doctor escalation','');
+    }
+  }else{
+    // Specialist referral — simpler flow, no EMS needed
+    const reason=prompt('Clinical reason for '+referDest+' referral:','');
+    if(!reason)return;
+    const destination=prompt(referDest+' name or facility (or leave blank):','');
+
+    // Get queue entry ID
+    let queueId=id;
+    if(isReferral){
+      const d=await api('/api/clinic/doctor-queue');
+      const ref=(d.referrals||[]).find(r=>r.id==id);
+      if(ref&&ref.queue_entry_id)queueId=ref.queue_entry_id;
+    }
+
+    const res=await api('/api/clinic/queue/'+queueId+'/escalate',{
+      method:'PUT',
+      body:JSON.stringify({
+        transport_method:'self_transport',
+        nurse_notes:'DOCTOR REFERRAL to '+referDest+': '+reason,
+        destination_hospital:destination||referDest+' (to be arranged)',
+        nurse_name:UNAME,
+        study_code:null,
+      })
+    });
+
+    if(res&&res.success){
+      alert('✅ '+name+' referred to '+referDest+'.\n\nReferral ID: '+(res.referral_id||'pending')+'\n\nReason: '+reason+(destination?'\nDestination: '+destination:''));
+      refreshDoctorQueue();
+    }else{
+      alert('Failed to create referral. Try again.');
+    }
+  }
+}
+
+// Auto-refresh doctor queue when tab is shown
+const origShowTab=showTab;
+showTab=function(name,el){
+  origShowTab(name,el);
+  if(name==='doctor')refreshDoctorQueue();
+};
+
+// ==================== DOCTOR BREAK ====================
+function doctorBreak(){
+  const html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center" id="break-modal">
+    <div style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:24px;width:380px">
+      <h3 style="font-size:16px;margin-bottom:4px;color:#f97316">☕ Doctor Break</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px">All remaining appointments will be shifted and patients notified on WhatsApp.</div>
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">Break duration:</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="btn" id="brk-15" onclick="selectBreakDuration(15)" style="flex:1;padding:10px;font-size:13px">15 min</button>
+        <button class="btn" id="brk-30" onclick="selectBreakDuration(30)" style="flex:1;padding:10px;font-size:13px">30 min</button>
+        <button class="btn" id="brk-45" onclick="selectBreakDuration(45)" style="flex:1;padding:10px;font-size:13px">45 min</button>
+        <button class="btn" id="brk-60" onclick="selectBreakDuration(60)" style="flex:1;padding:10px;font-size:13px">1 hour</button>
+      </div>
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:4px">Reason (optional):</div>
+      <select id="break-reason" style="width:100%;padding:8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:12px;margin-bottom:16px">
+        <option value="tea_break">Tea / lunch break</option>
+        <option value="emergency">Called to emergency</option>
+        <option value="admin">Administrative task</option>
+        <option value="other">Other</option>
+      </select>
+      <div style="display:flex;gap:8px">
+        <button id="break-submit" onclick="submitDoctorBreak()" style="flex:1;padding:10px;border-radius:6px;border:none;background:#475569;color:white;font-size:13px;font-weight:600;cursor:not-allowed;opacity:.5" disabled>Select duration</button>
+        <button onclick="document.getElementById('break-modal').remove()" style="padding:10px 16px;border-radius:6px;border:1px solid #1e293b;background:#111827;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+let _breakDuration=0;
+function selectBreakDuration(mins){
+  _breakDuration=mins;
+  [15,30,45,60].forEach(m=>{
+    const el=document.getElementById('brk-'+m);
+    if(m===mins){el.style.background='rgba(249,115,22,.2)';el.style.borderColor='#f97316';el.style.color='#f97316';}
+    else{el.style.background='';el.style.borderColor='';el.style.color='';}
+  });
+  const btn=document.getElementById('break-submit');
+  btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';
+  btn.style.background='#f97316';btn.textContent='Start '+mins+' min break';
+}
+
+async function submitDoctorBreak(){
+  if(!_breakDuration)return;
+  const reason=document.getElementById('break-reason').value;
+  const el=document.getElementById('break-modal');
+  if(el)el.remove();
+
+  const res=await api('/api/clinic/doctor-break',{method:'PUT',body:JSON.stringify({
+    duration_minutes:_breakDuration,
+    reason:reason,
+    doctor_name:UNAME
+  })});
+
+  if(res&&res.success){
+    const buffer=res.buffer_minutes||0;
+    const effective=res.effective_shift||0;
+    if(res.affected>0){
+      const shifts=res.shifts.map(s=>s.patient+': '+s.old_slot+' → '+s.new_slot).join('\n');
+      alert('☕ Break started ('+_breakDuration+' min).\n\n'+(buffer>0?'Doctor was '+buffer+' min ahead of schedule.\nEffective shift: '+effective+' min (buffer absorbed '+(_breakDuration-effective)+' min).\n\n':'')+res.affected+' appointment'+(res.affected!==1?'s':'')+' shifted:\n'+shifts+'\n\nPatients have been notified on WhatsApp.');
+    }else{
+      alert('☕ Break started ('+_breakDuration+' min).\n\n'+(buffer>0?'Doctor is '+buffer+' min ahead of schedule — break fully absorbed, no appointments shifted.':'No remaining appointments to shift.'));
+    }
+    _breakDuration=0;
+    refreshDoctorQueue();
+  }else{
+    alert('Failed to start break. Try again.');
+  }
+}
+
+// ==================== RECEPTION: MARK PATIENT ARRIVED ====================
+async function markArrived(id){
+  const res=await api('/api/clinic/queue/'+id+'/mark-arrived',{method:'PUT',body:JSON.stringify({marked_by:UNAME})});
+  if(res&&res.success){
+    refresh();
+  }else{
+    alert('Failed to mark arrival. Try again.');
+  }
+}
+
+// ==================== NURSE TRIAGE FEEDBACK (#4) ====================
+async function nurseFeedback(id,verdict){
+  if(verdict==='agree'){
+    const res=await api('/api/clinic/queue/'+id+'/feedback',{method:'PUT',body:JSON.stringify({
+      verdict:'agree',nurse_triage_level:null,nurse_name:UNAME
+    })});
+    if(res&&res.success){alert('Triage confirmed. Thank you!');refresh();}
+    return;
+  }
+  // DISAGREE → open override modal
+  openOverrideModal(id);
+}
+
+function openOverrideModal(queueId){
+  const levels=['RED','ORANGE','YELLOW','GREEN'];
+  const colors={RED:'#ef4444',ORANGE:'#f97316',YELLOW:'#eab308',GREEN:'#22c55e'};
+  const bgs={RED:'rgba(239,68,68,.12)',ORANGE:'rgba(249,115,22,.12)',YELLOW:'rgba(234,179,8,.12)',GREEN:'rgba(34,197,94,.12)'};
+  const reasons=['Under-triaged — patient is more urgent','Over-triaged — patient is less urgent','Discriminator missed by AI','Patient condition changed since triage','Clinical judgement — vitals contradict AI','Other'];
+
+  const html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center" id="override-modal">
+    <div style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:24px;width:420px;max-height:90vh;overflow-y:auto">
+      <h3 style="font-size:16px;margin-bottom:4px;color:#e2e8f0">🔄 Nurse Triage Override</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px">Reclassify this patient's triage level. Your clinical judgement takes precedence over AI.</div>
+
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;font-weight:600">Select correct triage level:</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        ${levels.map(l=>`<button id="ovr-${l}" onclick="selectOverrideLevel('${l}')" style="padding:12px;border-radius:8px;border:2px solid ${colors[l]}33;background:${bgs[l]};color:${colors[l]};font-size:14px;font-weight:700;cursor:pointer;transition:all .15s">${l}</button>`).join('')}
+      </div>
+
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;font-weight:600">Reason for override:</div>
+      <select id="ovr-reason" style="width:100%;padding:8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:12px;margin-bottom:10px" onchange="document.getElementById('ovr-reason-other').style.display=this.value==='Other'?'block':'none'">
+        <option value="">Select reason...</option>
+        ${reasons.map(r=>`<option value="${r}">${r}</option>`).join('')}
+      </select>
+      <input id="ovr-reason-other" type="text" placeholder="Describe reason..." style="display:none;width:100%;padding:8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:12px;margin-bottom:10px">
+
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;font-weight:600">Clinical notes (optional):</div>
+      <textarea id="ovr-notes" rows="2" placeholder="e.g. BP 180/110, patient diaphoretic..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:12px;margin-bottom:16px;resize:vertical"></textarea>
+
+      <div style="display:flex;gap:8px">
+        <button id="ovr-submit" onclick="submitOverride('${queueId}')" style="flex:1;padding:10px;border-radius:6px;border:none;background:#475569;color:white;font-size:13px;font-weight:600;cursor:not-allowed;opacity:.5" disabled>Select a level</button>
+        <button onclick="document.getElementById('override-modal').remove()" style="padding:10px 16px;border-radius:6px;border:1px solid #1e293b;background:#111827;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+let _selectedOverrideLevel=null;
+function selectOverrideLevel(level){
+  _selectedOverrideLevel=level;
+  const colors={RED:'#ef4444',ORANGE:'#f97316',YELLOW:'#eab308',GREEN:'#22c55e'};
+  ['RED','ORANGE','YELLOW','GREEN'].forEach(l=>{
+    const el=document.getElementById('ovr-'+l);
+    if(l===level){el.style.borderWidth='3px';el.style.transform='scale(1.05)';el.style.boxShadow='0 0 12px '+colors[l]+'44';}
+    else{el.style.borderWidth='2px';el.style.transform='scale(1)';el.style.boxShadow='none';}
+  });
+  const btn=document.getElementById('ovr-submit');
+  btn.disabled=false;btn.style.cursor='pointer';btn.style.opacity='1';
+  btn.style.background=colors[level];btn.textContent='Override to '+level;
+}
+
+async function submitOverride(queueId){
+  if(!_selectedOverrideLevel)return;
+  const reason=document.getElementById('ovr-reason').value==='Other'
+    ?document.getElementById('ovr-reason-other').value.trim()
+    :document.getElementById('ovr-reason').value;
+  const notes=document.getElementById('ovr-notes').value.trim();
+  if(!reason){alert('Please select a reason for the override.');return;}
+
+  const el=document.getElementById('override-modal');
+  if(el)el.remove();
+
+  const res=await api('/api/clinic/queue/'+queueId+'/feedback',{method:'PUT',body:JSON.stringify({
+    verdict:'disagree',
+    nurse_triage_level:_selectedOverrideLevel,
+    nurse_name:UNAME,
+    override_reason:reason,
+    override_notes:notes
+  })});
+  if(res&&res.success){
+    alert('Triage overridden to '+_selectedOverrideLevel+'. Queue updated.');
+    _selectedOverrideLevel=null;
+    refresh();
+  }
+}
+
+// ==================== TEWS CALCULATOR (DoH SATS-aligned) ====================
+// Triage Early Warning Score: 7 parameters, score 0-17
+// TEWS ≥7 = RED, 5-6 = ORANGE, 3-4 = YELLOW, 0-2 = GREEN
+function openTEWS(queueId, patientName, currentLevel){
+  const html=`<div style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:flex;align-items:center;justify-content:center" id="tews-modal">
+    <div style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:24px;width:440px;max-height:90vh;overflow-y:auto">
+      <h3 style="font-size:16px;margin-bottom:4px;color:#e2e8f0">📊 TEWS Calculator</h3>
+      <div style="font-size:12px;color:#64748b;margin-bottom:16px">Patient: <b>${patientName}</b> · Current: <span style="font-weight:600">${currentLevel}</span></div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        <div>
+          <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px">Respiratory Rate (/min)</label>
+          <input type="number" id="tews-rr" placeholder="e.g. 18" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:13px" oninput="calcTEWS()">
+        </div>
+        <div>
+          <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px">Heart Rate (bpm)</label>
+          <input type="number" id="tews-hr" placeholder="e.g. 80" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:13px" oninput="calcTEWS()">
+        </div>
+        <div>
+          <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px">Systolic BP (mmHg)</label>
+          <input type="number" id="tews-sbp" placeholder="e.g. 120" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:13px" oninput="calcTEWS()">
+        </div>
+        <div>
+          <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px">Temperature (°C)</label>
+          <input type="number" id="tews-temp" step="0.1" placeholder="e.g. 37.0" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:13px" oninput="calcTEWS()">
+        </div>
+      </div>
+      
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px">AVPU (Level of Consciousness)</label>
+        <select id="tews-avpu" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:13px" onchange="calcTEWS()">
+          <option value="">Select...</option>
+          <option value="A">A — Alert</option>
+          <option value="V">V — Responds to Voice</option>
+          <option value="P">P — Responds to Pain</option>
+          <option value="U">U — Unresponsive</option>
+        </select>
+      </div>
+      
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px">Mobility</label>
+        <select id="tews-mobility" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:13px" onchange="calcTEWS()">
+          <option value="">Select...</option>
+          <option value="walking">Walking</option>
+          <option value="wheelchair">Wheelchair / assisted</option>
+          <option value="stretcher">Stretcher / immobile</option>
+        </select>
+      </div>
+      
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px">Trauma</label>
+        <select id="tews-trauma" style="width:100%;padding:6px 8px;border-radius:6px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:13px" onchange="calcTEWS()">
+          <option value="no">No trauma</option>
+          <option value="yes">Trauma present</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:6px">Discriminators (tick all that apply):</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="chest_pain" onchange="calcTEWS()"> Chest pain</label>
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="severe_pain" onchange="calcTEWS()"> Severe pain</label>
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="haemorrhage" onchange="calcTEWS()"> Active haemorrhage</label>
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="seizure" onchange="calcTEWS()"> Seizure / convulsion</label>
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="overdose" onchange="calcTEWS()"> Overdose / poisoning</label>
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="burns" onchange="calcTEWS()"> Burns</label>
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="stroke" onchange="calcTEWS()"> Stroke signs</label>
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="hypoglycaemia" onchange="calcTEWS()"> Hypoglycaemia</label>
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="shortness_of_breath" onchange="calcTEWS()"> Shortness of breath</label>
+          <label style="font-size:11px;color:#cbd5e1;cursor:pointer"><input type="checkbox" class="tews-disc" value="abdominal_pain" onchange="calcTEWS()"> Acute abdominal pain</label>
+        </div>
+      </div>
+      
+      <div id="tews-result" style="background:#0d1321;border:1px solid #1e293b;border-radius:8px;padding:12px;margin-bottom:16px;text-align:center">
+        <div style="font-size:11px;color:#64748b">Enter vitals to calculate TEWS</div>
+      </div>
+
+      <div style="margin-bottom:12px;padding:10px;background:rgba(6,182,212,.05);border:1px solid rgba(6,182,212,.15);border-radius:8px">
+        <div style="font-size:11px;font-weight:600;color:#06b6d4;margin-bottom:6px">📋 Entry Attribution</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <label style="font-size:10px;color:#64748b;display:block;margin-bottom:2px">Your role</label>
+            <select id="tews-role" style="width:100%;padding:5px;border-radius:4px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:11px">
+              <option value="nurse">Nurse</option>
+              <option value="clerk">Clerk</option>
+              <option value="data_capturer">Data Capturer</option>
+              <option value="facility_manager">Facility Manager</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:10px;color:#64748b;display:block;margin-bottom:2px">Entry type</label>
+            <select id="tews-retro" style="width:100%;padding:5px;border-radius:4px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:11px" onchange="document.getElementById('tews-orig-time-wrap').style.display=this.value==='yes'?'block':'none'">
+              <option value="no">Real-time (at bedside)</option>
+              <option value="yes">Retrospective (from paper)</option>
+            </select>
+          </div>
+        </div>
+        <div id="tews-orig-time-wrap" style="display:none;margin-top:6px">
+          <label style="font-size:10px;color:#64748b;display:block;margin-bottom:2px">Original assessment time (from paper register)</label>
+          <input type="datetime-local" id="tews-orig-time" style="width:100%;padding:5px;border-radius:4px;border:1px solid #1e293b;background:#0d1321;color:#e2e8f0;font-size:11px">
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:8px">
+        <button onclick="submitTEWS('${queueId}')" id="tews-submit-btn" style="flex:1;padding:10px;border-radius:6px;border:none;background:#06b6d4;color:white;font-size:13px;font-weight:600;cursor:pointer" disabled>Save TEWS Score</button>
+        <button onclick="document.getElementById('tews-modal').remove()" style="padding:10px 16px;border-radius:6px;border:1px solid #1e293b;background:#111827;color:#94a3b8;font-size:13px;cursor:pointer">Cancel</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend',html);
+}
+
+function calcTEWS(){
+  const rr=parseInt(document.getElementById('tews-rr').value)||0;
+  const hr=parseInt(document.getElementById('tews-hr').value)||0;
+  const sbp=parseInt(document.getElementById('tews-sbp').value)||0;
+  const temp=parseFloat(document.getElementById('tews-temp').value)||0;
+  const avpu=document.getElementById('tews-avpu').value;
+  const mobility=document.getElementById('tews-mobility').value;
+  const trauma=document.getElementById('tews-trauma').value;
+  const discs=[...document.querySelectorAll('.tews-disc:checked')].map(c=>c.value);
+  
+  if(!rr&&!hr&&!sbp&&!avpu)return;
+  
+  let score=0;
+  // RR scoring
+  if(rr<9)score+=3; else if(rr<=14)score+=0; else if(rr<=20)score+=1; else if(rr<=29)score+=2; else score+=3;
+  // HR scoring
+  if(hr<41)score+=3; else if(hr<=50)score+=1; else if(hr<=100)score+=0; else if(hr<=110)score+=1; else if(hr<=129)score+=2; else score+=3;
+  // SBP scoring
+  if(sbp<71)score+=3; else if(sbp<=80)score+=2; else if(sbp<=100)score+=1; else if(sbp<=199)score+=0; else score+=2;
+  // Temp scoring
+  if(temp>0){if(temp<35)score+=2; else if(temp<=38.4)score+=0; else score+=2;}
+  // AVPU scoring
+  if(avpu==='A')score+=0; else if(avpu==='V')score+=1; else if(avpu==='P')score+=2; else if(avpu==='U')score+=3;
+  // Mobility
+  if(mobility==='walking')score+=0; else if(mobility==='wheelchair')score+=1; else if(mobility==='stretcher')score+=2;
+  // Trauma
+  if(trauma==='yes')score+=1;
+  
+  // Determine SATS colour from TEWS
+  let colour='GREEN',colHex='#22c55e';
+  if(score>=7){colour='RED';colHex='#ef4444';}
+  else if(score>=5){colour='ORANGE';colHex='#f97316';}
+  else if(score>=3){colour='YELLOW';colHex='#eab308';}
+  
+  // Discriminator upgrade: certain discriminators force at least ORANGE
+  const orangeDiscs=['chest_pain','severe_pain','haemorrhage','seizure','overdose','burns','stroke','hypoglycaemia','shortness_of_breath','abdominal_pain'];
+  if(discs.some(d=>orangeDiscs.includes(d))&&score<5){
+    colour='ORANGE';colHex='#f97316';
+  }
+  // Critical discriminators force RED
+  const redDiscs=['seizure','haemorrhage'];
+  if(discs.some(d=>redDiscs.includes(d))&&score<7){
+    colour='RED';colHex='#ef4444';
+  }
+  
+  const el=document.getElementById('tews-result');
+  el.innerHTML='<div style="font-size:28px;font-weight:700;color:'+colHex+'">TEWS: '+score+'/17</div><div style="font-size:14px;font-weight:600;color:'+colHex+';margin-top:4px">'+colour+'</div>'+(discs.length>0?'<div style="font-size:10px;color:#64748b;margin-top:4px">Discriminators: '+discs.join(', ')+'</div>':'');
+  
+  document.getElementById('tews-submit-btn').disabled=false;
+  document.getElementById('tews-submit-btn').dataset.score=score;
+  document.getElementById('tews-submit-btn').dataset.colour=colour;
+  document.getElementById('tews-submit-btn').dataset.discs=JSON.stringify(discs);
+}
+
+async function submitTEWS(queueId){
+  const btn=document.getElementById('tews-submit-btn');
+  const score=parseInt(btn.dataset.score)||0;
+  const colour=btn.dataset.colour||'GREEN';
+  const discs=JSON.parse(btn.dataset.discs||'[]');
+  
+  const vitals={
+    rr:document.getElementById('tews-rr').value||null,
+    hr:document.getElementById('tews-hr').value||null,
+    sbp:document.getElementById('tews-sbp').value||null,
+    temp:document.getElementById('tews-temp').value||null,
+    avpu:document.getElementById('tews-avpu').value||null,
+    mobility:document.getElementById('tews-mobility').value||null,
+    trauma:document.getElementById('tews-trauma').value||null,
+  };
+
+  const role=document.getElementById('tews-role').value;
+  const isRetro=document.getElementById('tews-retro').value==='yes';
+  const origTime=document.getElementById('tews-orig-time').value||null;
+  
+  const el=document.getElementById('tews-modal');
+  if(el)el.remove();
+  
+  const res=await api('/api/clinic/queue/'+queueId+'/tews',{method:'PUT',body:JSON.stringify({
+    tews_score:score,
+    tews_colour:colour,
+    discriminators:discs,
+    vitals,
+    nurse_name:UNAME,
+    entered_by_role:role,
+    is_retrospective:isRetro,
+    original_assessment_time:origTime
+  })});
+  
+  if(res&&res.success){
+    alert('TEWS '+score+' ('+colour+') saved successfully.');
+    refresh();
+  }else{
+    alert('Failed to save TEWS score.');
+  }
+}
+
+// ==================== WALK-IN REGISTRATION ====================
+async function registerWalkIn(queueType){
+  const name=document.getElementById('wi-name').value.trim();
+  const surname=document.getElementById('wi-surname').value.trim();
+  const dob=document.getElementById('wi-dob').value.trim();
+  const sex=document.getElementById('wi-sex').value;
+  const phone=document.getElementById('wi-phone').value.trim();
+  const symptoms=document.getElementById('wi-symptoms').value.trim();
+  const el=document.getElementById('wi-result');
+
+  if(!name&&!surname){el.innerHTML='<span style="color:#ef4444">Please enter at least a name or surname.</span>';return;}
+
+  const patientName=(name&&surname)?name+' '+surname:name||surname;
+  const patientId='walkin_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+
+  const res=await api('/api/clinic/queue',{method:'POST',body:JSON.stringify({
+    patient_id:patientId,
+    patient_phone:phone?phone.replace(/^0/,'27'):null,
+    patient_name:patientName,
+    triage_level:'UNKNOWN',
+    symptoms_summary:symptoms||null,
+    queue_type:queueType,
+    added_by:UNAME,
+    notes:'Walk-in registration'+(dob?' | DOB: '+dob:'')+(sex?' | Sex: '+sex:'')
+  })});
+
+  if(res&&res.success){
+    const qtLabels={fast_track:'Fast-Track',routine:'Routine',walk_in:'Walk-In',preventative:'Screening'};
+    el.innerHTML='<span style="color:#22c55e">Added *'+patientName+'* to '+qtLabels[queueType]+' queue.</span>';
+    document.getElementById('wi-name').value='';
+    document.getElementById('wi-surname').value='';
+    document.getElementById('wi-dob').value='';
+    document.getElementById('wi-sex').value='';
+    document.getElementById('wi-phone').value='';
+    document.getElementById('wi-symptoms').value='';
+    refresh();
+  }else{
+    el.innerHTML='<span style="color:#ef4444">Failed to register patient. Try again.</span>';
+  }
+}
+
+// ==================== EMS REGISTRATION ====================
+async function registerEMS(){
+  const name=document.getElementById('wi-name').value.trim();
+  const surname=document.getElementById('wi-surname').value.trim();
+  const dob=document.getElementById('wi-dob').value.trim();
+  const sex=document.getElementById('wi-sex').value;
+  const phone=document.getElementById('wi-phone').value.trim();
+  const provider=document.getElementById('ems-provider').value;
+  const crewId=document.getElementById('ems-crew-id').value.trim();
+  const handoverLevel=document.getElementById('ems-handover-level').value;
+  const handoverNotes=document.getElementById('ems-handover-notes').value.trim();
+  const el=document.getElementById('wi-result');
+
+  if(!handoverLevel){el.innerHTML='<span style="color:#ef4444">Please select triage level on arrival.</span>';return;}
+
+  const patientName=(name&&surname)?name+' '+surname:name||surname||'EMS Patient';
+  const patientId='ems_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
+
+  // Map triage level to queue type
+  const queueMap={RED:'emergency',ORANGE:'acute',YELLOW:'general',GREEN:'general'};
+
+  const res=await api('/api/clinic/queue/ems',{method:'POST',body:JSON.stringify({
+    patient_id:patientId,
+    patient_phone:phone?phone.replace(/^0/,'27'):null,
+    patient_name:patientName,
+    triage_level:handoverLevel,
+    symptoms_summary:handoverNotes||'EMS arrival — awaiting clinical assessment',
+    queue_type:queueMap[handoverLevel]||'emergency',
+    ems_provider:provider||null,
+    ems_crew_id:crewId||null,
+    added_by:UNAME,
+    notes:'EMS ARRIVAL'+(provider?' via '+provider:'')+(crewId?' ('+crewId+')':'')+(dob?' | DOB: '+dob:'')+(sex?' | Sex: '+sex:'')
+  })});
+
+  if(res&&res.success){
+    el.innerHTML='<span style="color:#f97316;font-weight:600">🚑 EMS patient <b>'+patientName+'</b> registered as '+handoverLevel+'. Queue position: #'+(res.queue_entry?.position||'—')+'</span>';
+    // Clear EMS-specific fields
+    document.getElementById('ems-provider').value='';
+    document.getElementById('ems-crew-id').value='';
+    document.getElementById('ems-handover-level').value='';
+    document.getElementById('ems-handover-notes').value='';
+    document.getElementById('wi-name').value='';
+    document.getElementById('wi-surname').value='';
+    document.getElementById('wi-dob').value='';
+    document.getElementById('wi-sex').value='';
+    document.getElementById('wi-phone').value='';
+    refresh();
+  }else{
+    el.innerHTML='<span style="color:#ef4444">Failed to register EMS patient. Try again.</span>';
+  }
+}
+
+// CRITICAL WALK-IN — one-tap emergency, front of queue, no registration needed
+async function criticalWalkIn(){
+  const name=document.getElementById('wi-name').value.trim()||null;
+  const surname=document.getElementById('wi-surname').value.trim()||null;
+  const symptoms=document.getElementById('wi-symptoms').value.trim()||null;
+  const el=document.getElementById('wi-result');
+
+  const patientName=name?(name+(surname?' '+surname:'')):null;
+
+  if(!confirm('⚠️ CRITICAL EMERGENCY\n\nThis will add a RED patient at the FRONT of the emergency queue.\n\nPatient: '+(patientName||'Unknown')+'\n\nContinue?'))return;
+
+  const res=await api('/api/clinic/queue/critical',{method:'POST',body:JSON.stringify({
+    patient_name:patientName,
+    description:symptoms||'Critical walk-in — reception emergency button',
+    nurse_name:UNAME
+  })});
+
+  if(res&&res.success){
+    el.innerHTML='<span style="color:#ef4444;font-weight:700">🚨 CRITICAL patient added to front of emergency queue.</span>';
+    document.getElementById('wi-name').value='';
+    document.getElementById('wi-surname').value='';
+    document.getElementById('wi-symptoms').value='';
+    refresh();
+  }else{
+    el.innerHTML='<span style="color:#ef4444">Failed to register critical patient. Try again.</span>';
+  }
+}
+
+// ==================== TODAY'S SUMMARY ====================
+async function refreshSummary(){
+  const sd=await api('/api/clinic/queue/stats');
+  if(!sd)return;
+
+  // Get completed patients
+  const completedRes=await api('/api/clinic/queue?status=completed');
+  const completed=(completedRes&&completedRes.queue)||[];
+
+  // Summary stats
+  const totalSeen=sd.today_completed||0;
+  const totalCheckedIn=sd.today_total||0;
+  const totalNoShow=sd.today_no_show||0;
+  const stillWaiting=sd.total_waiting||0;
+  const inConsult=sd.total_in_consultation||0;
+  const avgF=sd.avg_wait_minutes?.fast_track;
+  const avgR=sd.avg_wait_minutes?.routine;
+  const avgW=sd.avg_wait_minutes?.walk_in;
+
+  document.getElementById('summary-stats').innerHTML=[
+    {l:'Total check-ins',v:totalCheckedIn,s:'today',c:'#e2e8f0'},
+    {l:'Completed',v:totalSeen,s:totalCheckedIn>0?Math.round(totalSeen/totalCheckedIn*100)+'% throughput':'—',c:'#22c55e'},
+    {l:'Still waiting',v:stillWaiting,s:'in queue',c:stillWaiting>10?'#ef4444':'#eab308'},
+    {l:'In consultation',v:inConsult,s:'right now',c:'#3b82f6'},
+    {l:'No-shows',v:totalNoShow,s:totalCheckedIn>0?Math.round(totalNoShow/totalCheckedIn*100)+'%':'—',c:totalNoShow>3?'#ef4444':'#64748b'},
+    {l:'Avg wait (fast)',v:avgF?avgF+'m':'—',s:'fast-track',c:'#ef4444'},
+    {l:'Avg wait (routine)',v:avgR?avgR+'m':'—',s:'routine',c:'#3b82f6'},
+    {l:'Avg wait (walk-in)',v:avgW?avgW+'m':'—',s:'walk-in',c:'#64748b'},
+  ].map(c=>'<div class="stat"><div class="stat-label">'+c.l+'</div><div class="stat-val" style="color:'+c.c+'">'+c.v+'</div><div class="stat-sub">'+c.s+'</div></div>').join('');
+
+  // Completed patients table
+  const cb=document.getElementById('completed-body');
+  if(completed.length===0){
+    cb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:#334155">No completed consultations yet today.</td></tr>';
+  }else{
+    cb.innerHTML=completed.sort((a,b)=>new Date(b.completed_at)-new Date(a.completed_at)).slice(0,50).map(p=>{
+      const waitMs=p.called_at&&p.checked_in_at?Math.round((new Date(p.called_at)-new Date(p.checked_in_at))/60000):null;
+      const qtLabels={fast_track:'Fast-Track',routine:'Routine',walk_in:'Walk-In',preventative:'Screening'};
+      return '<tr><td style="color:#e2e8f0">'+maskName(p.patient_name,p.study_code)+'</td><td>'+triageBadge(p.triage_level)+'</td><td style="color:#94a3b8">'+(qtLabels[p.queue_type]||p.queue_type)+'</td><td style="color:#94a3b8">'+(waitMs!==null?waitMs+' min':'—')+'</td><td style="color:#94a3b8">'+(p.assigned_to||'—')+'</td><td style="color:#475569">'+fmtTime(p.completed_at)+'</td></tr>';
+    }).join('');
+  }
+
+  // Triage breakdown
+  const triageCounts={RED:0,ORANGE:0,YELLOW:0,GREEN:0,UNKNOWN:0};
+  completed.forEach(p=>{triageCounts[p.triage_level]=(triageCounts[p.triage_level]||0)+1;});
+  const triageTotal=completed.length||1;
+  document.getElementById('triage-breakdown').innerHTML=Object.entries(triageCounts).filter(([,v])=>v>0).map(([k,v])=>{
+    const pct=Math.round(v/triageTotal*100);
+    const colors={RED:'#ef4444',ORANGE:'#f97316',YELLOW:'#eab308',GREEN:'#22c55e',UNKNOWN:'#64748b'};
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:70px;font-size:11px;color:'+colors[k]+'">'+k+'</span><div style="flex:1;height:16px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+colors[k]+'33;border-left:3px solid '+colors[k]+'"></div></div><span style="width:40px;text-align:right;font-size:11px;color:#94a3b8">'+v+'</span></div>';
+  }).join('')||'<div style="color:#334155;font-size:12px">No data yet.</div>';
+
+  // Queue breakdown
+  const queueCounts={fast_track:0,routine:0,walk_in:0};
+  completed.forEach(p=>{queueCounts[p.queue_type]=(queueCounts[p.queue_type]||0)+1;});
+  const qLabels={fast_track:'Fast-Track',routine:'Routine',walk_in:'Walk-In'};
+  const qColors={fast_track:'#ef4444',routine:'#3b82f6',walk_in:'#64748b'};
+  document.getElementById('queue-breakdown').innerHTML=Object.entries(queueCounts).filter(([,v])=>v>0).map(([k,v])=>{
+    const pct=Math.round(v/triageTotal*100);
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:70px;font-size:11px;color:'+qColors[k]+'">'+qLabels[k]+'</span><div style="flex:1;height:16px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+qColors[k]+'33;border-left:3px solid '+qColors[k]+'"></div></div><span style="width:40px;text-align:right;font-size:11px;color:#94a3b8">'+v+'</span></div>';
+  }).join('')||'<div style="color:#334155;font-size:12px">No data yet.</div>';
+}
+
+async function checkExistingSession(){
+  const cookie=document.cookie.split(';').find(c=>c.trim().startsWith('bz_session='));
+  if(cookie){
+    const token=cookie.trim().split('=')[1];
+    try{
+      const res=await fetch('/api/auth/me',{headers:{'Authorization':'Bearer '+token}});
+      if(res.ok){
+        const data=await res.json();
+        UNAME=data.display_name;
+        document.getElementById('login').style.display='none';
+        document.getElementById('app').style.display='block';
+        document.getElementById('signed-in').textContent='Signed in: '+data.display_name+(data.facility_name?' · '+data.facility_name:'');
+        refresh();
+        loadGovernanceLead();
+        setInterval(refresh,15000);
+        return;
+      }
+    }catch(e){}
+  }
+  document.getElementById('login').style.display='flex';
+}
+checkExistingSession();
+</script>
+</body>
+</html>

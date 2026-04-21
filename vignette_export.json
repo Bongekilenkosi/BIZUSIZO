@@ -1,0 +1,732 @@
+{
+  "timestamp": "2026-03-30T23:52:21.932Z",
+  "results": [
+    {
+      "id": "V001",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Chest tightness + breathing difficulty + left arm heaviness = acute coronary syndrome. Deterministic RED rule triggered."
+    },
+    {
+      "id": "V002",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Heavy bleeding in pregnancy - deterministic RED rule. Immediate emergency assessment required for possible miscarriage, placental abruption, or other obstetric emergency."
+    },
+    {
+      "id": "V003",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Unresponsive patient with head trauma and loss of consciousness - deterministic RED rule triggered"
+    },
+    {
+      "id": "V004",
+      "triage": "RED",
+      "confidence": 1,
+      "reason": "Snake bite - deterministic RED rule. Requires immediate medical attention for antivenom assessment and monitoring for systemic envenomation effects."
+    },
+    {
+      "id": "V005",
+      "triage": "RED",
+      "confidence": 1,
+      "reason": "Not breathing + limp not moving - deterministic RED rule. Requires immediate emergency intervention and resuscitation."
+    },
+    {
+      "id": "V006",
+      "triage": "RED",
+      "confidence": 0.98,
+      "reason": "Active seizure with high fever in 4-year-old child - concern for febrile seizure but requires immediate evaluation. Seizure activity is a RED deterministic rule requiring urgent assessment."
+    },
+    {
+      "id": "V007",
+      "triage": "RED",
+      "confidence": 0.98,
+      "reason": "Thunderclap headache (sudden worst headache of life) with neck stiffness and nausea - critical for meningitis or subarachnoid hemorrhage"
+    },
+    {
+      "id": "V008",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Open fracture with bone visible through skin and heavy bleeding - requires emergency intervention"
+    },
+    {
+      "id": "V009",
+      "triage": "RED",
+      "confidence": 0.98,
+      "reason": "Acute stroke symptoms - sudden unilateral weakness (arm and leg) with facial droop within 2-hour window. Meets SATS deterministic RED criteria for neurological emergency requiring immediate medical intervention."
+    },
+    {
+      "id": "V010",
+      "triage": "ORANGE",
+      "confidence": 0.95,
+      "reason": "Pregnant 34 weeks with headache, blurred vision, and facial/hand swelling - classic pre-eclampsia triad. Requires urgent assessment for BP, proteinuria, and fetal well-being to exclude severe pre-eclampsia/eclampsia risk."
+    },
+    {
+      "id": "V011",
+      "triage": "ORANGE",
+      "confidence": 0.95,
+      "reason": "Head trauma with loss of consciousness (blacked out for few minutes). This meets ORANGE criteria - head trauma with LOC requires urgent evaluation for intracranial injury, even with resolution of unconsciousness. Needs neurological assessment and possible imaging."
+    },
+    {
+      "id": "V012",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Severe burns (boiling water, significant body area - bilateral arms and chest). Deterministic RED rule: severe burns require immediate emergency care. High risk of shock, infection, and airway compromise."
+    },
+    {
+      "id": "V013",
+      "triage": "ORANGE",
+      "confidence": 0.95,
+      "reason": "Acute confusion in patient with diabetes and hypertension - concerning for hyperglycemic emergency (HHS/DKA), hypoglycemia, stroke, or hypertensive emergency. Requires urgent assessment of blood sugar, BP, consciousness level and neurological status."
+    },
+    {
+      "id": "V014",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "3-week cough with night sweats and weight loss meets TB symptom criteria (3wk cough+sweats+weight loss). Absence of fever today does not exclude TB. Requires urgent investigation and TB screening."
+    },
+    {
+      "id": "V015",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "UTI symptoms (dysuria, burning) with lower back pain for 2 days - meets UTI+back pain criteria requiring same-day assessment to rule out pyelonephritis"
+    },
+    {
+      "id": "V016",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "Blood sugar 18.5 mmol/L with symptoms (dizziness, polydipsia) in diabetic patient - risk of hyperglycemic crisis; requires urgent assessment and management but not immediately life-threatening"
+    },
+    {
+      "id": "V017",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "17-year-old female with 2 days severe right-sided abdominal pain worsening, unable to eat. Right-sided abdominal pain is YELLOW criteria. Differential includes appendicitis, ovarian pathology, or other surgical abdomen requiring urgent evaluation. No RED flags present (no shock, peritonitis signs not documented). Requires prompt clinical assessment and imaging."
+    },
+    {
+      "id": "V018",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "Asthma not responding to inhaler with severe symptoms (wheezing, dyspnea limiting activity). Requires urgent assessment for acute exacerbation but no immediate RED flags (no chest pain+breathing difficulty combination, still conscious and speaking). Needs prompt evaluation to prevent deterioration to RED."
+    },
+    {
+      "id": "V019",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "HIV+ patient with 3-day fever (38.8°C), headache, and neck stiffness. While fever+stiff neck in HIV+ is typically ORANGE, the stiffness is described as 'a bit stiff' (mild) rather than marked rigidity. Requires urgent assessment for meningitis but presentation suggests possible early/mild manifestation. YELLOW allows rapid evaluation while maintaining safety threshold."
+    },
+    {
+      "id": "V020",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "Suspected ankle fracture with inability to weight bear and significant swelling after trauma. Requires X-ray imaging and orthopedic assessment but not immediately life-threatening."
+    },
+    {
+      "id": "V021",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "BP 175/110 with headache - elevated BP with symptoms requires urgent assessment but no acute end-organ damage signs documented. Hypertensive urgency requiring prompt evaluation and medication review. 'Feel strange' requires clarification but no RED criteria present (no chest pain, no neuro deficits, no stroke signs). Urgent senior review needed within 1-2 hours."
+    },
+    {
+      "id": "V022",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "Lower abdominal pain with missed period suggests possible ectopic pregnancy, miscarriage, or gynecological emergency. Requires urgent evaluation to exclude life-threatening conditions. YELLOW criteria met: lower abdo pain + missed period."
+    },
+    {
+      "id": "V023",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Fever for 4 days with recent travel to Zimbabwe (endemic area for malaria, typhoid, other travel-related illnesses) and systemic symptoms (body aches). Travel fever requires investigation but no RED/ORANGE deterministic criteria present. Needs prompt assessment, bloods, and malaria testing."
+    },
+    {
+      "id": "V024",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "Deep laceration requiring assessment for wound depth, foreign body, neurovascular/tendon involvement, and proper closure. Bleeding controlled but needs urgent evaluation and likely suturing."
+    },
+    {
+      "id": "V025",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "URTI symptoms (sore throat, runny nose) for 2 days without fever, no systemic features, patient ambulatory and coping well"
+    },
+    {
+      "id": "V026",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Routine medication collection for chronic disease management. Patient asymptomatic with controlled hypertension on treatment. No acute complaints or red/orange/yellow flags present."
+    },
+    {
+      "id": "V027",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Mild rash on arms for 1 week, no fever, no pain, only mild itching. No systemic symptoms or red flag features. Consistent with benign dermatological condition."
+    },
+    {
+      "id": "V028",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Routine chronic disease management review for stable diabetes with normal blood sugars and no acute complaints"
+    },
+    {
+      "id": "V029",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Mild headache responsive to paracetamol, no red flag symptoms (no fever, vomiting, or neurological signs). Suitable for routine primary care assessment."
+    },
+    {
+      "id": "V030",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Mechanical back pain following clear work-related lifting injury, 3 days duration, mobile and walking, no red flags or neurological symptoms"
+    },
+    {
+      "id": "V031",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Chest pain + breathing difficulty + right-sided arm/shoulder pain - meets DETERMINISTIC RED criteria for acute coronary syndrome or life-threatening chest emergency"
+    },
+    {
+      "id": "V032",
+      "triage": "RED",
+      "confidence": 0.98,
+      "reason": "Pregnant 8 months with heavy vaginal bleeding - risk of placental abruption, preterm labour, or other obstetric emergency. Heavy bleeding in pregnancy is a deterministic RED rule."
+    },
+    {
+      "id": "V033",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Unresponsive patient - not waking up, fell down, currently unresponsive. Requires immediate emergency assessment for life-threatening causes (stroke, head trauma, seizure, severe infection in HIV+ patient)."
+    },
+    {
+      "id": "V034",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Snake bite - deterministic RED rule. Child with snake bite to leg in field with significant swelling and pain. Requires immediate anti-venom assessment and emergency care."
+    },
+    {
+      "id": "V035",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Child not breathing, lying down and unresponsive - DETERMINISTIC RED: not breathing and not waking up. Requires immediate emergency intervention."
+    },
+    {
+      "id": "V036",
+      "triage": "ORANGE",
+      "confidence": 0.92,
+      "reason": "5-year-old with high fever, generalized body convulsions/tremors, and severe shivering - consistent with febrile seizure presentation. Requires urgent assessment for seizure activity and fever management."
+    },
+    {
+      "id": "V037",
+      "triage": "RED",
+      "confidence": 0.95,
+      "reason": "Thunderclap headache - sudden severe headache like never before, patient describes feeling like head is dying. Age 70 with hypertension is risk factor for intracranial event (subarachnoid hemorrhage, stroke). Requires immediate emergency evaluation."
+    },
+    {
+      "id": "V038",
+      "triage": "RED",
+      "confidence": 0.95,
+      "reason": "Open fracture with visible bone and active bleeding - deterministic RED rule. Patient reports severe leg pain with poor angulation and bleeding from bone site, consistent with open fracture requiring emergency orthopedic intervention."
+    },
+    {
+      "id": "V039",
+      "triage": "RED",
+      "confidence": 0.95,
+      "reason": "Facial droop + right-sided weakness for 2 hours = acute stroke symptoms. Time-critical emergency requiring immediate CT/MRI and thrombolytic assessment"
+    },
+    {
+      "id": "V040",
+      "triage": "ORANGE",
+      "confidence": 0.92,
+      "reason": "Pregnant 36 weeks with severe headache, visual disturbances (blurred vision), and hand swelling - concerning for pre-eclampsia. Requires urgent assessment for blood pressure, proteinuria, and fetal wellbeing."
+    },
+    {
+      "id": "V041",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Head trauma with loss of consciousness - patient fell at school and has severe headache. Requires assessment for intracranial injury, neurological examination, and possible imaging. Not meeting RED criteria (no current unconsciousness, seizure, or severe bleeding mentioned) but needs urgent evaluation."
+    },
+    {
+      "id": "V042",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Deep laceration to palms with hot water exposure and significant back skin involvement. Requires wound assessment, infection prevention, and pain management. Not meeting RED criteria (not heavy bleeding, no airway/breathing compromise) but needs urgent evaluation for burn depth, contamination risk, and systemic effects."
+    },
+    {
+      "id": "V043",
+      "triage": "RED",
+      "confidence": 0.95,
+      "reason": "58M with diabetes presenting with acute confusion ('umndeni wami uthi angiqondi kahle' - family says not understanding well) + diabetes history. Acute confusion with DM is a RED flag for hyperglycemic emergency (DKA/HHS) or hypoglycemia. Requires immediate assessment of blood sugar, mental status, and vital signs."
+    },
+    {
+      "id": "V044",
+      "triage": "YELLOW",
+      "confidence": 0.88,
+      "reason": "3-week cough with night sweats and weight loss - TB screening symptoms. No fever today but classic TB presentation requiring urgent investigation and sputum testing."
+    },
+    {
+      "id": "V045",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Severe chest pain on exertion with palpitations for 2 days in young female - concerning for cardiac etiology, myocarditis, or pulmonary pathology. Requires urgent evaluation but not immediately life-threatening based on presentation alone. Rule out ACS, PE, and cardiac causes."
+    },
+    {
+      "id": "V046",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Blood sugar 19 mmol/L with symptoms (thirst, burning sensation, fatigue) in diabetic patient. High blood glucose with symptomatic presentation requires urgent assessment but not immediately life-threatening. Needs same-day evaluation for possible hyperglycemic episode/DKA risk."
+    },
+    {
+      "id": "V047",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "16-year-old female with severe right-sided abdominal pain for 2 days, persistent. Concerning for appendicitis, ovarian pathology, or other acute abdominal condition requiring urgent evaluation and imaging. No RED flags present but requires same-day assessment."
+    },
+    {
+      "id": "V048",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "Asthma exacerbation not responding to inhaler with dyspnea. Requires urgent assessment and treatment but not immediately life-threatening at this moment. If breathing becomes severe or chest pain/confusion develops, escalate to RED."
+    },
+    {
+      "id": "V049",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "HIV+ patient with 3-day fever, headache, and neck stiffness (suggestive of meningitis); fever+stiff neck in HIV+ is YELLOW criteria requiring urgent assessment for opportunistic infections"
+    },
+    {
+      "id": "V050",
+      "triage": "ERROR",
+      "confidence": 0,
+      "reason": "Parse:{\"model\":\"claude-haiku-4-5-20251001\",\"id\":\"msg_01XmSuzWa8E7a4fmyDYDaRnr\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"```json\\n{\\n  \\\"triage\\\": \\\"YELLOW\\\",\\n  \\\"confidence\\\": "
+    },
+    {
+      "id": "V051",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "BP 180/115 with headache in hypertensive patient - concerning but patient took medication this morning, requires urgent assessment for hypertensive urgency/emergency"
+    },
+    {
+      "id": "V052",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "24F with 5-year history of severe right lower abdominal pain, no trauma. Concerning for chronic condition (possibly appendicitis, ovarian pathology, or inflammatory condition) requiring urgent evaluation. Severe right-sided abdominal pain is a YELLOW criterion."
+    },
+    {
+      "id": "V053",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "Travel fever - fever 4 days at 39°C, recent travel to Zimbabwe last month, generalized body pain. Requires investigation for travel-related infections (malaria, typhoid, dengue)."
+    },
+    {
+      "id": "V054",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "Deep laceration to hand with heavy bleeding and pain - requires wound assessment, hemostasis, and possible sutures/closure; heavy bleeding controlled but deep penetrating injury needs urgent evaluation"
+    },
+    {
+      "id": "V055",
+      "triage": "GREEN",
+      "confidence": 0.92,
+      "reason": "Early rhinitis with nasal discharge and cough for 2 days, afebrile, well appearance - consistent with URTI, no RED or ORANGE features"
+    },
+    {
+      "id": "V056",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Patient requesting blood pressure medication refill, reports feeling well today. Routine chronic disease management for known hypertension. No acute symptoms or warning signs present."
+    },
+    {
+      "id": "V057",
+      "triage": "GREEN",
+      "confidence": 0.85,
+      "reason": "Mild rash on arms for 7 days, non-painful, slightly itchy - consistent with viral exanthem or mild dermatitis. No red flags present. Routine assessment appropriate."
+    },
+    {
+      "id": "V058",
+      "triage": "GREEN",
+      "confidence": 0.92,
+      "reason": "Patient requesting routine diabetes check. States blood sugar levels are stable and denies pain/symptoms today. Routine chronic disease management review indicated."
+    },
+    {
+      "id": "V059",
+      "triage": "GREEN",
+      "confidence": 0.92,
+      "reason": "Mild headache since morning, relieved by paracetamol, no red flags present"
+    },
+    {
+      "id": "V060",
+      "triage": "GREEN",
+      "confidence": 0.85,
+      "reason": "Mechanical back pain (3 days post-lifting heavy objects at work). No red flags, no neurological symptoms reported. Consistent with musculoskeletal strain. Routine analgesia and activity modification appropriate."
+    },
+    {
+      "id": "V061",
+      "triage": "RED",
+      "confidence": 0.98,
+      "reason": "Chest pain + breathing difficulty + arm pain - meets deterministic RED criteria for acute coronary syndrome"
+    },
+    {
+      "id": "V062",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Pregnant patient (7 months) with heavy vaginal bleeding - DETERMINISTIC RED rule: 'Heavy bleeding in pregnancy'. Requires immediate emergency obstetric assessment for placental abruption, placenta previa, or other life-threatening complications."
+    },
+    {
+      "id": "V063",
+      "triage": "RED",
+      "confidence": 0.95,
+      "reason": "Unresponsive patient (not waking up) with severe head trauma history and loss of consciousness. Deterministic RED rule: unresponsive/not waking up/unconscious. Requires immediate emergency assessment for potential intracranial injury, especially with HIV status as risk factor."
+    },
+    {
+      "id": "V064",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Snake bite - deterministic RED rule applies. Child bitten by snake in field with severe swelling and pain in leg. Requires immediate anti-venom assessment and emergency referral."
+    },
+    {
+      "id": "V065",
+      "triage": "ERROR",
+      "confidence": 0,
+      "reason": "Parse:{\"model\":\"claude-haiku-4-5-20251001\",\"id\":\"msg_019jSJcxMRLS1CTv9ejGEYBv\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"```json\\n{\\n  \\\"triage\\\": \\\"RED\\\",\\n  \\\"confidence\\\": 0.9"
+    },
+    {
+      "id": "V066",
+      "triage": "ORANGE",
+      "confidence": 0.92,
+      "reason": "6-year-old with high fever and generalized body shaking (convulsive movements) lasting 11 minutes - concerning for febrile seizure. Requires urgent assessment to confirm seizure activity, check current temperature, and rule out serious causes of fever."
+    },
+    {
+      "id": "V067",
+      "triage": "RED",
+      "confidence": 0.95,
+      "reason": "Thunderclap headache - sudden severe headache unlike anything experienced before with nausea. High risk for subarachnoid hemorrhage or other life-threatening intracranial pathology. Requires immediate emergency evaluation."
+    },
+    {
+      "id": "V068",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Open fracture with bone visible and active bleeding - requires immediate emergency care"
+    },
+    {
+      "id": "V069",
+      "triage": "RED",
+      "confidence": 0.95,
+      "reason": "Facial drooping on one side with unilateral body weakness for 2 hours in 60-year-old smoker = acute stroke symptoms. Time-critical emergency requiring immediate assessment and possible thrombolytic therapy."
+    },
+    {
+      "id": "V070",
+      "triage": "ERROR",
+      "confidence": 0,
+      "reason": "Parse:{\"model\":\"claude-haiku-4-5-20251001\",\"id\":\"msg_01MAQTUxhYug3ropWsRGByko\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"```json\\n{\\n  \\\"triage\\\": \\\"RED\\\",\\n  \\\"confidence\\\": 0.9"
+    },
+    {
+      "id": "V071",
+      "triage": "ORANGE",
+      "confidence": 0.92,
+      "reason": "Head trauma from motor vehicle accident with loss of consciousness (lying down after incident) and current headache. LOC with head trauma is ORANGE priority requiring urgent assessment for intracranial injury."
+    },
+    {
+      "id": "V072",
+      "triage": "ERROR",
+      "confidence": 0,
+      "reason": "Parse:{\"model\":\"claude-haiku-4-5-20251001\",\"id\":\"msg_01BNdvR4zta92TS18NRbRpsE\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"```json\\n{\\n  \\\"triage\\\": \\\"YELLOW\\\",\\n  \\\"confidence\\\": "
+    },
+    {
+      "id": "V073",
+      "triage": "ERROR",
+      "confidence": 0,
+      "reason": "Parse:{\"model\":\"claude-haiku-4-5-20251001\",\"id\":\"msg_01NGZ8V4HBsypc2pSG6B4qY7\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"```json\\n{\\n  \\\"triage\\\": \\\"RED\\\",\\n  \\\"confidence\\\": 0.9"
+    },
+    {
+      "id": "V074",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "3-week cough + night sweats + weight loss = TB symptom complex; requires urgent TB screening and CXR"
+    },
+    {
+      "id": "V075",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Lower abdominal pain + 2 days duration + missed period status unknown. Possible UTI with pyelonephritis, ectopic pregnancy, or PID. Requires prompt assessment to rule out serious causes. Translate: 'I feel severe pain when urinating, lower abdomen pain, 2 days'"
+    },
+    {
+      "id": "V076",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "52-year-old with diabetes presenting with blood sugar 20 mmol/L (high), fatigue, and weakness. Meets YELLOW criteria: high sugar 15+ with symptoms. Requires prompt assessment for hyperglycemia management and exclusion of diabetic emergency, but no RED flags present (conscious, breathing, speaking)."
+    },
+    {
+      "id": "V077",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Severe right-sided abdominal pain for 2 days, persistent - meets YELLOW criteria for severe right-sided abdo pain. Requires urgent assessment to rule out appendicitis, ovarian pathology, or other acute abdominal conditions. No RED flags present."
+    },
+    {
+      "id": "V078",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "Asthma not responding to inhaler - requires urgent assessment and treatment escalation, but patient is communicating and conscious"
+    },
+    {
+      "id": "V079",
+      "triage": "YELLOW",
+      "confidence": 0.88,
+      "reason": "HIV+ patient with 3-day fever, headache, and neck stiffness - concerning for meningitis; requires urgent evaluation to rule out TB meningitis or other serious CNS infection; meets YELLOW criteria for fever+stiff neck in HIV+ patient"
+    },
+    {
+      "id": "V080",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Acute foot swelling with inability to walk following metal injury - possible fracture, laceration, or compartment syndrome requiring imaging and assessment"
+    },
+    {
+      "id": "V081",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "BP 178/112 with headache in hypertensive patient - requires urgent assessment for hypertensive emergency but no acute end-organ damage signs present. Not meeting RED criteria (no chest pain, vision changes, or severe neurological symptoms). Needs prompt evaluation and BP management within hours."
+    },
+    {
+      "id": "V082",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "Lower abdominal pain (right-sided) with missed period (7 months) - concerning for ectopic pregnancy, miscarriage, or other gynecological emergency requiring urgent evaluation"
+    },
+    {
+      "id": "V083",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Fever 39°C for 4 days + recent travel to Zimbabwe (endemic area) + systemic symptoms (body pain) = travel fever. Requires evaluation for malaria, typhoid, or other travel-related infections. Not meeting RED/ORANGE criteria currently."
+    },
+    {
+      "id": "V084",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Deep laceration with heavy bleeding (controlled). Requires wound assessment, hemostasis evaluation, and possible suturing. Not actively hemorrhaging uncontrollably, no RED flag criteria met, but needs urgent care within YELLOW timeframe."
+    },
+    {
+      "id": "V085",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Sore throat and nasal congestion for 2 days without fever, feeling well overall - consistent with uncomplicated URTI, no red/orange/yellow flags present"
+    },
+    {
+      "id": "V086",
+      "triage": "GREEN",
+      "confidence": 0.92,
+      "reason": "Routine medication collection for chronic hypertension management. Patient reports feeling well today. No acute symptoms or RED/ORANGE/YELLOW criteria present."
+    },
+    {
+      "id": "V087",
+      "triage": "GREEN",
+      "confidence": 0.85,
+      "reason": "Small persistent cough for 6 weeks without fever or weight loss reported - does not meet TB symptom triad (3-week cough + sweats + weight loss). No red or orange flags present. Requires further assessment for URTI or other mild respiratory cause."
+    },
+    {
+      "id": "V088",
+      "triage": "GREEN",
+      "confidence": 0.92,
+      "reason": "61M with diabetes requesting routine blood sugar check. States blood sugar is managing well with no pain today. Chronic disease monitoring - routine review."
+    },
+    {
+      "id": "V089",
+      "triage": "GREEN",
+      "confidence": 0.92,
+      "reason": "21-year-old female with mild intermittent headaches since morning, responsive to paracetamol. No red/orange flags present. Mild headache is GREEN category. Suitable for routine assessment."
+    },
+    {
+      "id": "V090",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Acute lower back pain (3 days) following heavy lifting - possible mechanical back injury with strain component. Requires assessment for nerve involvement, fracture risk, or other serious pathology. Not mechanical back pain alone given acute onset with heavy exertion. Yellow level appropriate for evaluation to rule out serious causes."
+    },
+    {
+      "id": "V091",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Chest tightness + breathing difficulty + left arm heaviness + diaphoresis = acute coronary syndrome until proven otherwise"
+    },
+    {
+      "id": "V092",
+      "triage": "RED",
+      "confidence": 0.98,
+      "reason": "Pregnant patient (8 months) with heavy vaginal bleeding onset 20 minutes ago soaking through clothing. Heavy bleeding in pregnancy is a DETERMINISTIC RED rule - risk of placental abruption, previa, or other obstetric emergency requiring immediate assessment and possible emergency transfer."
+    },
+    {
+      "id": "V093",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Unresponsive patient with head trauma and loss of consciousness - meets RED criteria for unresponsiveness and head injury with LOC. Requires emergency assessment for intracranial injury."
+    },
+    {
+      "id": "V094",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Snake bite - deterministic RED rule. Rapid limb swelling indicates possible envenomation. Requires immediate anti-venom assessment and monitoring for systemic effects."
+    },
+    {
+      "id": "V095",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Child not breathing, limp and unresponsive - DETERMINISTIC RED criteria met. Requires immediate emergency intervention."
+    },
+    {
+      "id": "V096",
+      "triage": "ORANGE",
+      "confidence": 0.95,
+      "reason": "Febrile seizure: 4-year-old with high fever (39.8°C) and generalized convulsion lasting 2 minutes. Febrile seizures are common in this age group but require urgent assessment to rule out serious causes (meningitis, encephalitis) and manage fever/seizure risk."
+    },
+    {
+      "id": "V097",
+      "triage": "RED",
+      "confidence": 0.98,
+      "reason": "Thunderclap headache (worst ever, sudden onset 1 hour ago) + neck stiffness + nausea = meningitis or subarachnoid hemorrhage until proven otherwise. Deterministic emergency requiring immediate assessment."
+    },
+    {
+      "id": "V098",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Open fracture with bone visible through skin and heavy bleeding - requires immediate emergency care"
+    },
+    {
+      "id": "V099",
+      "triage": "RED",
+      "confidence": 0.98,
+      "reason": "Acute stroke symptoms: sudden right arm and leg paralysis, facial droop, symptom onset 2 hours ago. Within thrombolytic window. Requires immediate emergency assessment."
+    },
+    {
+      "id": "V100",
+      "triage": "RED",
+      "confidence": 0.95,
+      "reason": "Pregnant 33 weeks with severe headache, visual disturbances (double vision), and swelling - classic pre-eclampsia/eclampsia signs. Requires immediate obstetric evaluation for maternal and fetal safety."
+    },
+    {
+      "id": "V101",
+      "triage": "ORANGE",
+      "confidence": 0.95,
+      "reason": "Head trauma with loss of consciousness and severe headache - requires urgent neurological assessment to rule out intracranial injury"
+    },
+    {
+      "id": "V102",
+      "triage": "RED",
+      "confidence": 0.99,
+      "reason": "Severe burns from boiling water on arms and chest with blistering and severe pain - meets deterministic RED rule for significant area burns"
+    },
+    {
+      "id": "V103",
+      "triage": "YELLOW",
+      "confidence": 0.89,
+      "reason": "Acute confusion in diabetic patient - potential hypoglycemia, hyperglycemia crisis, or acute medical emergency requiring urgent assessment and blood glucose check"
+    },
+    {
+      "id": "V104",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "3-week cough + night sweats + weight loss = TB symptoms. Requires urgent investigation despite no fever today."
+    },
+    {
+      "id": "V105",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "UTI with back pain - dysuria for 2 days plus lower back pain suggests possible pyelonephritis; requires same-day assessment to rule out upper UTI"
+    },
+    {
+      "id": "V106",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "Blood sugar 17.5 mmol/L with symptoms (dizziness, polydipsia) in diabetic patient since yesterday suggests hyperglycemic state requiring urgent assessment for DKA/HHS risk"
+    },
+    {
+      "id": "V107",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Severe right-sided abdominal pain for 2 days, worsening - requires urgent assessment to exclude appendicitis, ovarian pathology, or other acute abdominal condition"
+    },
+    {
+      "id": "V108",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "Asthma not responding to inhaler with dyspnoea at rest - requires urgent assessment but not immediately life-threatening at this moment. Known asthma risk factor. Needs prompt evaluation for acute exacerbation and consideration of systemic corticosteroids/nebulised therapy."
+    },
+    {
+      "id": "V109",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "Fever + headache + neck stiffness in HIV+ patient (on ARVs). Meets YELLOW criteria: fever + stiff neck in HIV+. Requires prompt evaluation for meningitis/opportunistic infection but not acutely unresponsive/seizing (RED). Needs urgent assessment within hours."
+    },
+    {
+      "id": "V110",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "Fall from height with significant ankle swelling and inability to bear weight - possible fracture requiring X-ray assessment. No RED flags present (no neurovascular compromise, no head trauma, no heavy bleeding)."
+    },
+    {
+      "id": "V111",
+      "triage": "ORANGE",
+      "confidence": 0.92,
+      "reason": "BP 182/114 with headache and nausea in hypertensive patient - hypertensive emergency concern. Patient took medications this morning but BP remains significantly elevated with neurological symptoms."
+    },
+    {
+      "id": "V112",
+      "triage": "YELLOW",
+      "confidence": 0.92,
+      "reason": "Lower abdominal pain + missed period (4 hours of severe right lower pain). Rule out ectopic pregnancy, appendicitis, or other acute abdomen. Requires urgent assessment to exclude surgical emergency."
+    },
+    {
+      "id": "V113",
+      "triage": "YELLOW",
+      "confidence": 0.85,
+      "reason": "Travel fever - fever 39°C for 4 days, recent travel to Mozambique (malaria/dengue/other endemic diseases risk), generalized body pain. Requires assessment for travel-related illness but not immediately life-threatening."
+    },
+    {
+      "id": "V114",
+      "triage": "YELLOW",
+      "confidence": 0.95,
+      "reason": "Deep laceration from broken glass - requires wound assessment, cleaning, possible sutures/closure, and tetanus evaluation. Bleeding controlled but depth and location need evaluation for structural damage (tendons, nerves, vessels)."
+    },
+    {
+      "id": "V115",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Upper respiratory tract infection (URTI) symptoms - sore throat and runny nose for 2 days, no fever, normal functioning. Routine PHC assessment appropriate."
+    },
+    {
+      "id": "V116",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Routine chronic medication review for hypertension. Patient feels well, no acute symptoms or danger signs present."
+    },
+    {
+      "id": "V117",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Mild rash on arms for 1 week without pain, slightly itchy. No red flag features. Consistent with benign dermatological condition. Routine assessment appropriate."
+    },
+    {
+      "id": "V118",
+      "triage": "GREEN",
+      "confidence": 0.98,
+      "reason": "routine chronic disease review for diabetes management, patient reports well with no complaints"
+    },
+    {
+      "id": "V119",
+      "triage": "GREEN",
+      "confidence": 0.95,
+      "reason": "Mild headache with partial response to paracetamol, no vomiting, no red flag features. Routine assessment appropriate."
+    },
+    {
+      "id": "V120",
+      "triage": "GREEN",
+      "confidence": 0.92,
+      "reason": "Mechanical back pain following heavy lifting 3 days ago, able to mobilize, no red flags present"
+    }
+  ],
+  "counts": {
+    "RED": 36,
+    "ORANGE": 10,
+    "YELLOW": 46,
+    "GREEN": 23,
+    "ERROR": 5
+  }
+}

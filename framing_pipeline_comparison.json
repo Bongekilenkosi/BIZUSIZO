@@ -1,0 +1,2782 @@
+{
+  "timestamp": "2026-04-12T18:15:32.636Z",
+  "summary": {
+    "red": {
+      "n": 55,
+      "ai_invariance_pct": "50.9",
+      "pipeline_invariance_pct": "78.2",
+      "dcsl_rescued": 18
+    },
+    "orange": {
+      "n": 33,
+      "ai_invariance_pct": "48.5",
+      "pipeline_invariance_pct": "87.9",
+      "dcsl_rescued": 14
+    },
+    "yellow": {
+      "n": 22,
+      "ai_invariance_pct": "36.4",
+      "pipeline_invariance_pct": "81.8",
+      "dcsl_rescued": 13
+    },
+    "total": {
+      "n": 110,
+      "ai_invariance_pct": "47.3",
+      "pipeline_invariance_pct": "81.8",
+      "dcsl_rescued": 45
+    }
+  },
+  "architecture_note": "AI-only results use simplified prompt. Full pipeline uses production system prompt (sats-v2.3) which is richer — production AI layer invariance may exceed AI-only baseline.",
+  "results": [
+    {
+      "id": "R_EN_01",
+      "gold": "RED",
+      "lang": "en",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "respiratory_cardiac_arrest",
+        "variant_rule": "respiratory_cardiac_arrest"
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_EN_02",
+      "gold": "RED",
+      "lang": "en",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "obstetric_haemorrhage",
+        "variant_rule": "obstetric_haemorrhage"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_EN_03",
+      "gold": "RED",
+      "lang": "en",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "envenomation",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_EN_04",
+      "gold": "RED",
+      "lang": "en",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_EN_05",
+      "gold": "RED",
+      "lang": "en",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_EN_01",
+      "gold": "ORANGE",
+      "lang": "en",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "pre_eclampsia",
+        "variant_rule": "pre_eclampsia"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_EN_02",
+      "gold": "ORANGE",
+      "lang": "en",
+      "category": "febrile_seizure",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_EN_03",
+      "gold": "ORANGE",
+      "lang": "en",
+      "category": "stroke_signs",
+      "framing_type": "catastrophising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_EN_01",
+      "gold": "YELLOW",
+      "lang": "en",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "tb_triad",
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_EN_02",
+      "gold": "YELLOW",
+      "lang": "en",
+      "category": "asthma_inhaler_failure",
+      "framing_type": "hedged",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "severe_asthma",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_ZU_01",
+      "gold": "RED",
+      "lang": "zu",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "respiratory_cardiac_arrest_zu",
+        "variant_rule": "respiratory_cardiac_arrest_zu"
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_ZU_02",
+      "gold": "RED",
+      "lang": "zu",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "obstetric_haemorrhage",
+        "variant_rule": "obstetric_haemorrhage"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_ZU_03",
+      "gold": "RED",
+      "lang": "zu",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "envenomation",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_ZU_04",
+      "gold": "RED",
+      "lang": "zu",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_ZU_05",
+      "gold": "RED",
+      "lang": "zu",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": true,
+        "neutral_rule": null,
+        "variant_rule": "cardiac_emergency_ss"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_ZU_01",
+      "gold": "ORANGE",
+      "lang": "zu",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "pre_eclampsia",
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_ZU_02",
+      "gold": "ORANGE",
+      "lang": "zu",
+      "category": "head_trauma_loc",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "GREEN",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "O_ZU_03",
+      "gold": "ORANGE",
+      "lang": "zu",
+      "category": "acute_confusion_dm",
+      "framing_type": "catastrophising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": true,
+        "neutral_rule": null,
+        "variant_rule": "acute_confusion_chronic"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_ZU_01",
+      "gold": "YELLOW",
+      "lang": "zu",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_ZU_02",
+      "gold": "YELLOW",
+      "lang": "zu",
+      "category": "hypertensive_urgency",
+      "framing_type": "hedged",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_XH_01",
+      "gold": "RED",
+      "lang": "xh",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_XH_02",
+      "gold": "RED",
+      "lang": "xh",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "obstetric_haemorrhage",
+        "variant_rule": "obstetric_haemorrhage"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_XH_03",
+      "gold": "RED",
+      "lang": "xh",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_XH_04",
+      "gold": "RED",
+      "lang": "xh",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_XH_05",
+      "gold": "RED",
+      "lang": "xh",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_XH_01",
+      "gold": "ORANGE",
+      "lang": "xh",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_XH_02",
+      "gold": "ORANGE",
+      "lang": "xh",
+      "category": "thunderclap_headache",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_XH_03",
+      "gold": "ORANGE",
+      "lang": "xh",
+      "category": "febrile_seizure",
+      "framing_type": "catastrophising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_XH_01",
+      "gold": "YELLOW",
+      "lang": "xh",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_XH_02",
+      "gold": "YELLOW",
+      "lang": "xh",
+      "category": "urti_back_pain",
+      "framing_type": "hedged",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_AF_01",
+      "gold": "RED",
+      "lang": "af",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_AF_02",
+      "gold": "RED",
+      "lang": "af",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_AF_03",
+      "gold": "RED",
+      "lang": "af",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "envenomation",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_AF_04",
+      "gold": "RED",
+      "lang": "af",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_AF_05",
+      "gold": "RED",
+      "lang": "af",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_af",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_AF_01",
+      "gold": "ORANGE",
+      "lang": "af",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_AF_02",
+      "gold": "ORANGE",
+      "lang": "af",
+      "category": "head_trauma_loc",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_AF_03",
+      "gold": "ORANGE",
+      "lang": "af",
+      "category": "stroke_signs",
+      "framing_type": "catastrophising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "stroke_facial_droop",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_AF_01",
+      "gold": "YELLOW",
+      "lang": "af",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_AF_02",
+      "gold": "YELLOW",
+      "lang": "af",
+      "category": "asthma_inhaler_failure",
+      "framing_type": "hedged",
+      "native_review": false,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "severe_asthma",
+        "variant_rule": "severe_asthma"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_NSO_01",
+      "gold": "RED",
+      "lang": "nso",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_nso",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_NSO_02",
+      "gold": "RED",
+      "lang": "nso",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_NSO_03",
+      "gold": "RED",
+      "lang": "nso",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "YELLOW",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "RED",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_NSO_04",
+      "gold": "RED",
+      "lang": "nso",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_NSO_05",
+      "gold": "RED",
+      "lang": "nso",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_NSO_01",
+      "gold": "ORANGE",
+      "lang": "nso",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_NSO_02",
+      "gold": "ORANGE",
+      "lang": "nso",
+      "category": "febrile_seizure",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "febrile_seizure",
+        "variant_rule": "febrile_seizure"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_NSO_03",
+      "gold": "ORANGE",
+      "lang": "nso",
+      "category": "acute_confusion_dm",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_NSO_01",
+      "gold": "YELLOW",
+      "lang": "nso",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_NSO_02",
+      "gold": "YELLOW",
+      "lang": "nso",
+      "category": "asthma_inhaler_failure",
+      "framing_type": "hedged",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_TN_01",
+      "gold": "RED",
+      "lang": "tn",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_nso",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_TN_02",
+      "gold": "RED",
+      "lang": "tn",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_TN_03",
+      "gold": "RED",
+      "lang": "tn",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_TN_04",
+      "gold": "RED",
+      "lang": "tn",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_nso",
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_TN_05",
+      "gold": "RED",
+      "lang": "tn",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_TN_01",
+      "gold": "ORANGE",
+      "lang": "tn",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_TN_02",
+      "gold": "ORANGE",
+      "lang": "tn",
+      "category": "acute_confusion_dm",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_TN_03",
+      "gold": "ORANGE",
+      "lang": "tn",
+      "category": "stroke_signs",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "stroke_facial_droop",
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_TN_01",
+      "gold": "YELLOW",
+      "lang": "tn",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_TN_02",
+      "gold": "YELLOW",
+      "lang": "tn",
+      "category": "hypertensive_urgency",
+      "framing_type": "hedged",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_ST_01",
+      "gold": "RED",
+      "lang": "st",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_st",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_ST_02",
+      "gold": "RED",
+      "lang": "st",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_ST_03",
+      "gold": "RED",
+      "lang": "st",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "YELLOW",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "RED",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_ST_04",
+      "gold": "RED",
+      "lang": "st",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "YELLOW",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_ST_05",
+      "gold": "RED",
+      "lang": "st",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_ST_01",
+      "gold": "ORANGE",
+      "lang": "st",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_ST_02",
+      "gold": "ORANGE",
+      "lang": "st",
+      "category": "febrile_seizure",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_ST_03",
+      "gold": "ORANGE",
+      "lang": "st",
+      "category": "stroke_signs",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "stroke_facial_droop",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_ST_01",
+      "gold": "YELLOW",
+      "lang": "st",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_ST_02",
+      "gold": "YELLOW",
+      "lang": "st",
+      "category": "asthma_inhaler_failure",
+      "framing_type": "hedged",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "severe_asthma",
+        "variant_rule": "severe_asthma"
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_TS_01",
+      "gold": "RED",
+      "lang": "ts",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_ts",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_TS_02",
+      "gold": "RED",
+      "lang": "ts",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "obstetric_haemorrhage",
+        "variant_rule": "obstetric_haemorrhage"
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_TS_03",
+      "gold": "RED",
+      "lang": "ts",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "envenomation",
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_TS_04",
+      "gold": "RED",
+      "lang": "ts",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_ts",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_TS_05",
+      "gold": "RED",
+      "lang": "ts",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_TS_01",
+      "gold": "ORANGE",
+      "lang": "ts",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_TS_02",
+      "gold": "ORANGE",
+      "lang": "ts",
+      "category": "acute_confusion_dm",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_TS_03",
+      "gold": "ORANGE",
+      "lang": "ts",
+      "category": "stroke_signs",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "stroke_speech",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "Y_TS_01",
+      "gold": "YELLOW",
+      "lang": "ts",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_TS_02",
+      "gold": "YELLOW",
+      "lang": "ts",
+      "category": "hypertensive_urgency",
+      "framing_type": "hedged",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_SS_01",
+      "gold": "RED",
+      "lang": "ss",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "respiratory_cardiac_arrest_zu",
+        "variant_rule": "respiratory_cardiac_arrest_zu"
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_SS_02",
+      "gold": "RED",
+      "lang": "ss",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "obstetric_haemorrhage",
+        "variant_rule": "obstetric_haemorrhage"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_SS_03",
+      "gold": "RED",
+      "lang": "ss",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "envenomation",
+        "variant_rule": "envenomation"
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_SS_04",
+      "gold": "RED",
+      "lang": "ss",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_zu",
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_SS_05",
+      "gold": "RED",
+      "lang": "ss",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": true,
+        "neutral_rule": null,
+        "variant_rule": "cardiac_emergency_ss"
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_SS_01",
+      "gold": "ORANGE",
+      "lang": "ss",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_SS_02",
+      "gold": "ORANGE",
+      "lang": "ss",
+      "category": "febrile_seizure",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_SS_03",
+      "gold": "ORANGE",
+      "lang": "ss",
+      "category": "stroke_signs",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "Y_SS_01",
+      "gold": "YELLOW",
+      "lang": "ss",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_SS_02",
+      "gold": "YELLOW",
+      "lang": "ss",
+      "category": "asthma_inhaler_failure",
+      "framing_type": "hedged",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_VE_01",
+      "gold": "RED",
+      "lang": "ve",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_ve",
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_VE_02",
+      "gold": "RED",
+      "lang": "ve",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_VE_03",
+      "gold": "RED",
+      "lang": "ve",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "GREEN",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_VE_04",
+      "gold": "RED",
+      "lang": "ve",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "YELLOW",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_ve",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_VE_05",
+      "gold": "RED",
+      "lang": "ve",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "cardiac_emergency_ve",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_VE_01",
+      "gold": "ORANGE",
+      "lang": "ve",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_VE_02",
+      "gold": "ORANGE",
+      "lang": "ve",
+      "category": "febrile_seizure",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "RED",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "O_VE_03",
+      "gold": "ORANGE",
+      "lang": "ve",
+      "category": "acute_confusion_dm",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_VE_01",
+      "gold": "YELLOW",
+      "lang": "ve",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "Y_VE_02",
+      "gold": "YELLOW",
+      "lang": "ve",
+      "category": "hypertensive_urgency",
+      "framing_type": "hedged",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_NR_01",
+      "gold": "RED",
+      "lang": "nr",
+      "category": "cardiac_arrest",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_zu",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_NR_02",
+      "gold": "RED",
+      "lang": "nr",
+      "category": "obstetric_haemorrhage",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "obstetric_haemorrhage",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    },
+    {
+      "id": "R_NR_03",
+      "gold": "RED",
+      "lang": "nr",
+      "category": "snake_bite",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": true,
+        "neutral_rule": "envenomation",
+        "variant_rule": "envenomation"
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_NR_04",
+      "gold": "RED",
+      "lang": "nr",
+      "category": "neonatal_apnoea",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "ORANGE",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "respiratory_cardiac_arrest_zu",
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "R_NR_05",
+      "gold": "RED",
+      "lang": "nr",
+      "category": "cardiac_emergency",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "RED",
+        "drifted": true,
+        "direction": "upward"
+      },
+      "pipeline": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": true,
+        "neutral_rule": null,
+        "variant_rule": "cardiac_emergency_ss"
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_NR_01",
+      "gold": "ORANGE",
+      "lang": "nr",
+      "category": "pre_eclampsia",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_NR_02",
+      "gold": "ORANGE",
+      "lang": "nr",
+      "category": "febrile_seizure",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "O_NR_03",
+      "gold": "ORANGE",
+      "lang": "nr",
+      "category": "stroke_signs",
+      "framing_type": "catastrophising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "RED",
+        "variant": "RED",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "neutral_dcsl_fired": true,
+        "variant_dcsl_fired": false,
+        "neutral_rule": "stroke_facial_droop",
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_NR_01",
+      "gold": "YELLOW",
+      "lang": "nr",
+      "category": "tb_symptoms",
+      "framing_type": "minimising",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "direction": "downward"
+      },
+      "pipeline": {
+        "neutral": "YELLOW",
+        "variant": "YELLOW",
+        "drifted": false,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": true,
+      "remaining_drift": false
+    },
+    {
+      "id": "Y_NR_02",
+      "gold": "YELLOW",
+      "lang": "nr",
+      "category": "asthma_inhaler_failure",
+      "framing_type": "hedged",
+      "native_review": true,
+      "ai_only": {
+        "neutral": "ORANGE",
+        "variant": "ORANGE",
+        "drifted": false,
+        "direction": "none"
+      },
+      "pipeline": {
+        "neutral": "ORANGE",
+        "variant": "YELLOW",
+        "drifted": true,
+        "neutral_dcsl_fired": false,
+        "variant_dcsl_fired": false,
+        "neutral_rule": null,
+        "variant_rule": null
+      },
+      "dcsl_rescued": false,
+      "remaining_drift": true
+    }
+  ]
+}

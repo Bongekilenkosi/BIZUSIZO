@@ -1,0 +1,48 @@
+name: BIZUSIZO Clinical Safety Regression
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Also allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  regression:
+    name: Clinical Safety Test (80 + 55 vignettes)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install @anthropic-ai/sdk @supabase/supabase-js dotenv
+
+      - name: Run regression test
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node full_regression_test.js
+
+      # Exit code 1 = under-triage or critical drift detected
+      # GitHub Actions will automatically fail the workflow on non-zero exit
+      # This blocks the Railway deployment
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-results-${{ github.sha }}
+          path: regression_results.json
+          if-no-files-found: ignore
+          retention-days: 90
