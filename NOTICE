@@ -1,0 +1,79 @@
+BIZUSIZO
+Copyright 2025-2026 Bongekile Esther Nkosi-Mjadu and contributors.
+
+================================================================
+IMPORTANT — READ BEFORE DEPLOYMENT
+================================================================
+
+This repository (and any public snapshot thereof, including the
+"BIZUSIZO" public repository at https://github.com/Bongekilenkosi/BIZUSIZO)
+is released under the Apache License, Version 2.0 for purposes of
+scientific reproducibility and independent verification of the
+Bizusizo triage methodology.
+
+It is NOT a deployment-ready toolkit.
+
+Bizusizo as an operational clinical service is constituted by more
+than the code in this repository. An operationally responsible
+deployment requires, at minimum, all of the following — NONE of
+which are included in or conferred by this repository:
+
+  * Facility-specific configuration, including the operational
+    DCSL keyword sets and threshold values used in production
+    (maintained as separate governed configuration)
+  * A live clinical governance loop with a named clinical
+    governance lead, monthly audit cycles, and incident
+    response pathways
+  * Active integration with the South African primary healthcare
+    referral pathway, ambulance dispatch, and CCMDD systems
+  * POPIA compliance infrastructure including a current Data
+    Protection Impact Assessment, audit logging, consent
+    management, and a Data Processing Agreement with the
+    deploying facility
+  * Health Professions Council of South Africa (HPCSA) and
+    Department of Health district-level approvals for the
+    specific facilities at which deployment is intended
+  * Production credentials for the messaging channel (Meta
+    WhatsApp Cloud API) operated under identity-verified business
+    accounts with facility-level consent flows
+  * Native-speaker-validated keyword sets for all eleven official
+    South African languages in which the system responds
+
+Anyone who takes this code and deploys it to triage real patients
+without establishing each of the above is operating a different
+system, under different clinical and legal conditions, and under
+their own liability. No warranty or clinical-safety assurance
+is offered by the copyright holders in respect of such
+deployments. See LICENSE for the warranty disclaimer terms.
+
+================================================================
+PILOT AUTHORISATION
+================================================================
+
+As of 2026-04-15, BIZUSIZO pilot deployment is authorised in
+writing by Tshwane District Health for three primary healthcare
+facilities: Eersterus Community Health Centre, Skinner Clinic,
+and Soshanguve Community Health Centre. Deployment at any other
+facility without equivalent written authorisation falls outside
+the scope of this pilot and is not sanctioned by the
+maintainers.
+
+================================================================
+TRADEMARK
+================================================================
+
+"Bizusizo" and the Bizusizo logo are unregistered trademarks of
+the Bizusizo founding team. The Apache License 2.0 grant of this
+repository does not include trademark rights (see Apache License
+Section 6). Forks, derivative works, or other uses of this code
+in a clinical-facing product must not use the "Bizusizo" name
+or logo without written permission.
+
+================================================================
+CONTACT
+================================================================
+
+Security reports:       bongekilenkosi@berkeley.edu
+Clinical governance:    sheilaplaatjie@gmail.com
+General correspondence: bongekilenkosi@berkeley.edu
+Trademark inquiries:    licasone@icloud.com

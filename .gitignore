@@ -19,3 +19,11 @@ model_comparison.json
 
 # Internal working documents (not for public release)
 internal/
+
+# DCSL keyword sets — load-at-startup config, NOT published.
+# See SECURITY.md known attack classes 2 and 3.
+# config/dcsl_keywords.example.json IS committed (shape only, empty arrays).
+config/dcsl_keywords.json
+
+# Backup of pre-refactor triage.js — kept locally only during migration
+lib/triage.orig.js

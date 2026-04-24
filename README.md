@@ -18,6 +18,16 @@ The design premise is that AI safety in resource-constrained primary healthcare 
 
 ---
 
+## Security posture
+
+The DCSL rule engine, rule names, and architecture are fully published in this repository. The **operational keyword sets** (the specific phrases in all 11 languages that cause each rule to fire) are maintained privately and loaded at runtime from `config/dcsl_keywords.json`, which is not committed here. `config/dcsl_keywords.example.json` shows the required JSON shape with empty arrays.
+
+This follows established practice for safety-critical clinical AI systems: publish the architecture and methodology; restrict the operational parameters that, if widely known, enlarge the de-escalation / rule-evasion attack surface. See [`SECURITY.md`](SECURITY.md) for the known attack classes and the responsible disclosure policy, and [`NOTICE`](NOTICE) for the reproducibility-snapshot-vs-deployment-toolkit boundary.
+
+Researchers who need the operational keyword sets for independent reproducibility studies can request access at `bongekilenkosi@berkeley.edu`.
+
+---
+
 ## Repository layout
 
 ### Paper artefacts (`docs/`)
